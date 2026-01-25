@@ -1,0 +1,83 @@
+# Implementation Plan - Immersive Corridor Portfolio
+
+## Goal Description
+Build an interactive 3D portfolio website where users scroll to move down a corridor. Doors angled at 45 degrees represent projects. Clicking a door opens a detail view.
+
+## User Review Required
+> [!IMPORTANT]
+> I will be using **Vite** with **Vanilla JavaScript** to ensure a production-ready build process, as opposed to a raw HTML/JS file structure. This aligns with modern best practices and the "Web Application Development" guidelines.
+
+## Proposed Changes
+
+### Project Structure
+I will set up a standard Vite project structure but adapt it to the user's requested folder layout where possible.
+
+```
+/
+├── index.html
+├── package.json
+├── vite.config.js
+├── src/
+│   ├── main.js          # Entry point
+│   ├── 3d/
+│   │   ├── SceneSetup.js # Scene, Camera, Renderer
+│   │   ├── Corridor.js   # Walls, Floor, Ceiling
+│   │   ├── Door.js       # Door mesh and logic
+│   │   └── Lights.js     # Lighting setup
+│   ├── scripts/
+│   │   ├── scroll.js     # Scroll handling
+│   │   └── interaction.js # Raycasting and events
+│   └── styles/
+│       └── main.css      # Global styles
+└── public/
+    └── assets/
+        ├── textures/
+        └── door-icons/
+```
+
+### Dependencies
+- `three`: For 3D rendering.
+- `gsap`: For animations (door opening, camera smoothing).
+- `lenis` (optional) or custom smooth scroll logic: To make the scroll-to-movement feel weighty and cinematic.
+
+### 3D Implementation Details
+- **Camera**: PerspectiveCamera.
+- **Movement**: The camera will move along the Z-axis based on `window.scrollY`.
+- **Corridor**: Simple PlaneGeometries for walls/floor/ceiling with repeating textures.
+- **Doors**:
+    - Placed at regular intervals along Z.
+    - Alternating Left (x < 0) and Right (x > 0).
+    - Rotated 45 degrees (Math.PI / 4) towards the camera.
+    - Each door will have a `userData` property linking to project details.
+
+### Interaction
+- **Raycaster**: Attached to mouse movement for hover effects.
+- **Click**: Triggers a GSAP animation to "open" the door or zoom in, then fades in the HTML Modal.
+
+### Styling
+- **Theme**: Dark, cinematic, "Blade Runner" or "Control" (game) aesthetic. Concrete, neon, shadows.
+- **UI**: Minimalist HUD.
+
+## Verification Plan
+### Automated Tests
+- N/A for this visual project, but I will ensure the build command `npm run build` works.
+
+### Manual Verification
+- **Scroll**: Verify scrolling moves the camera smoothly.
+- **Visuals**: Verify doors are angled correctly and visible.
+- **Interaction**: Verify hovering highlights doors and clicking opens the modal.
+- **Performance**: Check FPS on standard window size.
+
+tar \
+  --exclude='**/.env*' \
+  --exclude='node_modules' \
+  --exclude='**/node_modules' \
+  --exclude='build' \
+  --exclude='dist' \
+  --exclude='out' \
+  --exclude='coverage' \
+  --exclude='.git' \
+  --exclude='.gitignore' \
+  --exclude='.DS_Store' \
+  --exclude='*.log' \
+  -czvf clean_portfolio.tar.gz .
