@@ -35,6 +35,7 @@ class PortfolioApp {
         this.maxDepth = -120;
         this.cameraStartZ = 8;
         this.cameraEndZ = -50; // Will be updated after doors are created
+        this.hasEnteredCorridor = false; // Track if user has entered corridor
         
         this.init();
     }
@@ -77,7 +78,7 @@ class PortfolioApp {
         this.updateCameraPosition();
         
         // Prevent scrolling while landing page is visible
-        document.body.style.overflow = 'hidden';
+        // document.body.style.overflow = 'hidden';
         
         // Set up ScrollTrigger - reversed so scroll up moves forward
         ScrollTrigger.create({
@@ -88,35 +89,42 @@ class PortfolioApp {
             onUpdate: (self) => {
                 // Reverse progress: 0 at bottom (start), 1 at top (end)
                 // This makes scrolling up move forward into corridor
-                this.currentScrollProgress = 1 - self.progress;
+                this.currentScrollProgress = self.progress;
                 this.updateCameraPosition();
                 this.updateDoors();
                 // Update scroll indicator with reversed progress
                 this.updateScrollIndicator(this.currentScrollProgress);
+                this.updateLandingTransition(this.currentScrollProgress);
             }
         });
     }
 
+    
+
     updateCameraPosition() {
-        // Move camera forward as user scrolls
+        // eased progress for camera motion only
+        const p = this.easeInOutCubic(this.currentScrollProgress);
+
+        // Use eased progress for forward movement
         const z = gsap.utils.interpolate(
             this.cameraStartZ,
             this.cameraEndZ,
-            this.currentScrollProgress
+            p
         );
-        
-        // Add subtle parallax effect
-        const parallaxX = Math.sin(this.currentScrollProgress * Math.PI * 2) * 0.1;
-        const parallaxY = Math.cos(this.currentScrollProgress * Math.PI * 2) * 0.05;
-        
+
+        // Subtle parallax driven by eased progress
+        const parallaxX = Math.sin(p * Math.PI * 2) * 0.1;
+        const parallaxY = Math.cos(p * Math.PI * 2) * 0.05;
+
         gsap.to(this.sceneSetup.camera.position, {
-            z: z,
+            z,
             x: parallaxX,
             y: 1.6 + parallaxY,
             duration: 0.1,
             ease: 'none'
         });
     }
+
 
     createDoors() {
         // Create doors staggered on left and right walls
@@ -171,6 +179,58 @@ class PortfolioApp {
             }
         });
     }
+
+    updateLandingTransition(progress) {
+        const landing = document.getElementById('landingPage');
+        const left = document.getElementById('landingLeft');
+        const right = document.getElementById('landingRight');
+        const vignette = document.getElementById('vignetteOverlay');
+
+        if (!landing || !left || !right) return;
+
+        console.log("landing progress", progress);
+
+        const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+        const A_END = 0.18;
+        const B_END = 0.34;
+        const REVEAL_START = 0.04;
+
+        // Phase A: lateral exit
+        const tA = clamp01(progress / A_END);
+
+        const exitDistance = window.innerWidth * 1.05;
+        gsap.set(left, { x: -exitDistance * tA });
+        gsap.set(right, { x: exitDistance * tA });
+
+        // Phase B: fade + blur + vignette
+        const tB = clamp01((progress - REVEAL_START) / (B_END - REVEAL_START));
+
+        const blurPx = 10;
+        const scaleStart = 1;
+        const scaleEnd = 0.96; // subtle, cinematic
+
+        const scale = scaleStart - (scaleStart - scaleEnd) * tB;
+
+        gsap.set(landing, {
+        opacity: 1 - tB,
+        filter: `blur(${blurPx * tB}px)`,
+        transform: `scale(${scale})`
+        });
+
+
+        landing.style.pointerEvents = (tB > 0.98) ? 'none' : 'auto';
+
+        if (vignette) {
+            const max = 0.85;
+            gsap.set(vignette, { opacity: max * tB });
+        }
+
+        const hint = document.getElementById('scrollHint');
+        if (hint) gsap.set(hint, { opacity: clamp01(1 - progress / 0.08) });
+    }
+
+
 
     highlightDoor(door, highlight) {
         if (!door.mesh) return;
@@ -293,25 +353,25 @@ class PortfolioApp {
         }
         
         // Navigation home button
-        const navHome = document.getElementById('navHome');
-        if (navHome) {
-            navHome.addEventListener('click', () => {
-                // Hide modal if open
-                modal.classList.remove('active');
+        // const navHome = document.getElementById('navHome');
+        // if (navHome) {
+        //     navHome.addEventListener('click', () => {
+        //         // Hide modal if open
+        //         modal.classList.remove('active');
                 
-                // Show landing page
-                const landingPage = document.getElementById('landingPage');
-                if (landingPage) {
-                    landingPage.classList.remove('hidden');
-                }
+        //         // Show landing page
+        //         const landingPage = document.getElementById('landingPage');
+        //         if (landingPage) {
+        //             landingPage.classList.remove('hidden');
+        //         }
                 
-                // Scroll to top
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        }
+        //         // Scroll to top
+        //         window.scrollTo({
+        //             top: 0,
+        //             behavior: 'smooth'
+        //         });
+        //     });
+        // }
         
         // Audio toggle (placeholder)
         const audioToggle = document.getElementById('audioToggle');
@@ -340,7 +400,7 @@ class PortfolioApp {
             landingPage.classList.remove('hidden');
         }
         
-        // Handle enter button click
+        // Handle enter button click (optional, kept for compatibility)
         if (enterButton) {
             enterButton.addEventListener('click', () => {
                 this.enterCorridor();
@@ -349,16 +409,44 @@ class PortfolioApp {
         
         // Also allow Enter key to proceed
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && landingPage && !landingPage.classList.contains('hidden')) {
+            if (e.key === 'Enter' && landingPage && !landingPage.classList.contains('hidden') && !this.hasEnteredCorridor) {
                 this.enterCorridor();
             }
         });
+        
+        // Handle scroll wheel to enter corridor
+        // window.addEventListener('wheel', (e) => {
+        //     if (!this.hasEnteredCorridor && landingPage && !landingPage.classList.contains('hidden')) {
+        //         // Only trigger on scroll down (deltaY > 0)
+        //         if (e.deltaY > 10) {
+        //             e.preventDefault();
+        //             this.enterCorridor();
+        //         }
+        //     }
+        // }, { passive: false });
     }
+
+    easeInOutCubic(t) {
+        return t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
     
     enterCorridor() {
+        // Prevent multiple calls
+        if (this.hasEnteredCorridor) return;
+        this.hasEnteredCorridor = true;
+        
         const landingPage = document.getElementById('landingPage');
+        const scrollHint = document.getElementById('scrollHint');
         
         if (landingPage) {
+            // Hide scroll hint if it exists
+            if (scrollHint) {
+                scrollHint.classList.add('hidden');
+            }
+            
             // Fade out landing page
             landingPage.classList.add('hidden');
             
@@ -367,11 +455,9 @@ class PortfolioApp {
             
             // Wait for transition, then scroll to bottom to start corridor journey
             setTimeout(() => {
-                const scrollHeight = document.body.scrollHeight;
-                window.scrollTo({
-                    top: scrollHeight,
-                    behavior: 'smooth'
-                });
+                // const scrollHeight = document.body.scrollHeight;
+                // Start corridor journey at the top (no teleport)
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 // Ensure camera is at start position
                 this.currentScrollProgress = 0;
