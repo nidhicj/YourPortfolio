@@ -487,6 +487,7 @@ class PortfolioApp {
         // Render scene
         this.sceneSetup.render();
     }
+
 }
 
 // Initialize app when DOM is ready

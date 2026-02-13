@@ -11,6 +11,16 @@
 <body>
     <!-- Canvas Container -->
     <div id="app"></div>
+    <header class="site-nav" id="siteNav">
+    <nav class="landing-nav" aria-label="Primary">
+      <a class="landing-nav__item is-active" href="#">Home</a>
+      <a class="landing-nav__item" href="#">About</a>
+      <a class="landing-nav__item" href="#">Work</a>
+      <a class="landing-nav__item" href="#">Projects</a>
+      <a class="landing-nav__item" href="#">Contact</a>
+    </nav>
+  </header>
+
 
     <!-- Scroll Progress Indicator -->
     <div class="scroll-indicator">
@@ -18,26 +28,43 @@
     </div>
 
     <!-- Landing Page -->
-    <div class="landing-page" id="landingPage">
-        <div class="landing-content">
-  <div class="landing-rails">
-    <!-- LEFT rail -->
-    <div class="landing-rail landing-left" id="landingLeft">
-      <h1 class="greeting-title">Hello, I'm</h1>
-      <h2 class="greeting-name">Nidhi Joshi</h2>
-      <p class="greeting-role">Frontend Developer & Creative Technologist</p>
-      <p class="greeting-subtitle">Welcome to my portfolio</p>
-    </div>
+<div class="landing-page" id="landingPage">
+  <div class="landing-content landing-hero">
+    
 
-    <!-- RIGHT rail -->
-    <div class="landing-rail landing-right" id="landingRight">
-      <div class="greeting-description">
-        <p>I create immersive digital experiences through innovative web design and development.</p>
-        <p>Step into the corridor and explore my projects - each door represents a unique creation.</p>
+    <div class="landing-rails">
+      <!-- LEFT rail (slides left during entry) -->
+      <div class="landing-rail landing-left" id="landingLeft">
+        <div class="rail-inner rail-inner--left">
+        <p class="hero-kicker">Building applied AI systems that automate decisions.</p>
+
+        <h1 class="hero-title">
+          <span class="hero-title__prefix">I am</span>
+          <span class="hero-title__name">Nidhi</span>
+        </h1>
+
+        <p class="hero-role">AI Engineer · Systems &amp; Automation</p>
+        <p class="hero-hook">I don’t ship AI without guardrails.</p>
+
+        <div class="hero-cta">
+          <a class="hero-btn" href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume PDF</a>
+        </div>
+        </div>
       </div>
-     
 
-      <div class="greeting-links">
+      <!-- RIGHT rail (slides right during entry) -->
+      <div class="landing-rail landing-right" id="landingRight">
+        <div class="rail-inner rail-inner--right">
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-block hero-block--a"></div>
+          <div class="hero-block hero-block--b"></div>
+          <div class="hero-block hero-block--c"></div>
+
+          <!-- Add your headshot here -->
+          <img class="hero-photo" src="./assets/headshot-bigSize.png" alt="" />
+        </div>
+
+        <div class="hero-links">
         <!-- keep your existing links exactly as-is -->
         <a href="mailto:joshichi.nidhi@gmail.com" class="social-link" aria-label="Email">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -57,12 +84,13 @@
         </a>
       </div>
 
-      <p class="scroll-hint" id="scrollHint">Scroll to enter</p>
+      <!-- <p class="scroll-hint" id="scrollHint">Scroll to enter</p> -->
     </div>
+    </div>  
   </div>
 </div>
-
-    </div>
+</div>
+ 
     <div id="vignetteOverlay" class="vignette-overlay" aria-hidden="true"></div>
 
     <!-- Project Detail Modal -->

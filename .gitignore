@@ -5,6 +5,8 @@ dist/
 *.env
 *.env.local
 *.tar.gz
-
+*.zip
+archives/*
 
 clean_portfolio.tar.gz
+ABOUTME.MD
