@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SceneSetup } from '../SceneSetup.js';
-import { Corridor } from '../Corridor.js';
-import { Door } from '../Door.js';
-import { Lights } from '../Lights.js';
-import { InteractionHandler } from '../interaction.js';
+import { SceneSetup } from './scene/SceneSetup.js';
+import { Corridor } from './scene/Corridor.js';
+import { Door } from './scene/Door.js';
+import { Lights } from './scene/Lights.js';
+import { InteractionHandler } from './scene/interaction.js';
 import { projects } from './data/projects.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -188,7 +188,7 @@ class PortfolioApp {
 
         if (!landing || !left || !right) return;
 
-        console.log("landing progress", progress);
+// DEBUG:         console.log("landing progress", progress);
 
         const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
