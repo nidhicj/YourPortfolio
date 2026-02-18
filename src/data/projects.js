@@ -6,8 +6,8 @@ export const projects = [
         description: 'A modern web application built with React and Three.js. Features real-time collaboration and immersive user experience.',
         tags: ['React', 'Three.js', 'WebGL'],
         link: '#',
-        image: './assets/textures/project-1.jpg',
-        icon: './assets/door-icons/project-1.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2024',
         role: 'Lead Frontend Developer'
     },
@@ -17,8 +17,8 @@ export const projects = [
         description: 'Cross-platform mobile app with native performance and beautiful animations. Winner of Design Award 2024.',
         tags: ['React Native', 'iOS', 'Android'],
         link: '#',
-        image: './assets/textures/project-2.jpg',
-        icon: './assets/door-icons/project-2.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2024',
         role: 'Frontend Developer'
     },
@@ -28,8 +28,8 @@ export const projects = [
         description: 'Interactive data visualization platform that transforms complex datasets into beautiful, understandable insights.',
         tags: ['D3.js', 'Python', 'Data Science'],
         link: '#',
-        image: './assets/textures/project-3.jpg',
-        icon: './assets/door-icons/project-3.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2023',
         role: 'Full-Stack Developer'
     },
@@ -39,8 +39,8 @@ export const projects = [
         description: 'Full-stack e-commerce solution with advanced search, payment integration, and personalized recommendations.',
         tags: ['Node.js', 'MongoDB', 'Stripe'],
         link: '#',
-        image: './assets/textures/project-4.jpg',
-        icon: './assets/door-icons/project-4.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2023',
         role: 'Backend Developer'
     },
@@ -50,8 +50,8 @@ export const projects = [
         description: 'Complete brand identity system including logo design, typography, and comprehensive style guide.',
         tags: ['Design', 'Branding', 'Identity'],
         link: '#',
-        image: './assets/textures/project-5.jpg',
-        icon: './assets/door-icons/project-5.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2024',
         role: 'Creative Director'
     },
@@ -61,8 +61,8 @@ export const projects = [
         description: 'Immersive virtual reality experience built with Unity. Explores new frontiers in interactive storytelling.',
         tags: ['Unity', 'VR', '3D'],
         link: '#',
-        image: './assets/textures/project-6.jpg',
-        icon: './assets/door-icons/project-6.svg',
+        image: '/assets/textures/project-1.jpg',
+        icon: '/assets/door-icons/project-1.png',
         date: '2023',
         role: '3D Developer'
     }
