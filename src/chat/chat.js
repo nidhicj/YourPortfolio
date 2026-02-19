@@ -1,6 +1,6 @@
 // src/chat.js
 // Win #1: Chat UI (demo mode). Next win: swap demoReply() for POST /api/chat.
-import { loadKB, replyFromKB } from "./kbEngine.js";
+// import { loadKB, replyFromKB } from "./kbEngine.js";
 
 function $(id) { return document.getElementById(id); }
 
@@ -34,16 +34,38 @@ function demoReply(userText) {
   return "Demo mode: I’m not connected to the API yet. Next win: I’ll answer from your KB + /api/chat.";
 }
 
-// Later we’ll turn this on and remove demoReply:
-// async function apiReply(userText) {
-//   const res = await fetch("/api/chat", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ message: userText })
-//   });
-//   const data = await res.json();
-//   return data.reply || "No reply.";
-// }
+async function apiReply(userText) {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userText }),
+    });
+
+    // Try to parse JSON even on non-200 so we can show a useful message.
+    let data = null;
+    try {
+      data = await res.json();
+    } catch {
+      data = null;
+    }
+
+    if (!res.ok) {
+      // If the server returned a JSON reply, show it. Otherwise show a generic one.
+      return (data && typeof data.reply === "string" && data.reply.trim())
+        ? data.reply
+        : `Chatbot error (${res.status}). Please try again.`;
+    }
+
+    const reply = data?.reply;
+    if (typeof reply !== "string" || !reply.trim()) return "No reply.";
+    return reply;
+  } catch (err) {
+    console.error("Network/API error calling /api/chat:", err);
+    return "Network error: couldn’t reach the chatbot API. Check your connection and try again.";
+  }
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const fab = $("chatFab");
@@ -55,17 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!fab || !panel || !closeBtn || !form || !input || !log) return;
 
-    // Load KB once at startup (KB-only bot)
-  window.__kb = null;
-  loadKB()
-    .then((kb) => {
-      window.__kb = kb;
-    })
-    .catch((err) => {
-      // If KB fails to load, bot must still refuse deterministically
-      window.__kb = { meta: { contact: {} }, chunks: [] };
-      console.error(err);
-    });
+  // Load KB once at startup (KB-only bot)
+  // window.__kb = null;
+  // loadKB()
+  //   .then((kb) => {
+  //     window.__kb = kb;
+  //   })
+  //   .catch((err) => {
+  //     // If KB fails to load, bot must still refuse deterministically
+  //     window.__kb = { meta: { contact: {} }, chunks: [] };
+  //     console.error(err);
+  //   });
 
   // Start locked: button + panel hidden until first scroll (or timeout).
   // (fab is already hidden in HTML; we keep it consistent here.)
@@ -141,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("pointerdown", closePanel);
   closeBtn.addEventListener("click", closePanel);
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const userText = input.value.trim();
     if (!userText) return;
@@ -153,9 +175,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // const reply = demoReply(userText);
 
     // Win #2 behavior: KB-only deterministic reply
-    const reply = replyFromKB(window.__kb, userText);
+    // const reply = replyFromKB(window.__kb, userText);
+    // addMsg(log, "bot", reply);
 
-    addMsg(log, "bot", reply);
+    // Win #3 behavior: backend deterministic reply
+    addMsg(log, "bot", "…"); // lightweight “typing” placeholder
+    const placeholder = log.lastElementChild;
+
+    const reply = await apiReply(userText);
+
+    // Replace the placeholder text with the real reply
+    if (placeholder && placeholder.querySelector) {
+      const textEl = placeholder.querySelector(".chat-text");
+      if (textEl) textEl.textContent = reply;
+    } else {
+      addMsg(log, "bot", reply);
+    }
   });
 });
 
