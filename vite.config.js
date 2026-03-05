@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     port: 3000,
     open: true
@@ -8,11 +8,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    // sourcemap: true
     // Sourcemaps expose your source code publicly — only enable in development
     sourcemap: mode === 'development'
   }
-});
-
-
-
+}));
