@@ -8,7 +8,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: true
+    // sourcemap: true
+    // Sourcemaps expose your source code publicly — only enable in development
+    sourcemap: mode === 'development'
   }
 });
 

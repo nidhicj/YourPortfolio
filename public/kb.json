@@ -1,56 +1,84 @@
 {
   "version": "1.0",
   "meta": {
-    "ownerName": "Nidhi",
-    "headline": "AI Engineer · Systems & Automation",
+    "ownerName": "Nidhi Joshi",
+    "headline": "AI Engineer · Robotics & Automation",
     "contact": {
       "email": "mailto:joshichi.nidhi@gmail.com",
-      "linkedin": "https://linkedin.com/in/yourprofile",
-      "github": "https://github.com/yourusername",
+      "linkedin": "https://www.linkedin.com/in/connect-nidhichijoshi/",
+      "github": "https://github.com/nidhicj",
       "resumePdf": "/resume.pdf"
     }
   },
   "chunks": [
     {
       "id": "about-summary",
-      "title": "About",
-      "tags": ["about", "bio", "summary"],
+      "title": "About Nidhi",
+      "tags": ["about", "bio", "summary", "who"],
       "keywords": ["who are you", "about", "background", "intro", "summary", "tell me about yourself"],
-      "text": "I build applied AI systems that automate decisions. I care about reliability, guardrails, and practical delivery (not demos that break in production)."
+      "text": "I build applied AI systems that automate decisions — especially in robotics and industrial automation. I care about reliability, guardrails, and practical delivery. I don't ship AI that breaks in production."
     },
     {
-      "id": "work-style-guardrails",
-      "title": "Work style: guardrails",
-      "tags": ["work-style", "quality", "reliability"],
-      "keywords": ["guardrails", "reliable", "production", "quality", "testing", "robust", "safe"],
-      "text": "I don’t ship AI without guardrails: validation, deterministic fallbacks, monitoring, and clear failure modes. If something is unknown, I say so and route it correctly."
+      "id": "skills-robotics",
+      "title": "Robotics skills",
+      "tags": ["robotics", "ROS", "skills"],
+      "keywords": ["robotics", "ROS", "ROS2", "gazebo", "rviz", "navigation", "perception", "SLAM", "robot"],
+      "text": "ROS2, Gazebo simulation, Rviz visualization, robot navigation stacks, sensor fusion. [EDIT: add your specific robots/platforms here — e.g. TurtleBot, UR5, custom hardware]"
     },
     {
-      "id": "skills-core",
-      "title": "Core skills",
-      "tags": ["skills", "stack"],
-      "keywords": ["skills", "tech stack", "tools", "languages", "javascript", "python", "automation", "systems"],
-      "text": "Core focus: automation-first systems, clean interfaces, and practical AI integration. (Edit this block to list your exact tools: Python, JS, n8n, Jira/Confluence, etc.)"
+      "id": "skills-automation",
+      "title": "Automation & AI skills",
+      "tags": ["skills", "automation", "AI", "stack"],
+      "keywords": ["skills", "tech stack", "tools", "languages", "python", "automation", "AI", "machine learning", "pipeline"],
+      "text": "Python, automation pipelines, applied ML, guardrail design, deterministic fallbacks. [EDIT: add your exact tools — n8n, FastAPI, PyTorch, etc.]"
+    },
+    {
+      "id": "project-robotics",
+      "title": "Robotics projects",
+      "tags": ["projects", "robotics", "ROS2"],
+      "keywords": ["robotics project", "robot", "ROS", "gazebo", "simulation", "navigation", "autonomous"],
+      "text": "[EDIT: describe your main robotics project in 2 sentences — what it does and what was technically hard about it.]"
+    },
+    {
+      "id": "project-automation",
+      "title": "Automation projects",
+      "tags": ["projects", "automation", "pipeline"],
+      "keywords": ["automation", "pipeline", "workflow", "n8n", "script", "automate"],
+      "text": "[EDIT: describe your main automation project — what was manual, how you automated it, what it saved.]"
+    },
+    {
+      "id": "project-ml",
+      "title": "ML / AI projects",
+      "tags": ["projects", "ML", "AI", "machine learning"],
+      "keywords": ["machine learning", "ML", "model", "AI", "neural network", "classification", "detection"],
+      "text": "[EDIT: describe your ML project — problem, approach, key metric.]"
+    },
+    {
+      "id": "work-style",
+      "title": "How I work",
+      "tags": ["work-style", "quality", "guardrails"],
+      "keywords": ["guardrails", "reliable", "production", "quality", "testing", "robust", "how do you work", "approach"],
+      "text": "I don't ship AI without guardrails: validation, deterministic fallbacks, monitoring, and clear failure modes. If something is unknown, I say so and route it correctly. I look for systems that need automating and eliminate manual labor."
     },
     {
       "id": "portfolio-site",
       "title": "This portfolio",
-      "tags": ["projects", "portfolio"],
-      "keywords": ["portfolio", "corridor", "website", "site", "3d", "three.js", "projects"],
-      "text": "This site is an interactive portfolio corridor. Scroll to explore projects and click doors to open details."
+      "tags": ["portfolio", "website", "3D"],
+      "keywords": ["portfolio", "corridor", "website", "site", "3D", "three.js", "how did you build"],
+      "text": "Built with Three.js and GSAP — a scroll-driven 3D corridor where each door is a project. The chatbot (that's me) runs on a Cloudflare Pages Function backed by a knowledge base. No LLM API calls — deterministic retrieval only."
     },
     {
       "id": "resume",
       "title": "Resume",
       "tags": ["resume", "cv"],
-      "keywords": ["resume", "cv", "pdf"],
-      "text": "Resume PDF is available here: {resumePdf}"
+      "keywords": ["resume", "cv", "pdf", "download"],
+      "text": "Resume PDF: {resumePdf}"
     },
     {
       "id": "contact",
       "title": "Contact",
-      "tags": ["contact", "email"],
-      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect"],
+      "tags": ["contact", "email", "hire"],
+      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect", "hire", "available", "open to work"],
       "text": "Email: {email}\nLinkedIn: {linkedin}\nGitHub: {github}"
     }
   ]
