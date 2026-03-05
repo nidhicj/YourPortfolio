@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive 3D corridor portfolio showcasing creative projects and work.">
+    <meta name="keywords" content="portfolio, web development, 3D, three.js, interactive">
+    <title>Portfolio Corridor - Nidhi Joshi</title>
+  <script type="module" crossorigin src="/assets/index-DCODY5Vf.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C6Dw9zjw.css">
+</head>
+<body>
+    <!-- Canvas Container -->
+    <div id="app"></div>
+    <header class="site-nav" id="siteNav">
+    <nav class="landing-nav" aria-label="Primary">
+      <a class="landing-nav__item is-active" href="#">Home</a>
+      <a class="landing-nav__item" href="#">About</a>
+      <a class="landing-nav__item" href="#">Work</a>
+      <a class="landing-nav__item" href="#">Projects</a>
+      <a class="landing-nav__item" href="#">Contact</a>
+    </nav>
+  </header>
+
+
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-bar"></div>
+    </div>
+
+        <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+      <div class="landing-content landing-hero">
+        <div class="landing-rails">
+          <!-- LEFT rail (slides left during entry) -->
+          <div class="landing-rail landing-left" id="landingLeft">
+            <div class="rail-inner rail-inner--left">
+              <div class="lx-item" style="--lx-i:0">
+                <p class="hero-kicker">Building applied AI systems that automate decisions.</p>
+              </div>
+
+              <div class="lx-item" style="--lx-i:1">
+                <h1 class="hero-title">
+                  <span class="hero-title__prefix">I am</span>
+                  <span class="hero-title__name">Nidhi</span>
+                </h1>
+              </div>
+
+              <div class="lx-item" style="--lx-i:2">
+                <p class="hero-role">AI Engineer · Systems &amp; Automation</p>
+              </div>
+
+              <div class="lx-item" style="--lx-i:3">
+                <p class="hero-hook">I don’t ship AI without guardrails.</p>
+              </div>
+
+              <div class="lx-item" style="--lx-i:4">
+                <div class="hero-cta">
+                  <a class="hero-btn" href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume PDF</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT rail (slides right during entry) -->
+          <div class="landing-rail landing-right" id="landingRight">
+            <div class="rail-inner rail-inner--right">
+              <div class="hero-visual" aria-hidden="true">
+                <div class="hero-block hero-block--a"></div>
+                <div class="hero-block hero-block--b"></div>
+                <div class="hero-block hero-block--c"></div>
+
+                <!-- Add your headshot here -->
+                <img class="hero-photo" src="/assets/headshot-bigSize.png" alt="" />
+              </div>
+
+              <div class="hero-links">
+                <!-- keep your existing links exactly as-is -->
+                <a href="mailto:joshichi.nidhi@gmail.com" class="social-link" aria-label="Email">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </a>
+                <a href="https://linkedin.com/in/yourprofile" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+                <a href="https://github.com/yourusername" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+              </div>
+
+              <!-- <p class="scroll-hint" id="scrollHint">Scroll to enter</p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="vignetteOverlay" class="vignette-overlay" aria-hidden="true"></div>
+
+    <!-- Project Detail Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose" aria-label="Close project details">&times;</button>
+            <div class="modal-body">
+                <h2 id="modalTitle"></h2>
+                <div class="modal-image" id="modalImage"></div>
+                <p id="modalDescription"></p>
+                <div class="modal-tags" id="modalTags"></div>
+                <a href="#" id="modalLink" class="modal-link" target="_blank">View Project →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Button -->
+    <!-- <button class="nav-home" id="navHome" aria-label="Return to home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Home</span>
+    </button> -->
+
+    <!-- Audio Toggle (Optional) -->
+    <button class="audio-toggle" id="audioToggle" aria-label="Toggle Audio">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9v6h4l5 5V4L7 9H3z"></path>
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"></path>
+            <path d="M14 3.23v5.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path>
+        </svg>
+    </button>
+        <!-- Recruiter Chatbot (demo UI) -->
+    <button class="chat-fab" id="chatFab" aria-label="Open chatbot" hidden>
+      Chat
+    </button>
+
+    <section class="chat-panel" id="chatPanel" aria-label="Chatbot" hidden>
+      <header class="chat-header">
+        <strong>Ask about my work</strong>
+        <button class="chat-close" id="chatClose" aria-label="Close chatbot">✕</button>
+      </header>
+
+      <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
+
+      <form class="chat-form" id="chatForm">
+        <input
+          class="chat-input"
+          id="chatInput"
+          type="text"
+          placeholder="Ask about projects, skills, or contact..."
+          autocomplete="off"
+        />
+        <button class="chat-send" type="submit">Send</button>
+      </form>
+
+      <small class="chat-hint">Demo mode (local). Next win: connect to /api/chat.</small>
+    </section>
+
+    <!-- Scripts -->
+
+</body>
+</html>

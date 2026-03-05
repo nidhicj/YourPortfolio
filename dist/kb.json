@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "meta": {
+    "ownerName": "Nidhi",
+    "headline": "AI Engineer · Systems & Automation",
+    "contact": {
+      "email": "mailto:joshichi.nidhi@gmail.com",
+      "linkedin": "https://linkedin.com/in/yourprofile",
+      "github": "https://github.com/yourusername",
+      "resumePdf": "/resume.pdf"
+    }
+  },
+  "chunks": [
+    {
+      "id": "about-summary",
+      "title": "About",
+      "tags": ["about", "bio", "summary"],
+      "keywords": ["who are you", "about", "background", "intro", "summary", "tell me about yourself"],
+      "text": "I build applied AI systems that automate decisions. I care about reliability, guardrails, and practical delivery (not demos that break in production)."
+    },
+    {
+      "id": "work-style-guardrails",
+      "title": "Work style: guardrails",
+      "tags": ["work-style", "quality", "reliability"],
+      "keywords": ["guardrails", "reliable", "production", "quality", "testing", "robust", "safe"],
+      "text": "I don’t ship AI without guardrails: validation, deterministic fallbacks, monitoring, and clear failure modes. If something is unknown, I say so and route it correctly."
+    },
+    {
+      "id": "skills-core",
+      "title": "Core skills",
+      "tags": ["skills", "stack"],
+      "keywords": ["skills", "tech stack", "tools", "languages", "javascript", "python", "automation", "systems"],
+      "text": "Core focus: automation-first systems, clean interfaces, and practical AI integration. (Edit this block to list your exact tools: Python, JS, n8n, Jira/Confluence, etc.)"
+    },
+    {
+      "id": "portfolio-site",
+      "title": "This portfolio",
+      "tags": ["projects", "portfolio"],
+      "keywords": ["portfolio", "corridor", "website", "site", "3d", "three.js", "projects"],
+      "text": "This site is an interactive portfolio corridor. Scroll to explore projects and click doors to open details."
+    },
+    {
+      "id": "resume",
+      "title": "Resume",
+      "tags": ["resume", "cv"],
+      "keywords": ["resume", "cv", "pdf"],
+      "text": "Resume PDF is available here: {resumePdf}"
+    },
+    {
+      "id": "contact",
+      "title": "Contact",
+      "tags": ["contact", "email"],
+      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect"],
+      "text": "Email: {email}\nLinkedIn: {linkedin}\nGitHub: {github}"
+    }
+  ]
+}
