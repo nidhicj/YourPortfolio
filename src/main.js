@@ -155,7 +155,7 @@ class PortfolioApp {
         const landing = document.getElementById('landingPage');
         const left    = document.getElementById('landingLeft');
         const right   = document.getElementById('landingRight');
-        const vignette= document.getElementById('vignetteOverlay');
+        // const vignette= document.getElementById('vignetteOverlay');
         if (!landing || !left || !right) return;
 
         // Use absolute pixels — landing clears in the first 400px of scroll,

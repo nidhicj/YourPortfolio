@@ -28,7 +28,7 @@ export class Placard {
         this.restZ = READ_Z - index * STACK_SPACING;
 
         this.mesh      = null;
-        this.frameMesh = null;
+        // this.frameMesh = null;
 
         this._build();
     }
@@ -42,23 +42,24 @@ export class Placard {
 
         const isLeft = this.side === -1;
         const isWork = this.entry.type === 'work';
-        const accent = isWork ? '#FCBB6D' : '#B7FF4A';
+        const accent     = '#7A1B2A';
+        const accentLight = '#9B2335';
         const PAD    = 64;
         const ax     = isLeft ? 'left' : 'right';
         const ox     = isLeft ? PAD + 14 : W - PAD - 14;
 
-        // Background
-        ctx.fillStyle = isWork ? '#0d1117' : '#080f12';
+        // Background — pure white for both work and project cards
+        ctx.fillStyle = '#ffffff';
         ctx.roundRect(0, 0, W, H, 20);
         ctx.fill();
 
-        // Faint accent warmth
+        // Faint burgundy warmth
         const grd = ctx.createRadialGradient(
             isLeft ? W*0.15 : W*0.85, H*0.2, 0,
             isLeft ? W*0.15 : W*0.85, H*0.2, W*0.55
         );
-        grd.addColorStop(0, isWork ? 'rgba(252,187,109,0.07)' : 'rgba(183,255,74,0.06)');
-        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        grd.addColorStop(0, 'rgba(122,27,42,0.05)');
+        grd.addColorStop(1, 'rgba(122,27,42,0)');
         ctx.fillStyle = grd; ctx.roundRect(0,0,W,H,20); ctx.fill();
 
         // Accent bar
@@ -77,13 +78,13 @@ export class Placard {
 
         // Date (opposite corner)
         ctx.font = '400 20px "Courier New",monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.fillStyle = 'rgba(26,13,16,0.35)';
         ctx.textAlign = isLeft ? 'right' : 'left';
         ctx.fillText(this.entry.date || '', isLeft ? W - PAD : PAD, 68);
 
         // Title
-        ctx.font = '700 72px Arial,sans-serif';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 72px "Syne",Arial,sans-serif';
+        ctx.fillStyle = '#1a0d10';
         ctx.textAlign = ax;
         this._wrap(ctx, this.entry.title, ox, 160, W - PAD*2 - 20, 84, 2, ax);
 
@@ -96,13 +97,13 @@ export class Placard {
         ctx.globalAlpha = 1;
 
         // Rule
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.strokeStyle = 'rgba(122,27,42,0.12)';
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(PAD, 296); ctx.lineTo(W-PAD, 296); ctx.stroke();
 
         // Description
-        ctx.font = '400 26px Arial,sans-serif';
-        ctx.fillStyle = 'rgba(210,218,232,0.82)';
+        ctx.font = '400 26px "DM Sans",Arial,sans-serif';
+        ctx.fillStyle = 'rgba(26,13,16,0.65)';
         ctx.textAlign = ax;
         this._wrap(ctx, this.entry.description, ox, 346, W - PAD*2 - 20, 38, 4, ax);
 
@@ -113,7 +114,7 @@ export class Placard {
             ctx.textAlign = 'left';
             const cw = ctx.measureText(ct).width + 36;
             const cx = isLeft ? PAD + 14 : W - PAD - 14 - cw;
-            ctx.fillStyle = accent + '18'; ctx.strokeStyle = accent + '50'; ctx.lineWidth = 1.5;
+            ctx.fillStyle = 'rgba(122,27,42,0.10)'; ctx.strokeStyle = 'rgba(122,27,42,0.35)'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.roundRect(cx, cy, cw, 36, 7); ctx.fill();
             ctx.beginPath(); ctx.roundRect(cx, cy, cw, 36, 7); ctx.stroke();
             ctx.fillStyle = accent;
@@ -129,16 +130,16 @@ export class Placard {
         const rowW = tagData.reduce((s,d) => s + d.w + 8, -8);
         let tx = isLeft ? PAD + 14 : W - PAD - 14 - rowW;
         tagData.forEach(({ t, w }) => {
-            ctx.fillStyle = 'rgba(255,255,255,0.07)';
+            ctx.fillStyle = 'rgba(122,27,42,0.07)';
             ctx.beginPath(); ctx.roundRect(tx, tagY-20, w, 28, 5); ctx.fill();
-            ctx.fillStyle = 'rgba(255,255,255,0.40)';
+            ctx.fillStyle = 'rgba(26,13,16,0.45)';
             ctx.fillText(t, tx+12, tagY);
             tx += w + 8;
         });
 
         // Ghost index number
-        ctx.font = '800 220px Arial,sans-serif';
-        ctx.fillStyle = 'rgba(255,255,255,0.018)';
+        ctx.font = '800 220px "Syne",Arial,sans-serif';
+        ctx.fillStyle = 'rgba(122,27,42,0.035)';
         ctx.textAlign = isLeft ? 'right' : 'left';
         ctx.fillText(String(this.index+1).padStart(2,'0'), isLeft ? W-20 : 20, H+15);
 
@@ -177,20 +178,20 @@ export class Placard {
             })
         );
 
-        const frameColor = this.entry.type === 'work' ? 0xFCBB6D : 0xB7FF4A;
-        this.frameMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(PW + 0.03, PH + 0.03),
-            new THREE.MeshBasicMaterial({
-                color: frameColor, transparent: true,
-                opacity: 0.22, depthWrite: false,
-            })
-        );
+        const frameColor = 0x7A1B2A; // burgundy for both work and project cards
+        // this.frameMesh = new THREE.Mesh(
+        //     new THREE.PlaneGeometry(PW + 0.03, PH + 0.03),
+        //     new THREE.MeshBasicMaterial({
+        //         color: frameColor, transparent: true,
+        //         opacity: 0.22, depthWrite: false,
+        //     })
+        // );
 
         // Place at resting position immediately — stacked in depth, already visible
         this.mesh.position.set(this.side * OFFSET_X, 1.7, this.restZ);
-        this.frameMesh.position.set(this.side * OFFSET_X, 1.7, this.restZ - 0.001);
+        // this.frameMesh.position.set(this.side * OFFSET_X, 1.7, this.restZ - 0.001);
 
-        this.scene.add(this.frameMesh);
+        // this.scene.add(this.frameMesh);
         this.scene.add(this.mesh);
     }
 
@@ -210,14 +211,14 @@ export class Placard {
         const slot  = 1 / n;
         const start = this.index * slot;
         const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
-        const smooth = t => t * t * (3 - 2 * t);
+        const smooth = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
         // Local progress 0→1 within this card's slot
         const local = clamp((scrollProgress - start) / slot, 0, 1);
 
         // Phase boundaries (fractions of local)
-        const SLIDE_END = 0.15;   // slide finishes at 15%
-        const HOLD_END  = 0.75;   // hold finishes at 75% — 60% of slot is pure reading time
+        const SLIDE_END = 0.20;   // slide finishes at 15%
+        const HOLD_END  = 0.85;   // hold finishes at 75% — 60% of slot is pure reading time
         // exit runs 75%→100%
 
         const slideT = smooth(clamp(local / SLIDE_END, 0, 1));
@@ -228,16 +229,16 @@ export class Placard {
 
         // X: lean at rest, sweep off on exit — quadratic so it starts slow then accelerates
         const restX    = this.side * OFFSET_X;
-        const currentX = restX + exitT * exitT * this.side * EXIT_X;
+        const currentX = restX + exitT * this.side * EXIT_X;
 
         // Opacity: fully visible the whole time, only fades during exit
         const opacity = 1 - exitT * 0.92;
 
         this.mesh.position.set(currentX, 1.7, currentZ);
-        this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
+        // this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
 
         this.mesh.material.opacity      = Math.max(0, opacity);
-        this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
+        // this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
     }
 
     setTotal(n) { this._total = n; }

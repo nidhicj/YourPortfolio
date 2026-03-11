@@ -17,7 +17,7 @@ export class SceneSetup {
 
         // Scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x080810);
+        this.scene.background = new THREE.Color(0xffffff);
         // No fog — all placards must be visible simultaneously in the depth stack
 
         // Camera with perspective settings

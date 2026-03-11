@@ -8,12 +8,12 @@ export class Lights {
     }
 
     init() {
-        // Ambient Light (Low base visibility)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.08);
+        // Ambient Light — bright for white scene
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
         this.scene.add(ambientLight);
 
-        // Main Directional Light (Warm lighting from behind)
-        const dirLight = new THREE.DirectionalLight(0xFCBB6D, 0.5); // Warm peach
+        // Main Directional Light — neutral, soft
+        const dirLight = new THREE.DirectionalLight(0xfff5f5, 0.35);
         dirLight.position.set(0, 8, 10);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 2048;
@@ -27,25 +27,18 @@ export class Lights {
         dirLight.shadow.bias = -0.0001;
         this.scene.add(dirLight);
 
-        // Fill Light from front (soft cool tone)
-        const fillLight = new THREE.DirectionalLight(0x475C7A, 0.2); // Blue-gray
+        // Fill Light — very soft
+        const fillLight = new THREE.DirectionalLight(0xf5eeee, 0.15);
         fillLight.position.set(0, 5, -10);
         this.scene.add(fillLight);
 
-        // Spotlights along the corridor for cinematic effect
-        // Alternating on left and right with warm tones
+        // Subtle burgundy spotlights along corridor for depth
         for (let z = 5; z > -150; z -= 12) {
-            const side = (z % 24 === 5) ? -1 : 1; // Alternate sides
-            const intensity = 1.5 + Math.random() * 0.5;
-            // Alternate between warm peach and rose pink
-            const lightColor = (z % 24 === 5) ? 0xFCBB6D : 0xD8737F;
+            const side = (z % 24 === 5) ? -1 : 1;
+            const intensity = 0.4 + Math.random() * 0.2;
             const spotLight = new THREE.SpotLight(
-                lightColor,
-                intensity,
-                20,
-                Math.PI / 5,
-                0.4,
-                1
+                0x7A1B2A, // burgundy tint
+                intensity, 20, Math.PI / 5, 0.4, 1
             );
             spotLight.position.set(side * 1.5, 2.8, z);
             spotLight.target.position.set(0, 0, z);
@@ -57,12 +50,12 @@ export class Lights {
             this.spotlights.push(spotLight);
         }
 
-        // Subtle rim lights on walls
-        const rimLightLeft = new THREE.DirectionalLight(0xAB6C82, 0.15); // Dusty rose
+        // Subtle rim lights
+        const rimLightLeft  = new THREE.DirectionalLight(0xf5eaea, 0.1);
         rimLightLeft.position.set(-3, 2, 0);
         this.scene.add(rimLightLeft);
 
-        const rimLightRight = new THREE.DirectionalLight(0xAB6C82, 0.15); // Dusty rose
+        const rimLightRight = new THREE.DirectionalLight(0xf5eaea, 0.1);
         rimLightRight.position.set(3, 2, 0);
         this.scene.add(rimLightRight);
     }
