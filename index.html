@@ -36,6 +36,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;900&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
     <!-- ─── Stylesheet ────────────────────────────────────────────────────── -->
     <link rel="stylesheet" href="./styles/main.css">
 </head>
@@ -52,6 +57,13 @@
     </nav>
   </header>
 
+
+    <!-- Horizontal Index Bar -->
+    <div class="index-bar-wrapper" id="indexBarWrapper">
+        <div class="index-bar" id="indexBar">
+            <!-- Populated by JS -->
+        </div>
+    </div>
 
     <!-- Scroll Progress Indicator -->
     <div class="scroll-indicator">
@@ -133,21 +145,7 @@
 
 <div id="vignetteOverlay" class="vignette-overlay" aria-hidden="true"></div>
 
-    <!-- Project Detail Modal -->
-    <div class="modal" id="projectModal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose" aria-label="Close project details">&times;</button>
-            <div class="modal-body">
-                <h2 id="modalTitle"></h2>
-                <div class="modal-image" id="modalImage"></div>
-                <p id="modalDescription"></p>
-                <div class="modal-tags" id="modalTags"></div>
-                <a href="#" id="modalLink" class="modal-link" target="_blank">View Project →</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation Button -->
+    <!-- Navigation Button (removed) -->
     <!-- <button class="nav-home" id="navHome" aria-label="Return to home">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>

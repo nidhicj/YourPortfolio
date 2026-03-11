@@ -304,6 +304,14 @@ body {
     transition: opacity 0.8s ease-out, visibility 0s linear;
     backdrop-filter: blur(0px);
     will-change: opacity, filter, transform;
+    pointer-events: none; /* scroll passes through to window — content still interactive via children */
+}
+
+/* Re-enable pointer events on actual content inside landing */
+.landing-page .landing-hero,
+.landing-page .landing-nav,
+.landing-page .landing-content {
+    pointer-events: auto;
 }
 
 .landing-hero { width: min(1200px, 92vw); }
@@ -1029,3 +1037,139 @@ body {
     background: rgba(252, 187, 109, 0.8);
 }
 
+
+/* ─── Index Bar ──────────────────────────────────────────────────────────── */
+.index-bar-wrapper {
+  position: fixed;
+  top: 52px; /* sits just below the nav */
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 24px;
+  transition: opacity 0.6s ease;
+}
+
+/* Hide index bar while landing page is visible */
+.landing-visible .index-bar-wrapper {
+  opacity: 0;
+}
+
+.index-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 7px 20px;
+  background: rgba(8, 10, 28, 0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  pointer-events: auto;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.index-bar::-webkit-scrollbar { display: none; }
+
+.index-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.42);
+  cursor: pointer;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.index-item:hover {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.index-item.is-active {
+  color: #FCBB6D;
+  background: rgba(252, 187, 109, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Work experience items use warm accent */
+.index-item[data-type="work"] .index-dot {
+  background: #FCBB6D;
+}
+
+/* Project items use green accent */
+.index-item[data-type="project"] .index-dot {
+  background: #B7FF4A;
+}
+
+.index-item[data-type="project"].is-active {
+  color: #B7FF4A;
+  background: rgba(183, 255, 74, 0.1);
+}
+
+.index-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.index-item.is-active .index-dot {
+  opacity: 1;
+  transform: scale(1.4);
+}
+
+.index-label {
+  font-size: 11px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.index-year {
+  font-size: 10px;
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.index-section-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ─── Section label that fades in between placards ───────────────────────── */
+.section-label {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.35);
+  pointer-events: none;
+  z-index: 100;
+  text-transform: uppercase;
+  transition: opacity 0.4s ease;
+}

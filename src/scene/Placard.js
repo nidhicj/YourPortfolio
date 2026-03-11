@@ -1,35 +1,37 @@
 import * as THREE from 'three';
 
-// ─── Scene constants ──────────────────────────────────────────────────────────
-// Camera is FIXED at z=0, looking toward -Z.
-// "Reading position" is z = -8 (comfortable distance from camera).
-// Cards start stacked behind that: z = -8, -22, -36, -50 ...  (14 units apart)
-// On scroll, each card slides forward to z=-8, holds, then exits left/right.
-
-const CAMERA_Z      =  0;    // camera never moves
-const READ_Z        = -8;    // z position where card is fully readable
-const STACK_SPACING = 14;    // depth between stacked cards at rest
+// ─── Layout ───────────────────────────────────────────────────────────────────
+const READ_Z        = -2.3;    // depth where card is comfortably readable
+const STACK_SPACING = 2;    // depth gap between stacked cards
 const OFFSET_X      = 0.4;   // left/right lean while in stack
-const EXIT_X        = 5.5;   // how far off-screen on lateral exit
-const PW            = 2.8;   // card width  (world units)
-const PH            = 1.55;  // card height (world units)
+const EXIT_X        = 5.5;   // lateral distance on exit
+const PW            = 2.8;
+const PH            = 1.55;
+
+// ─── Per-card scroll budget (in pixels) ──────────────────────────────────────
+// Each card owns a window of scroll. Windows overlap so the stack is always
+// visible — a card starts sliding forward while previous card is still in hold.
+export const SLIDE_PX = 500;
+export const HOLD_PX  = 200;
+export const EXIT_PX  = 500;
+export const CARD_PX  = SLIDE_PX + HOLD_PX + EXIT_PX;
 
 export class Placard {
     constructor(scene, entry, index, total) {
-        this._total = total;
         this.scene  = scene;
         this.entry  = entry;
+        this.entryId = entry.id
         this.index  = index;
+        this._total = total;
 
-        // Which side this card leans/exits toward
-        this.side = index % 2 === 0 ? -1 : 1;  // -1=left, +1=right
+        this.side  = index % 2 === 0 ? -1 : 1;
+        this.restZ = READ_Z - (index + 1) * STACK_SPACING;
 
-        // Resting depth — card 0 closest, card N deepest
-        this.restZ = READ_Z - index * STACK_SPACING;
+        this.currentZ = this.restZ;
+        this.exitT = 0;
 
         this.mesh      = null;
         this.frameMesh = null;
-
         this._build();
     }
 
@@ -49,10 +51,9 @@ export class Placard {
 
         // Background
         ctx.fillStyle = isWork ? '#0d1117' : '#080f12';
-        ctx.roundRect(0, 0, W, H, 20);
-        ctx.fill();
+        ctx.roundRect(0, 0, W, H, 20); ctx.fill();
 
-        // Faint accent warmth
+        // Accent warmth
         const grd = ctx.createRadialGradient(
             isLeft ? W*0.15 : W*0.85, H*0.2, 0,
             isLeft ? W*0.15 : W*0.85, H*0.2, W*0.55
@@ -75,7 +76,7 @@ export class Placard {
         ctx.fillText(isWork ? 'WORK EXPERIENCE' : 'KEY PROJECT', ox, 68);
         ctx.globalAlpha = 1;
 
-        // Date (opposite corner)
+        // Date
         ctx.font = '400 20px "Courier New",monospace';
         ctx.fillStyle = 'rgba(255,255,255,0.25)';
         ctx.textAlign = isLeft ? 'right' : 'left';
@@ -83,47 +84,39 @@ export class Placard {
 
         // Title
         ctx.font = '700 72px Arial,sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = ax;
+        ctx.fillStyle = '#ffffff'; ctx.textAlign = ax;
         this._wrap(ctx, this.entry.title, ox, 160, W - PAD*2 - 20, 84, 2, ax);
 
         // Company · Location
         const co = [this.entry.company, this.entry.location].filter(Boolean).join('  ·  ');
         ctx.font = '400 24px "Courier New",monospace';
-        ctx.fillStyle = accent; ctx.globalAlpha = 0.9;
-        ctx.textAlign = ax;
-        ctx.fillText(co, ox, 268);
-        ctx.globalAlpha = 1;
+        ctx.fillStyle = accent; ctx.globalAlpha = 0.9; ctx.textAlign = ax;
+        ctx.fillText(co, ox, 268); ctx.globalAlpha = 1;
 
         // Rule
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(PAD, 296); ctx.lineTo(W-PAD, 296); ctx.stroke();
 
         // Description
         ctx.font = '400 26px Arial,sans-serif';
-        ctx.fillStyle = 'rgba(210,218,232,0.82)';
-        ctx.textAlign = ax;
+        ctx.fillStyle = 'rgba(210,218,232,0.82)'; ctx.textAlign = ax;
         this._wrap(ctx, this.entry.description, ox, 346, W - PAD*2 - 20, 38, 4, ax);
 
         // Highlight chip
         if (this.entry.highlight) {
             const cy = H - 120, ct = this.entry.highlight;
-            ctx.font = '600 21px "Courier New",monospace';
-            ctx.textAlign = 'left';
+            ctx.font = '600 21px "Courier New",monospace'; ctx.textAlign = 'left';
             const cw = ctx.measureText(ct).width + 36;
             const cx = isLeft ? PAD + 14 : W - PAD - 14 - cw;
             ctx.fillStyle = accent + '18'; ctx.strokeStyle = accent + '50'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.roundRect(cx, cy, cw, 36, 7); ctx.fill();
             ctx.beginPath(); ctx.roundRect(cx, cy, cw, 36, 7); ctx.stroke();
-            ctx.fillStyle = accent;
-            ctx.fillText(ct, cx + 18, cy + 25);
+            ctx.fillStyle = accent; ctx.fillText(ct, cx + 18, cy + 25);
         }
 
         // Tags
         const tagY = H - 58;
-        ctx.font = '400 18px "Courier New",monospace';
-        ctx.textAlign = 'left';
+        ctx.font = '400 18px "Courier New",monospace'; ctx.textAlign = 'left';
         const tagData = (this.entry.tags||[]).slice(0,6)
             .map(t => ({ t, w: ctx.measureText(t).width + 24 }));
         const rowW = tagData.reduce((s,d) => s + d.w + 8, -8);
@@ -132,11 +125,10 @@ export class Placard {
             ctx.fillStyle = 'rgba(255,255,255,0.07)';
             ctx.beginPath(); ctx.roundRect(tx, tagY-20, w, 28, 5); ctx.fill();
             ctx.fillStyle = 'rgba(255,255,255,0.40)';
-            ctx.fillText(t, tx+12, tagY);
-            tx += w + 8;
+            ctx.fillText(t, tx+12, tagY); tx += w + 8;
         });
 
-        // Ghost index number
+        // Ghost number
         ctx.font = '800 220px Arial,sans-serif';
         ctx.fillStyle = 'rgba(255,255,255,0.018)';
         ctx.textAlign = isLeft ? 'right' : 'left';
@@ -164,7 +156,6 @@ export class Placard {
         if (line.trim()) draw(line);
     }
 
-    // ─── Geometry ─────────────────────────────────────────────────────────────
     _build() {
         const tex = new THREE.CanvasTexture(this._buildCanvas());
         tex.anisotropy = 16;
@@ -181,12 +172,10 @@ export class Placard {
         this.frameMesh = new THREE.Mesh(
             new THREE.PlaneGeometry(PW + 0.03, PH + 0.03),
             new THREE.MeshBasicMaterial({
-                color: frameColor, transparent: true,
-                opacity: 0.22, depthWrite: false,
+                color: frameColor, transparent: true, opacity: 0.22, depthWrite: false,
             })
         );
 
-        // Place at resting position immediately — stacked in depth, already visible
         this.mesh.position.set(this.side * OFFSET_X, 1.7, this.restZ);
         this.frameMesh.position.set(this.side * OFFSET_X, 1.7, this.restZ - 0.001);
 
@@ -194,53 +183,51 @@ export class Placard {
         this.scene.add(this.mesh);
     }
 
-    // ─── Update — called every frame with scroll progress 0→1 ────────────────
+    // ─── Update ───────────────────────────────────────────────────────────────
+    // scrollPx = raw scroll position in pixels (window.scrollY equivalent via progress)
+    // Each card has its own pixel window: starts at index * CARD_PX
     //
-    // Each card owns a slot of total scroll.
-    // Within that slot, three phases:
+    //   0 ──── SLIDE_PX ──── (SLIDE+HOLD)_PX ──── CARD_PX
+    //   |   slide fwd   |      hold still      |   exit    |
     //
-    //   SLIDE  (0 → 15%): card moves forward from restZ to READ_Z
-    //   HOLD   (15% → 75%): card sits perfectly still at READ_Z — reader reads
-    //   EXIT   (75% → 100%): card sweeps laterally off screen
-    //
-    // Card 0 starts already at READ_Z so its slide is instant.
-    //
-    update(scrollProgress) {
-        const n     = this._total;
-        const slot  = 1 / n;
-        const start = this.index * slot;
-        const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
-        const smooth = t => t * t * (3 - 2 * t);
+    update(scrollPx) {
+        const cardStart = this.index * CARD_PX;
+        const local     = scrollPx - cardStart;
+        const clamp     = (v,a,b) => Math.max(a, Math.min(b,v));
+        const smooth    = t => t * t * (3 - 2 * t);
 
-        // Local progress 0→1 within this card's slot
-        const local = clamp((scrollProgress - start) / slot, 0, 1);
+        // Current card's own exit timing
+        const exitStart = SLIDE_PX + HOLD_PX;
+        const exitT     = smooth(clamp((local - exitStart) / EXIT_PX, 0, 1));
 
-        // Phase boundaries (fractions of local)
-        const SLIDE_END = 0.15;   // slide finishes at 15%
-        const HOLD_END  = 0.75;   // hold finishes at 75% — 60% of slot is pure reading time
-        // exit runs 75%→100%
+        // Global stack motion driven by the currently active card
+        const activeIndex   = Math.floor(scrollPx / CARD_PX);
+        const activeLocal   = scrollPx - activeIndex * CARD_PX;
+        const activeSlideT  = smooth(clamp(activeLocal / SLIDE_PX, 0, 1));
+        const stackShift    = (activeIndex + activeSlideT) * STACK_SPACING;
 
-        const slideT = smooth(clamp(local / SLIDE_END, 0, 1));
-        const exitT  = smooth(clamp((local - HOLD_END) / (1 - HOLD_END), 0, 1));
+        // Everyone moves forward together, but no one comes past READ_Z
+        const currentZ = Math.min(READ_Z, this.restZ + stackShift);
 
-        // Z: slide restZ → READ_Z, then lock
-        const currentZ = this.restZ + slideT * (READ_Z - this.restZ);
-
-        // X: lean at rest, sweep off on exit — quadratic so it starts slow then accelerates
+        // X: lean at rest, sweep off on exit
         const restX    = this.side * OFFSET_X;
         const currentX = restX + exitT * exitT * this.side * EXIT_X;
 
-        // Opacity: fully visible the whole time, only fades during exit
         const opacity = 1 - exitT * 0.92;
+
+        this.currentZ = currentZ;
+        this.exitT = exitT;
 
         this.mesh.position.set(currentX, 1.7, currentZ);
         this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
-
         this.mesh.material.opacity      = Math.max(0, opacity);
         this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
     }
 
-    setTotal(n) { this._total = n; }
+    // Static helper — total scroll height to pass to body
+    static totalScrollHeight(n) {
+        return 600 + n * CARD_PX;
+    }
 
     get positionZ() { return this.restZ; }
 }

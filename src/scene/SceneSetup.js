@@ -17,16 +17,17 @@ export class SceneSetup {
 
         // Scene
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x475C7A, 0.03); // Blue-gray fog for depth
+        this.scene.background = new THREE.Color(0x080810);
+        // No fog — all placards must be visible simultaneously in the depth stack
 
         // Camera with perspective settings
         this.camera = new THREE.PerspectiveCamera(
-            65, // Slightly narrower FOV for more cinematic feel
+            60, // 60° FOV — wide enough to see stacked cards, tight enough to feel depth
             window.innerWidth / window.innerHeight,
             0.1,
             200
         );
-        this.camera.position.z = 8;
+        this.camera.position.z = 0;   // FIXED — cards move toward camera, not the other way
         this.camera.position.y = 1.6; // Eye level
 
         // Renderer
