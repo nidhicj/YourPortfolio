@@ -20,9 +20,10 @@ export class SceneSetup {
         this.scene.background = new THREE.Color(0xffffff);
         // No fog — all placards must be visible simultaneously in the depth stack
 
-        // Camera with perspective settings
+        // Camera — wider FOV on portrait mobile so cards actually fill the screen
+        const isMobile = () => window.innerWidth < 640;
         this.camera = new THREE.PerspectiveCamera(
-            60, // 60° FOV — wide enough to see stacked cards, tight enough to feel depth
+            isMobile() ? 75 : 60,
             window.innerWidth / window.innerHeight,
             0.1,
             200
@@ -37,6 +38,8 @@ export class SceneSetup {
             this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            // Let native touch-scroll pass through the fixed canvas on iOS/Android
+            this.renderer.domElement.style.touchAction = 'pan-y';
             this.container.appendChild(this.renderer.domElement);
         } catch (error) {
             console.error('Failed to create WebGL renderer:', error);
@@ -85,6 +88,8 @@ export class SceneSetup {
     }
 
     onResize() {
+        const isMobile = window.innerWidth < 640;
+        this.camera.fov    = isMobile ? 75 : 60;
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);

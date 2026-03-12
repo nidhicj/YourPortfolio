@@ -61,6 +61,7 @@ class PortfolioApp {
         this.setupUI();
         this.animate();
         this.handleLoading();
+        this.setupResizeForPlacards();
     }
 
     // ─── Scroll ───────────────────────────────────────────────────────────────
@@ -329,6 +330,15 @@ class PortfolioApp {
         document.body.style.overflow = '';
         const landing = document.getElementById('landingPage');
         if (landing) landing.classList.remove('hidden');
+    }
+
+    // ─── Placard resize ───────────────────────────────────────────────────────
+    // When the user rotates their phone, each Placard checks whether it has
+    // crossed the mobile breakpoint and rebuilds its geometry + canvas if so.
+    setupResizeForPlacards() {
+        window.addEventListener('resize', () => {
+            this.placards.forEach(p => p.onResize());
+        }, { passive: true });
     }
 
     // ─── Render loop ──────────────────────────────────────────────────────────

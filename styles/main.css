@@ -7,7 +7,7 @@
   --font-mono:    'Space Mono', monospace;
   --font-body:    'DM Sans', sans-serif;
 
-  /* layout knobs */
+  /* layout knobs — desktop values; mobile section resets these to 0 */
   --nav-x: -315px;
   --nav-y: 0px;
   --left-x: -360px;
@@ -20,6 +20,9 @@
   --blocks-y: 40px;
   --links-x: -610px;
   --links-y: 80px;
+
+  /* safe-area insets for notched phones */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ─── Theme Transition ───────────────────────────────────────────────────────── */
@@ -84,6 +87,8 @@ body {
   top: 0; left: 0;
   width: 0; height: 0;
   z-index: 1;
+  /* Critical: let native touch scroll pass through the fixed canvas */
+  touch-action: pan-y;
 }
 
 /* ─── Scroll progress ───────────────────────────────────────────────────────── */
@@ -201,7 +206,7 @@ body {
   line-height: 1;
   --static-y: -20px;
   transform: translateY(var(--static-y));
-  white-space: nowrap;
+  white-space: nowrap; /* keeps "I am Nidhi" on one line on desktop */
   color: var(--ink);
 }
 .hero-title__prefix,
@@ -212,9 +217,12 @@ body {
   font-weight: 800;
   margin: 18px 0 10px;
   font-size: clamp(22px, 2.2vw, 32px);
-  white-space: nowrap;
   color: var(--ink);
+  white-space: nowrap;
 }
+.hero-role__a,
+.hero-role__sep,
+.hero-role__b { display: inline; }
 .hero-hook {
   color: var(--mid);
   font-size: 18px;
@@ -827,19 +835,130 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
 ::-webkit-scrollbar-thumb:hover { background: rgba(122,27,42,0.45); }
 
 /* ─── Responsive ────────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .modal-content { width: 95%; padding: 1.5rem; }
-  .modal-body h2 { font-size: 1.5rem; }
-  .greeting-title { font-size: 1.4rem; }
-  .greeting-name { font-size: 3rem; }
-  .greeting-role { font-size: 1.1rem; }
-  .greeting-subtitle { font-size: 1.1rem; }
-  .greeting-description { font-size: 0.95rem; }
-  .greeting-links { gap: 0.8rem; }
-  .social-link { width: 40px; height: 40px; }
-  .enter-button { padding: 0.9rem 2rem; font-size: 1rem; }
-  .nav-home { top: 1rem; left: 1rem; padding: 0.6rem 1rem; font-size: 0.85rem; }
-  .nav-home span { display: none; }
+
+/* ── Tablet: tighten nav and index bar ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .site-nav { gap: 10px; }
+  .site-nav__item { font-size: 14px; }
+
+  /* End overlays: stack into a single scrollable column */
+  .end-overlay { align-items: flex-start; overflow-y: auto; }
+  .end-overlay__rails {
+    flex-direction: column;
+    gap: 32px;
+    padding: 80px 32px 48px;
+    width: 100%;
+    min-height: 100%;
+  }
+  .end-overlay__left  { max-width: 100%; }
+  .end-overlay__right { width: 100%; }
+}
+
+/* ── Mobile: ≤ 640px ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+
+  /* ── Nav: shrink so 5 items fit on 390px ── */
+  .site-nav { gap: 4px; padding: 8px 10px; justify-content: center; }
+  .site-nav__item { font-size: 12px; letter-spacing: 0; }
+
+  /* ── Landing: kill the desktop CSS-var offsets and go single-column ── */
+  :root {
+    --nav-x: 0px;
+    --left-x: 0px;
+    --right-x: 0px;
+    --photo-x: 0px;
+    --photo-y: 0px;
+    --blocks-x: 0px;
+    --blocks-y: 0px;
+    --links-x: 0px;
+    --links-y: 0px;
+  }
+
+  /* Stack: photo above, text below */
+  .landing-hero        { width: 100% !important; max-width: 100% !important; }
+  .landing-rails {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    width: 100%;
+    gap: 20px;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+  .landing-rail        { width: 100%; }
+  /* Clear desktop padding and centre all text */
+  .landing-left  { padding-left: 0 !important; padding-right: 0 !important; text-align: center; }
+  .landing-right { padding-left: 0 !important; padding-right: 0 !important; text-align: center; }
+  /* Zero the CSS-var-driven rail-inner offset (vars already zeroed above, this is belt+braces) */
+  .rail-inner--left,
+  .rail-inner--right   { --x: 0px; --y: 0px; }
+  .landing-nav         { transform: none !important; }
+
+  /* Hero type */
+  .hero-kicker  { font-size: 14px; margin-bottom: 10px; --static-y: 0px; }
+  .hero-title   { font-size: clamp(36px, 11vw, 56px); white-space: normal; --static-y: 0px; }
+  .hero-role      { font-size: clamp(16px, 5vw, 22px); margin: 10px 0 8px; white-space: normal; text-align: center; }
+  .hero-role__sep { display: none; }
+  .hero-role__a,
+  .hero-role__b   { display: block; text-align: center; }
+  .hero-hook    { font-size: 14px; margin-bottom: 14px; }
+  .hero-cta     { display: flex; justify-content: center; }
+  .hero-btn     { padding: 10px 18px; font-size: 14px; }
+
+  /* Photo: constrain so it doesn't overflow */
+  .hero-visual  { height: auto; min-height: 180px; }
+  .hero-photo   {
+    position: relative; right: auto; top: auto;
+    width: min(200px, 55vw);
+    margin: 0 auto;
+    display: block;
+    transform: none !important;
+  }
+  /* Decorative blocks look broken in single-col — hide them */
+  .hero-block { display: none; }
+
+  /* Social icons: centre under photo */
+  .hero-links {
+    justify-content: center;
+    transform: none !important;
+    margin: 10px 0 4px;
+  }
+
+  /* ── Index bar: drop the label text, keep num+year only ── */
+  .index-bar-wrapper { padding: 0 6px; }
+  .index-item { padding: 7px 9px; gap: 1px; }
+  .index-label { display: none; }
+  .index-year  { font-size: 11px; }
+  .index-num   { font-size: 7px; }
+  #indexBarWorkWrapper .index-bar::before,
+  #indexBarProjectsWrapper .index-bar::before {
+    padding: 0 6px 0 8px; font-size: 8px;
+  }
+
+  /* ── End overlays: mobile sizing ── */
+  .end-overlay__rails { padding: 72px 20px 40px; gap: 24px; }
+  .end-overlay__title { font-size: clamp(36px, 10vw, 56px); }
+  .contact-link { padding: 14px 16px; }
+  .contact-link__label { font-size: 13px; }
+  .about-bio { font-size: 14px; max-width: none; }
+
+  /* ── Chat: full-width on small screens, clear the home bar ── */
+  .chat-fab {
+    right: 1rem;
+    bottom: calc(1rem + var(--safe-bottom));
+  }
+  .chat-panel {
+    right: 0;
+    left: 0;
+    bottom: calc(4.5rem + var(--safe-bottom));
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+    height: 300px;
+  }
+
+  /* ── Modal ── */
+  .modal-content { width: 95%; padding: 1.25rem; }
+  .modal-body h2 { font-size: 1.4rem; }
+  .modal-image   { height: 160px; }
 }
 
 /* ── Dual index bar wrappers ──────────────────────────────────────────────── */
