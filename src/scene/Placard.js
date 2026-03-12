@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
-const READ_Z        = -2.3;    // depth where card is comfortably readable
+const READ_Z        = -2;    // depth where card is comfortably readable
 const STACK_SPACING = 2;    // depth gap between stacked cards
 const OFFSET_X      = 0.4;   // left/right lean while in stack
 const EXIT_X        = 5.5;   // lateral distance on exit
@@ -31,7 +31,7 @@ export class Placard {
         this.exitT = 0;
 
         this.mesh      = null;
-        this.frameMesh = null;
+        // this.frameMesh = null;
         this._build();
     }
 
@@ -44,81 +44,111 @@ export class Placard {
 
         const isLeft = this.side === -1;
         const isWork = this.entry.type === 'work';
-        const PAD  = 72;
+        const PAD  = 80;
         const INK  = '#0a0a0a';
-        const MID  = 'rgba(10,10,10,0.42)';
-        const SOFT = 'rgba(10,10,10,0.22)';
+        const SOFT = 'rgba(10,10,10,0.28)';
         const BRG  = '#7A1B2A';
 
-        // ── Background ──
+        // ── Background: white with very faint warm blush bottom-right ──
         ctx.fillStyle = '#ffffff';
-        ctx.roundRect(0, 0, W, H, 24); ctx.fill();
+        ctx.roundRect(0, 0, W, H, 28); ctx.fill();
 
-        const bgGrd = ctx.createLinearGradient(W * 0.5, 0, W, H);
-        bgGrd.addColorStop(0, 'rgba(255,255,255,0)');
-        bgGrd.addColorStop(1, 'rgba(122,27,42,0.03)');
-        ctx.fillStyle = bgGrd; ctx.roundRect(0,0,W,H,24); ctx.fill();
+        // Frosted image-zone tint — right half (simulates image behind glass)
+        // const imgX = isLeft ? W * 0.58 : 0;
+        // const imgGrd = ctx.createLinearGradient(imgX, 0, isLeft ? W : W * 0.42, H);
+        // imgGrd.addColorStop(0, 'rgba(240,233,228,0)');
+        // imgGrd.addColorStop(0.3, 'rgba(232,222,215,0.55)');
+        // imgGrd.addColorStop(1,   'rgba(220,208,200,0.80)');
+        // ctx.fillStyle = imgGrd;
+        // ctx.roundRect(0, 0, W, H, 28); ctx.fill();
 
-        // ── Top row: type pill + date ──
+        // Subtle image-zone label (placeholder)
+        // ctx.font = '400 18px "DM Sans",sans-serif';
+        // ctx.fillStyle = 'rgba(10,10,10,0.14)';
+        // ctx.textAlign = 'center';
+        // ctx.fillText('Project Image', isLeft ? W * 0.79 : W * 0.21, H / 2);
+
+        // Frosted overlay on text side — keeps text area crisp white
+        // const frostX  = isLeft ? 0 : W * 0.44;
+        // const frostW  = W * 0.56;
+        // const frost   = ctx.createLinearGradient(frostX, 0, frostX + frostW, 0);
+        // if (isLeft) {
+        //     frost.addColorStop(0,    'rgba(255,255,255,1)');
+        //     frost.addColorStop(0.78, 'rgba(255,255,255,0.96)');
+        //     frost.addColorStop(1,    'rgba(255,255,255,0)');
+        // } else {
+        //     frost.addColorStop(0,    'rgba(255,255,255,0)');
+        //     frost.addColorStop(0.22, 'rgba(255,255,255,0.96)');
+        //     frost.addColorStop(1,    'rgba(255,255,255,1)');
+        // }
+        // ctx.fillStyle = frost;
+        // ctx.roundRect(0, 0, W, H, 28); ctx.fill();
+
+        // ── Text zone anchored to the clear side ──
+        const tx  = isLeft ? PAD : W - PAD;          // text anchor X
+        const tal = isLeft ? 'left' : 'right';        // text align
+        const maxTW = W * 0.50;                       // max text width
+
+        // ── Top: pill (type) + date ──
         const typeLabel = isWork ? 'Work Experience' : 'Key Project';
-        ctx.font = '500 19px "DM Sans",sans-serif';
-        const pillW = ctx.measureText(typeLabel).width + 32;
+        ctx.font = '500 18px "DM Sans",sans-serif';
+        const pillW = ctx.measureText(typeLabel).width + 28;
         const pillX = isLeft ? PAD : W - PAD - pillW;
-        ctx.fillStyle = 'rgba(122,27,42,0.08)';
-        ctx.beginPath(); ctx.roundRect(pillX, 44, pillW, 34, 99); ctx.fill();
+
+        ctx.fillStyle = 'rgba(122,27,42,0.09)';
+        ctx.beginPath(); ctx.roundRect(pillX, 52, pillW, 32, 99); ctx.fill();
         ctx.fillStyle = BRG;
         ctx.textAlign = 'left';
-        ctx.fillText(typeLabel, pillX + 16, 68);
+        ctx.fillText(typeLabel, pillX + 14, 74);
 
-        ctx.font = '400 19px "DM Sans",sans-serif';
+        // Date — sits right next to pill or opposite
+        ctx.font = '400 17px "DM Sans",sans-serif';
         ctx.fillStyle = SOFT;
-        ctx.textAlign = isLeft ? 'right' : 'left';
-        ctx.fillText(this.entry.date || '', isLeft ? W - PAD : PAD, 68);
-
-        // ── Title ──
-        ctx.font = '800 74px "Epilogue","DM Sans",sans-serif';
-        ctx.fillStyle = INK;
         ctx.textAlign = isLeft ? 'left' : 'right';
-        const titleX = isLeft ? PAD : W - PAD;
-        this._wrap(ctx, this.entry.title, titleX, 176, W - PAD * 2, 86, 2, isLeft ? 'left' : 'right');
+        const dateX = isLeft ? pillX + pillW + 20 : pillX - 20;
+        ctx.fillText(this.entry.date || '', dateX, 74);
 
-        // ── Company · Location ──
+        // ── Giant title — the hero ──
+        ctx.font = '900 88px "Epilogue","DM Sans",sans-serif';
+        ctx.fillStyle = INK;
+        ctx.textAlign = tal;
+        ctx.fillText(this.entry.title, tx, 200);
+
+        // ── Company in burgundy, medium weight ──
         const co = [this.entry.company, this.entry.location].filter(Boolean).join('  ·  ');
         if (co) {
-            ctx.font = '600 22px "DM Sans",sans-serif';
+            ctx.font = '600 20px "DM Sans",sans-serif';
             ctx.fillStyle = BRG;
-            ctx.textAlign = isLeft ? 'left' : 'right';
-            ctx.fillText(co, titleX, 290);
+            ctx.textAlign = tal;
+            ctx.fillText(co, tx, 320);
         }
 
-        // ── Divider ──
-        ctx.strokeStyle = 'rgba(10,10,10,0.07)';
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(PAD, 318); ctx.lineTo(W - PAD, 318); ctx.stroke();
+        // ── Description — generous size, not muted ──
+        ctx.font = '400 22px "DM Sans",sans-serif';
+        ctx.fillStyle = 'rgba(10,10,10,0.62)';
+        ctx.textAlign = tal;
+        this._wrap(ctx, this.entry.description, tx, 374, maxTW, 34, 4, tal);
 
-        // ── Description ──
-        ctx.font = '400 25px "DM Sans",sans-serif';
-        ctx.fillStyle = 'rgba(10,10,10,0.72)';
-        ctx.textAlign = isLeft ? 'left' : 'right';
-        this._wrap(ctx, this.entry.description, titleX, 368, W - PAD * 2, 38, 4, isLeft ? 'left' : 'right');
-
-        // ── Bottom row ──
-        const botY = H - 52;
+        // ── Bottom row: highlight left, tags right ──
+        const botY = H - 56;
 
         if (this.entry.highlight) {
-            ctx.font = '600 18px "DM Sans",sans-serif';
+            ctx.font = '700 17px "DM Sans",sans-serif';
             ctx.fillStyle = BRG;
-            ctx.textAlign = isLeft ? 'left' : 'right';
-            ctx.fillText('↑ ' + this.entry.highlight, titleX, botY);
+            ctx.textAlign = tal;
+            ctx.fillText('↑  ' + this.entry.highlight, tx, botY);
         }
 
+        // Tags — dot separated, very quiet, opposite corner of text zone
         const tags = (this.entry.tags || []).slice(0, 5);
         if (tags.length) {
-            ctx.font = '400 17px "DM Sans",sans-serif';
-            ctx.fillStyle = SOFT;
+            ctx.font = '400 15px "DM Sans",sans-serif';
+            ctx.fillStyle = 'rgba(10,10,10,0.22)';
             const tagStr = tags.join('  ·  ');
+            // place at far edge of text zone
+            const tagAnchor = isLeft ? Math.min(PAD + maxTW, W * 0.54) : Math.max(W - PAD - maxTW, W * 0.46);
             ctx.textAlign = isLeft ? 'right' : 'left';
-            ctx.fillText(tagStr, isLeft ? W - PAD : PAD, botY);
+            ctx.fillText(tagStr, tagAnchor, botY);
         }
 
         return cvs;
@@ -155,18 +185,18 @@ export class Placard {
             })
         );
 
-        const frameColor = 0x7A1B2A; // burgundy
-        this.frameMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(PW + 0.03, PH + 0.03),
-            new THREE.MeshBasicMaterial({
-                color: frameColor, transparent: true, opacity: 0.22, depthWrite: false,
-            })
-        );
+        // const frameColor = 0x7A1B2A; // burgundy
+        // this.frameMesh = new THREE.Mesh(
+        //     new THREE.PlaneGeometry(PW + 0.03, PH + 0.03),
+        //     new THREE.MeshBasicMaterial({
+        //         color: frameColor, transparent: true, opacity: 0.22, depthWrite: false,
+        //     })
+        // );
 
         this.mesh.position.set(this.side * OFFSET_X, 1.7, this.restZ);
-        this.frameMesh.position.set(this.side * OFFSET_X, 1.7, this.restZ - 0.001);
+        // this.frameMesh.position.set(this.side * OFFSET_X, 1.7, this.restZ - 0.001);
 
-        this.scene.add(this.frameMesh);
+        // this.scene.add(this.frameMesh);
         this.scene.add(this.mesh);
     }
 
@@ -206,9 +236,9 @@ export class Placard {
         this.exitT = exitT;
 
         this.mesh.position.set(currentX, 1.7, currentZ);
-        this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
+        // this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
         this.mesh.material.opacity      = Math.max(0, opacity);
-        this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
+        // this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
     }
 
     // Static helper — total scroll height to pass to body
