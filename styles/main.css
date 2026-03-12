@@ -654,75 +654,126 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
 .chat-send:hover { background: var(--burgundy-light); }
 .chat-hint { padding: 0 12px 12px; opacity: 0.55; font-size: 12px; color: var(--mid); }
 
-/* ─── Index Bar ─────────────────────────────────────────────────────────────── */
+/* ─── Index Bar — Editorial Grid Cells ──────────────────────────────────────── */
 .index-bar-wrapper {
   position: fixed; top: 52px; left: 0; right: 0;
   z-index: 9999;
   display: flex; justify-content: center;
   pointer-events: none; padding: 0 24px;
-  transition: opacity 0.6s ease;
+  /* transition managed per-instance below */
 }
 .landing-visible .index-bar-wrapper { opacity: 0; }
 
 .index-bar {
-  display: flex; align-items: center; gap: 0;
-  padding: 7px 20px;
-  background: rgba(255,255,255,0.92);
+  display: flex; align-items: stretch; gap: 0;
+  background: rgba(255,255,255,0.95);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(122,27,42,0.12);
-  border-radius: 999px;
+  border: 1px solid rgba(122,27,42,0.14);
+  border-radius: 6px;
   pointer-events: auto;
   max-width: 100%; overflow-x: auto;
   scrollbar-width: none;
   flex-wrap: nowrap; white-space: nowrap;
+  box-shadow: 0 2px 16px rgba(26,13,16,0.07);
 }
 .index-bar::-webkit-scrollbar { display: none; }
 
 .index-item {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 14px;
-  border: none; background: transparent;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  gap: 2px;
+  padding: 10px 16px;
+  border: none;
+  border-right: 1px solid rgba(122,27,42,0.10);
+  background: transparent;
   color: var(--soft);
-  cursor: pointer; border-radius: 999px;
+  cursor: pointer;
   font-family: var(--font-mono);
-  font-size: 11px; font-weight: 400;
-  letter-spacing: 0.02em;
-  transition: color 0.2s, background 0.2s, transform 0.2s;
+  letter-spacing: 0.01em;
+  transition: background 0.18s ease, color 0.18s ease;
   flex-shrink: 0; position: relative;
+  border-radius: 0;
+  text-align: left;
 }
+.index-item:first-child { border-radius: 5px 0 0 5px; }
+.index-item:last-child  { border-right: none; border-radius: 0 5px 5px 0; }
+
 .index-item:hover {
-  color: var(--ink);
   background: var(--burgundy-pale);
-  transform: translateY(-1px);
+  color: var(--ink);
 }
 .index-item.is-active {
-  color: var(--burgundy);
-  background: var(--burgundy-dim);
-  transform: translateY(-1px);
+  background: var(--burgundy) !important;
+  border-color: var(--burgundy) !important;
+  color: var(--white) !important;
+  z-index: 1;
 }
 
-/* work = burgundy dot, project = warm rose dot */
-.index-item[data-type="work"] .index-dot    { background: var(--burgundy); }
-.index-item[data-type="project"] .index-dot { background: var(--burgundy-light); }
-.index-item[data-type="project"].is-active  {
-  color: var(--burgundy-light);
-  background: rgba(155,35,53,0.10);
+/* type accent: top border stripe */
+.index-item[data-type="work"]::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--burgundy);
+  border-radius: 5px 5px 0 0;
+  opacity: 0;
+  transition: opacity 0.18s;
 }
-
-.index-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  flex-shrink: 0; opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
+.index-item[data-type="project"]::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--burgundy-light);
+  border-radius: 5px 5px 0 0;
+  opacity: 0;
+  transition: opacity 0.18s;
 }
-.index-item.is-active .index-dot { opacity: 1; transform: scale(1.4); }
+.index-item:hover::before    { opacity: 1; }
+.index-item.is-active::before { opacity: 0; }
 
-.index-label { font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.index-year { font-size: 10px; opacity: 0.5; font-variant-numeric: tabular-nums; }
 .index-section-divider {
-  width: 1px; height: 20px;
-  background: rgba(122,27,42,0.15);
-  margin: 0 8px; flex-shrink: 0;
+  width: 1px; align-self: stretch;
+  background: rgba(122,27,42,0.18);
+  flex-shrink: 0;
 }
+
+/* cell contents */
+.index-num {
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  opacity: 0.35;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.index-item.is-active .index-num { opacity: 0.5; color: var(--white); }
+
+.index-year {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--ink);
+  font-family: var(--font-display);
+  transition: color 0.18s;
+}
+.index-item:hover .index-year { color: var(--ink); }
+.index-item.is-active .index-year { color: var(--white); }
+
+.index-label {
+  font-size: 10px;
+  opacity: 0.6;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: opacity 0.18s;
+}
+.index-item:hover .index-label  { opacity: 0.8; }
+.index-item.is-active .index-label { opacity: 0.75; color: var(--white); }
+
+/* hide the old dot — not used in grid style */
+.index-dot { display: none; }
 
 /* ─── Section label ─────────────────────────────────────────────────────────── */
 .section-label {
@@ -756,4 +807,64 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
   .enter-button { padding: 0.9rem 2rem; font-size: 1rem; }
   .nav-home { top: 1rem; left: 1rem; padding: 0.6rem 1rem; font-size: 0.85rem; }
   .nav-home span { display: none; }
+}
+
+/* ── Dual index bar wrappers ──────────────────────────────────────────────── */
+/* Both bars sit at top:52px, inherit all layout from .index-bar-wrapper.
+   They start hidden ABOVE the viewport and slide DOWN into view.            */
+
+#indexBarWorkWrapper,
+#indexBarProjectsWrapper {
+  /* Initial state: hidden above viewport */
+  transform: translateY(-130%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.40s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity   0.30s ease;
+}
+
+/* ── Visible: bar slides down into top:52px position ───────────────────── */
+#indexBarWorkWrapper.bar--visible,
+#indexBarProjectsWrapper.bar--visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Hidden: bar retracts back above viewport ───────────────────────────── */
+#indexBarWorkWrapper.bar--hidden,
+#indexBarProjectsWrapper.bar--hidden {
+  transform: translateY(-130%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Tiny section label prepended inside the bar ────────────────────────── */
+#indexBarWorkWrapper .index-bar::before {
+  content: 'Work ·';
+  font-size: 9px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  opacity: 0.45;
+  align-self: center;
+  padding: 0 10px 0 14px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+#indexBarProjectsWrapper .index-bar::before {
+  content: 'Projects ·';
+  font-size: 9px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  opacity: 0.45;
+  align-self: center;
+  padding: 0 10px 0 14px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }

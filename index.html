@@ -39,7 +39,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Space+Mono:wght@400;700&family=Crete+Round:ital@0;1&display=swap" rel="stylesheet">
 
     <!-- ─── Stylesheet ────────────────────────────────────────────────────── -->
     <link rel="stylesheet" href="./styles/main.css">
@@ -49,18 +49,25 @@
     <div id="app"></div>
     <header class="site-nav" id="siteNav">
     <nav class="landing-nav" aria-label="Primary">
-      <a class="landing-nav__item is-active" href="#">Home</a>
+      <a class="landing-nav__item" id="navHome" href="#">Home</a>
       <a class="landing-nav__item" href="#">About</a>
-      <a class="landing-nav__item" href="#">Work</a>
-      <a class="landing-nav__item" href="#">Projects</a>
+      <a class="landing-nav__item" id="navWork" href="#">Work</a>
+      <a class="landing-nav__item" id="navProjects" href="#">Projects</a>
       <a class="landing-nav__item" href="#">Contact</a>
     </nav>
   </header>
 
 
-    <!-- Horizontal Index Bar -->
-    <div class="index-bar-wrapper" id="indexBarWrapper">
-        <div class="index-bar" id="indexBar">
+    <!-- Timeline bar: Work Experience (shown during work section) -->
+    <div class="index-bar-wrapper" id="indexBarWorkWrapper">
+        <div class="index-bar" id="indexBarWork">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Timeline bar: Side Projects (shown during projects section) -->
+    <div class="index-bar-wrapper index-bar-wrapper--projects" id="indexBarProjectsWrapper">
+        <div class="index-bar" id="indexBarProjects">
             <!-- Populated by JS -->
         </div>
     </div>

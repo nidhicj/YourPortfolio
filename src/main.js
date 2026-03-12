@@ -95,34 +95,32 @@ class PortfolioApp {
         });
     }
 
-    // ─── Index bar ────────────────────────────────────────────────────────────
+    // ─── Index bars (Work + Projects, separate) ───────────────────────────────
     buildIndexBar() {
-        const bar = document.getElementById('indexBar');
-        if (!bar) return;
+        const workBar     = document.getElementById('indexBarWork');
+        const projectsBar = document.getElementById('indexBarProjects');
+        if (!workBar || !projectsBar) return;
 
         allEntries.forEach((entry, i) => {
-            if (i === workExperience.length) {
-                const div = document.createElement('div');
-                div.className = 'index-section-divider';
-                bar.appendChild(div);
-            }
+            const targetBar = entry.type === 'work' ? workBar : projectsBar;
 
             const item = document.createElement('button');
             item.className = 'index-item';
             item.dataset.entryId = entry.id;
-            item.dataset.type  = entry.type;
+            item.dataset.type    = entry.type;
 
-            const dot   = document.createElement('span'); dot.className   = 'index-dot';
-            const label = document.createElement('span'); label.className = 'index-label';
+            const num   = document.createElement('span'); num.className   = 'index-num';
             const year  = document.createElement('span'); year.className  = 'index-year';
+            const label = document.createElement('span'); label.className = 'index-label';
 
+            num.textContent   = String(i + 1).padStart(2, '0');
             label.textContent = entry.type === 'work' ? entry.company : entry.title;
             const m = (entry.date || '').match(/\d{4}/);
-            year.textContent  = m ? m[0] : '';
+            year.textContent  = m ? m[0] : '—';
 
-            item.appendChild(dot); item.appendChild(label); item.appendChild(year);
+            item.appendChild(num); item.appendChild(year); item.appendChild(label);
             item.addEventListener('click', () => this.jumpToEntryById(entry.id));
-            bar.appendChild(item);
+            targetBar.appendChild(item);
         });
     }
 
@@ -137,17 +135,47 @@ class PortfolioApp {
     }
 
     updateIndexBar() {
+        const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+        // ── Which placard is currently active ──
         const activeIndex = Math.min(
             this.placards.length - 1,
             Math.max(0, Math.floor(this.scrollPx / CARD_PX))
         );
-
         const activePlacard = this.placards[activeIndex];
-        const activeId = activePlacard?.entryId ?? null;
+        const activeId      = activePlacard?.entryId ?? null;
+        const activeType    = activePlacard?.entry?.type ?? null;
 
+        // ── Highlight active item in whichever bar ──
         document.querySelectorAll('.index-item').forEach((item) => {
             item.classList.toggle('is-active', item.dataset.entryId === activeId);
         });
+
+        // ── Landing fully gone threshold: tB >= 0.98 → px >= 50 + 350*0.98 ≈ 393 ──
+        const landingGone = this.scrollPx >= 393;
+
+        // ── Nav highlights ──
+        const navHome     = document.getElementById('navHome');
+        const navWork     = document.getElementById('navWork');
+        const navProjects = document.getElementById('navProjects');
+
+        if (navHome)     navHome.classList.toggle('is-active',     !landingGone);
+        if (navWork)     navWork.classList.toggle('is-active',      landingGone && activeType === 'work');
+        if (navProjects) navProjects.classList.toggle('is-active',  landingGone && activeType === 'project');
+
+        // ── Bar swap: Work bar visible during work section, Projects bar during project section ──
+        const workWrapper     = document.getElementById('indexBarWorkWrapper');
+        const projectsWrapper = document.getElementById('indexBarProjectsWrapper');
+        if (!workWrapper || !projectsWrapper) return;
+
+        const showWork     = landingGone && activeType === 'work';
+        const showProjects = landingGone && activeType === 'project';
+
+        // Apply state classes — CSS handles the dip/rise animation
+        workWrapper.classList.toggle('bar--visible',  showWork);
+        workWrapper.classList.toggle('bar--hidden',   !showWork);
+        projectsWrapper.classList.toggle('bar--visible',  showProjects);
+        projectsWrapper.classList.toggle('bar--hidden',   !showProjects);
     }
 
     // ─── Landing transition ───────────────────────────────────────────────────
@@ -176,6 +204,7 @@ class PortfolioApp {
             transform: `scale(${1 - 0.04 * tB})`
         });
         landing.style.pointerEvents = tB > 0.98 ? 'none' : 'auto';
+        const vignette = document.getElementById('vignetteOverlay');
         if (vignette) gsap.set(vignette, { opacity: 0.85 * tB });
 
         const hint = document.getElementById('scrollHint');
@@ -195,6 +224,46 @@ class PortfolioApp {
             audio.addEventListener('click', () => {
                 muted = !muted;
                 audio.classList.toggle('muted', muted);
+            });
+        }
+
+        // ── Nav click handlers ──
+        const navHome = document.getElementById('navHome');
+        const navWork = document.getElementById('navWork');
+        const navProjects = document.getElementById('navProjects');
+
+        if (navHome) {
+            navHome.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        if (navWork) {
+            navWork.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Jump to first work placard (index 0)
+                const firstWork = this.placards.find(p => p.entry?.type === 'work');
+                if (firstWork) {
+                    window.scrollTo({
+                        top: firstWork.index * CARD_PX + SLIDE_PX,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        if (navProjects) {
+            navProjects.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Jump to first side project placard
+                const firstProject = this.placards.find(p => p.entry?.type === 'project');
+                if (firstProject) {
+                    window.scrollTo({
+                        top: firstProject.index * CARD_PX + SLIDE_PX,
+                        behavior: 'smooth'
+                    });
+                }
             });
         }
     }
