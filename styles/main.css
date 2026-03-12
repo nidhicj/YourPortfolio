@@ -1,15 +1,8 @@
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+/* Colour tokens (--white, --burgundy, --ink, etc.) are injected at runtime    */
+/* by ThemeManager.js — edit THEME_COLORS there to change any colour.          */
+/* Only non-colour tokens live here.                                            */
 :root {
-  --white:    #ffffff;
-  --off-white:#f7f5f2;
-  --burgundy: #7A1B2A;
-  --burgundy-light: #9B2335;
-  --burgundy-dim:   rgba(122,27,42,0.12);
-  --burgundy-pale:  rgba(122,27,42,0.06);
-  --ink:      #1a0d10;
-  --mid:      rgba(26,13,16,0.45);
-  --soft:     rgba(26,13,16,0.25);
-
   --font-display: 'Epilogue', sans-serif;
   --font-mono:    'Space Mono', monospace;
   --font-body:    'DM Sans', sans-serif;
@@ -27,19 +20,6 @@
   --blocks-y: 40px;
   --links-x: -610px;
   --links-y: 80px;
-}
-
-/* ─── Dark Mode Tokens ───────────────────────────────────────────────────────── */
-[data-theme="dark"] {
-  --white:           #0f0d0e;
-  --off-white:       #1a1114;
-  --burgundy:        #c9485a;
-  --burgundy-light:  #e05568;
-  --burgundy-dim:    rgba(201,72,90,0.18);
-  --burgundy-pale:   rgba(201,72,90,0.09);
-  --ink:             #f0ebe8;
-  --mid:             rgba(240,235,232,0.50);
-  --soft:            rgba(240,235,232,0.30);
 }
 
 /* ─── Theme Transition ───────────────────────────────────────────────────────── */
@@ -702,9 +682,9 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
 
 .index-bar {
   display: flex; align-items: stretch; gap: 0;
-  background: rgba(255,255,255,0.95);
+  background: var(--bar-bg);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(122,27,42,0.14);
+  border: 1px solid var(--burgundy-dim);
   border-radius: 6px;
   pointer-events: auto;
   max-width: 100%; overflow-x: auto;
@@ -713,21 +693,21 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
   box-shadow: 0 2px 16px rgba(26,13,16,0.07);
 }
 
-/* ── Index bar goes dark in dark mode, matching the scene ───────────────── */
+/* ── Index bar goes dark in dark mode — uses injected tokens, no hardcodes ── */
 [data-theme="dark"] .index-bar {
-  background: rgba(15,13,14,0.94);
-  border-color: rgba(201,72,90,0.18);
+  background: var(--bar-bg);
+  border-color: var(--burgundy-dim);
   box-shadow: 0 2px 20px rgba(0,0,0,0.40);
 }
 [data-theme="dark"] .index-item {
-  border-right-color: rgba(201,72,90,0.12);
+  border-right-color: var(--burgundy-dim);
 }
 [data-theme="dark"] .index-item.is-active {
-  background: #c9485a !important;
-  border-color: #c9485a !important;
+  background: var(--burgundy) !important;
+  border-color: var(--burgundy) !important;
 }
 [data-theme="dark"] .index-section-divider {
-  background: rgba(201,72,90,0.20);
+  background: var(--burgundy-dim);
 }
 .index-bar::-webkit-scrollbar { display: none; }
 

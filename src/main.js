@@ -340,7 +340,6 @@ class PortfolioApp {
     }
 }
 
-// const boot = () => { try { new PortfolioApp(); } catch(e) { console.error(e); } };
 const boot = () => { try { window.__portfolioApp = new PortfolioApp(); } catch(e) { console.error(e); } };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
