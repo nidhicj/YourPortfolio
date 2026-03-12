@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SceneSetup } from './scene/SceneSetup.js';
-// import { Corridor } from './scene/Corridor.js';
 import { Lights } from './scene/Lights.js';
-import { Placard, CARD_PX, SLIDE_PX } from './scene/Placard.js';
+import { Placard, CARD_PX, SLIDE_PX, EXIT_PX } from './scene/Placard.js';
 import { allEntries as rawEntries, workExperience } from './data/projects.js';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Extra scroll px after last card: one full EXIT window + hold for Contact, same for About
+const CONTACT_PX  = EXIT_PX + 600;   // contact fades in after last card exits
+const ABOUT_PX    = 800;             // about follows contact on further scroll
 
 
 function ensureEntryIds(entries) {
@@ -61,10 +64,7 @@ class PortfolioApp {
 
     // ─── Scroll ───────────────────────────────────────────────────────────────
     setupScroll() {
-        // ~1400px per card so user has time to read before it exits
-        // Scroll height driven by Placard pixel budgets
-        // const CARD_PX = 2600; // must match Placard.js CARD_PX
-        const scrollHeight = 600 + allEntries.length * CARD_PX;
+        const scrollHeight = 600 + allEntries.length * CARD_PX + CONTACT_PX + ABOUT_PX;
         document.body.style.height = `${scrollHeight}px`;
 
         ScrollTrigger.create({
@@ -78,6 +78,7 @@ class PortfolioApp {
                 this.updateScrollIndicator(self.progress);
                 this.updateLandingTransition();
                 this.updateIndexBar();
+                this.updateEndSections();
             }
         });
 
@@ -134,9 +135,52 @@ class PortfolioApp {
         });
     }
 
-    updateIndexBar() {
-        const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+    // ─── Contact + About overlays ─────────────────────────────────────────────
+    // Scroll windows (absolute px from top):
+    //   lastCardExitEnd  = 600 + n*CARD_PX  (last card fully gone)
+    //   contactStart     = lastCardExitEnd
+    //   contactFull      = contactStart + 300   (fully opaque)
+    //   aboutStart       = contactStart + CONTACT_PX - 300
+    //   aboutFull        = aboutStart + 300
+    updateEndSections() {
+        const lastCardExitEnd = 600 + allEntries.length * CARD_PX;
+        const contactStart    = lastCardExitEnd;
+        const aboutStart      = contactStart + CONTACT_PX - 300;
 
+        const px    = this.scrollPx;
+        const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
+
+        const contactT = clamp((px - contactStart) / 300, 0, 1);
+        const aboutT   = clamp((px - aboutStart)   / 300, 0, 1);
+
+        const contactEl = document.getElementById('contactOverlay');
+        const aboutEl   = document.getElementById('aboutOverlay');
+
+        if (contactEl) {
+            contactEl.style.opacity       = contactT;
+            contactEl.style.pointerEvents = contactT > 0.05 ? 'auto' : 'none';
+            contactEl.style.transform     = `translateY(${(1 - contactT) * 40}px)`;
+        }
+        if (aboutEl) {
+            aboutEl.style.opacity       = aboutT;
+            aboutEl.style.pointerEvents = aboutT > 0.05 ? 'auto' : 'none';
+            aboutEl.style.transform     = `translateY(${(1 - aboutT) * 40}px)`;
+        }
+
+        // Hide contact once about is fully in
+        if (contactEl) {
+            const contactOut = clamp((px - aboutStart) / 200, 0, 1);
+            contactEl.style.opacity = Math.max(0, contactT - contactOut);
+        }
+
+        // Nav highlights for contact/about
+        const navContact = document.getElementById('navContact');
+        const navAbout   = document.getElementById('navAbout');
+        if (navContact) navContact.classList.toggle('is-active', contactT > 0.5 && aboutT < 0.5);
+        if (navAbout)   navAbout.classList.toggle('is-active',   aboutT > 0.5);
+    }
+
+    updateIndexBar() {
         // ── Which placard is currently active ──
         const activeIndex = Math.min(
             this.placards.length - 1,
@@ -151,8 +195,10 @@ class PortfolioApp {
             item.classList.toggle('is-active', item.dataset.entryId === activeId);
         });
 
-        // ── Landing fully gone threshold: tB >= 0.98 → px >= 50 + 350*0.98 ≈ 393 ──
-        const landingGone = this.scrollPx >= 393;
+        // ── Landing fully gone threshold: tB >= 0.98 → px >= 393 ──
+        const landingGone    = this.scrollPx >= 393;
+        const lastCardEnd    = 600 + allEntries.length * CARD_PX;
+        const inContactAbout = this.scrollPx >= lastCardEnd;
 
         // ── Nav highlights ──
         const navHome     = document.getElementById('navHome');
@@ -160,18 +206,17 @@ class PortfolioApp {
         const navProjects = document.getElementById('navProjects');
 
         if (navHome)     navHome.classList.toggle('is-active',     !landingGone);
-        if (navWork)     navWork.classList.toggle('is-active',      landingGone && activeType === 'work');
-        if (navProjects) navProjects.classList.toggle('is-active',  landingGone && activeType === 'project');
+        if (navWork)     navWork.classList.toggle('is-active',      landingGone && activeType === 'work'    && !inContactAbout);
+        if (navProjects) navProjects.classList.toggle('is-active',  landingGone && activeType === 'project' && !inContactAbout);
 
-        // ── Bar swap: Work bar visible during work section, Projects bar during project section ──
+        // ── Bar swap ──
         const workWrapper     = document.getElementById('indexBarWorkWrapper');
         const projectsWrapper = document.getElementById('indexBarProjectsWrapper');
         if (!workWrapper || !projectsWrapper) return;
 
-        const showWork     = landingGone && activeType === 'work';
-        const showProjects = landingGone && activeType === 'project';
+        const showWork     = landingGone && activeType === 'work'    && !inContactAbout;
+        const showProjects = landingGone && activeType === 'project' && !inContactAbout;
 
-        // Apply state classes — CSS handles the dip/rise animation
         workWrapper.classList.toggle('bar--visible',  showWork);
         workWrapper.classList.toggle('bar--hidden',   !showWork);
         projectsWrapper.classList.toggle('bar--visible',  showProjects);
@@ -228,9 +273,11 @@ class PortfolioApp {
         }
 
         // ── Nav click handlers ──
-        const navHome = document.getElementById('navHome');
-        const navWork = document.getElementById('navWork');
+        const navHome     = document.getElementById('navHome');
+        const navWork     = document.getElementById('navWork');
         const navProjects = document.getElementById('navProjects');
+        const navContact  = document.getElementById('navContact');
+        const navAbout    = document.getElementById('navAbout');
 
         if (navHome) {
             navHome.addEventListener('click', (e) => {
@@ -238,32 +285,33 @@ class PortfolioApp {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
-
         if (navWork) {
             navWork.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Jump to first work placard (index 0)
-                const firstWork = this.placards.find(p => p.entry?.type === 'work');
-                if (firstWork) {
-                    window.scrollTo({
-                        top: firstWork.index * CARD_PX + SLIDE_PX,
-                        behavior: 'smooth'
-                    });
-                }
+                const first = this.placards.find(p => p.entry?.type === 'work');
+                if (first) window.scrollTo({ top: first.index * CARD_PX + SLIDE_PX, behavior: 'smooth' });
             });
         }
-
         if (navProjects) {
             navProjects.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Jump to first side project placard
-                const firstProject = this.placards.find(p => p.entry?.type === 'project');
-                if (firstProject) {
-                    window.scrollTo({
-                        top: firstProject.index * CARD_PX + SLIDE_PX,
-                        behavior: 'smooth'
-                    });
-                }
+                const first = this.placards.find(p => p.entry?.type === 'project');
+                if (first) window.scrollTo({ top: first.index * CARD_PX + SLIDE_PX, behavior: 'smooth' });
+            });
+        }
+        if (navContact) {
+            navContact.addEventListener('click', (e) => {
+                e.preventDefault();
+                // contactT reaches 1.0 at contactStart + 300 — scroll exactly there
+                const target = 600 + allEntries.length * CARD_PX + 300;
+                window.scrollTo({ top: target, behavior: 'smooth' });
+            });
+        }
+        if (navAbout) {
+            navAbout.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = 600 + allEntries.length * CARD_PX + CONTACT_PX;
+                window.scrollTo({ top: target, behavior: 'smooth' });
             });
         }
     }

@@ -213,7 +213,8 @@ export class Placard {
         const clamp     = (v,a,b) => Math.max(a, Math.min(b,v));
         const smooth    = t => t * t * (3 - 2 * t);
 
-        // Current card's own exit timing
+        // Current card's own slide-in and exit timing
+        const slideT    = smooth(clamp(local / SLIDE_PX, 0, 1));
         const exitStart = SLIDE_PX + HOLD_PX;
         const exitT     = smooth(clamp((local - exitStart) / EXIT_PX, 0, 1));
 
@@ -221,12 +222,20 @@ export class Placard {
         const activeIndex   = Math.floor(scrollPx / CARD_PX);
         const activeLocal   = scrollPx - activeIndex * CARD_PX;
         const activeSlideT  = smooth(clamp(activeLocal / SLIDE_PX, 0, 1));
-        const stackShift    = (activeIndex + activeSlideT) * STACK_SPACING;
+        let   stackShift    = (activeIndex + activeSlideT) * STACK_SPACING;
+
+        // Last card fix: once it starts exiting, keep driving the stack forward
+        // so it fully arrives at READ_Z before sweeping off laterally.
+        const isLast = this.index === this._total - 1;
+        if (isLast && exitT > 0) {
+            // Push stack as if a phantom next card were sliding in
+            stackShift = (this.index + 1) * STACK_SPACING;
+        }
 
         // Everyone moves forward together, but no one comes past READ_Z
         const currentZ = Math.min(READ_Z, this.restZ + stackShift);
 
-        // X: lean at rest, sweep off on exit
+        // X: lean at rest, sweep fully off on exit
         const restX    = this.side * OFFSET_X;
         const currentX = restX + exitT * exitT * this.side * EXIT_X;
 
@@ -236,9 +245,7 @@ export class Placard {
         this.exitT = exitT;
 
         this.mesh.position.set(currentX, 1.7, currentZ);
-        // this.frameMesh.position.set(currentX, 1.7, currentZ - 0.001);
-        this.mesh.material.opacity      = Math.max(0, opacity);
-        // this.frameMesh.material.opacity = Math.max(0, opacity * 0.22);
+        this.mesh.material.opacity = Math.max(0, opacity);
     }
 
     // Static helper — total scroll height to pass to body
