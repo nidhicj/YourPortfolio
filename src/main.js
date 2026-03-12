@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SceneSetup } from './scene/SceneSetup.js';
 import { Lights } from './scene/Lights.js';
 import { Placard, CARD_PX, SLIDE_PX, EXIT_PX } from './scene/Placard.js';
+import { ThemeManager } from './ThemeManager.js';
 import { allEntries as rawEntries, workExperience } from './data/projects.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -43,9 +44,9 @@ const allEntries = ensureEntryIds(rawEntries);
 class PortfolioApp {
     constructor() {
         this.sceneSetup = new SceneSetup();
-        // this.corridor   = null;
         this.lights     = null;
         this.placards   = [];
+        this.themeManager = null;
         this.scrollProgress = 0;
         this.scrollPx = 0;
         this.init();
@@ -53,9 +54,9 @@ class PortfolioApp {
 
     init() {
         this.setupScroll();
-        // this.corridor = new Corridor(this.sceneSetup.scene);
         this.lights   = new Lights(this.sceneSetup.scene);
         this.createPlacards();
+        this.initTheme();
         this.buildIndexBar();
         this.setupUI();
         this.animate();
@@ -261,17 +262,23 @@ class PortfolioApp {
         if (bar) bar.style.width = `${progress * 100}%`;
     }
 
+    // ─── Theme ────────────────────────────────────────────────────────────────
+    initTheme() {
+        const btn = document.getElementById('themeToggle');
+        this.themeManager = new ThemeManager(
+            this.sceneSetup.scene,
+            this.placards,
+            btn
+        );
+        this.themeManager.init();
+
+        if (btn) {
+            btn.addEventListener('click', () => this.themeManager.toggle());
+        }
+    }
+
     // ─── UI ───────────────────────────────────────────────────────────────────
     setupUI() {
-        const audio = document.getElementById('audioToggle');
-        if (audio) {
-            let muted = true;
-            audio.addEventListener('click', () => {
-                muted = !muted;
-                audio.classList.toggle('muted', muted);
-            });
-        }
-
         // ── Nav click handlers ──
         const navHome     = document.getElementById('navHome');
         const navWork     = document.getElementById('navWork');
@@ -333,6 +340,7 @@ class PortfolioApp {
     }
 }
 
-const boot = () => { try { new PortfolioApp(); } catch(e) { console.error(e); } };
+// const boot = () => { try { new PortfolioApp(); } catch(e) { console.error(e); } };
+const boot = () => { try { window.__portfolioApp = new PortfolioApp(); } catch(e) { console.error(e); } };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();

@@ -29,6 +29,56 @@
   --links-y: 80px;
 }
 
+/* ─── Dark Mode Tokens ───────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --white:           #0f0d0e;
+  --off-white:       #1a1114;
+  --burgundy:        #c9485a;
+  --burgundy-light:  #e05568;
+  --burgundy-dim:    rgba(201,72,90,0.18);
+  --burgundy-pale:   rgba(201,72,90,0.09);
+  --ink:             #f0ebe8;
+  --mid:             rgba(240,235,232,0.50);
+  --soft:            rgba(240,235,232,0.30);
+}
+
+/* ─── Theme Transition ───────────────────────────────────────────────────────── */
+/* Applied briefly during toggle so the DOM fades rather than snapping */
+html.theme-transitioning,
+html.theme-transitioning * {
+  transition:
+    background-color 0.32s ease,
+    color            0.32s ease,
+    border-color     0.32s ease,
+    box-shadow       0.32s ease !important;
+}
+
+/* ─── Theme Toggle Button ────────────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--burgundy-dim);
+  background: transparent;
+  color: var(--mid);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.theme-toggle:hover {
+  background: var(--burgundy-dim);
+  color: var(--burgundy);
+  border-color: var(--burgundy);
+  transform: scale(1.1);
+}
+/* Sun icon shown by default (light mode); moon shown when dark */
+.theme-toggle__icon--moon { display: none; }
+.theme-toggle.is-dark .theme-toggle__icon--sun  { display: none; }
+.theme-toggle.is-dark .theme-toggle__icon--moon { display: block; }
+
 /* ─── Reset ─────────────────────────────────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -79,16 +129,19 @@ body {
   top: 0; left: 0; right: 0;
   z-index: 10002;
   pointer-events: auto;
-}
-.site-nav__inner {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: clamp(18px, 4vw, 72px);
-  padding: 18px 24px;
+  gap: 16px;
+  padding: 10px 20px;
   backdrop-filter: blur(14px);
-  background: rgba(255,255,255,0.88);
-  border-bottom: 1px solid rgba(122,27,42,0.10);
+  background: rgba(var(--white-rgb, 255,255,255), 0.88);
+  border-bottom: 1px solid var(--burgundy-dim);
 }
+[data-theme="dark"] .site-nav {
+  background: rgba(15,13,14,0.88);
+}
+/* .site-nav__inner kept for legacy, layout now on .site-nav directly */
 .site-nav__item {
   text-decoration: none;
   font-family: var(--font-display);
@@ -130,10 +183,10 @@ body {
 
 .landing-nav {
   display: flex;
-  margin: auto;
+  align-items: center;
   justify-content: center;
   gap: clamp(18px, 4vw, 70px);
-  padding: 10px 0 30px;
+  padding: 10px 0;
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -550,28 +603,9 @@ body {
 .nav-home svg { transition: transform 0.3s ease; }
 .nav-home:hover svg { transform: translateY(-2px); }
 
-/* ─── Audio Toggle ──────────────────────────────────────────────────────────── */
-.audio-toggle {
-  position: fixed; bottom: 2rem; right: 2rem;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--white);
-  border: 1.5px solid rgba(122,27,42,0.18);
-  color: var(--mid); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 10004;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 2px 12px rgba(122,27,42,0.10);
-}
-.audio-toggle:hover {
-  background: var(--burgundy);
-  color: var(--white);
-  transform: scale(1.1);
-}
-.audio-toggle.muted { opacity: 0.4; }
-
 /* ─── Chat FAB & Panel ──────────────────────────────────────────────────────── */
 .chat-fab {
-  position: fixed; right: 2rem; bottom: 5.5rem;  /* sits directly above audio toggle */
+  position: fixed; right: 2rem; bottom: 2rem;
   z-index: 10004;
   isolation: isolate;
   padding: 10px 16px;
@@ -677,6 +711,23 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
   scrollbar-width: none;
   flex-wrap: nowrap; white-space: nowrap;
   box-shadow: 0 2px 16px rgba(26,13,16,0.07);
+}
+
+/* ── Index bar goes dark in dark mode, matching the scene ───────────────── */
+[data-theme="dark"] .index-bar {
+  background: rgba(15,13,14,0.94);
+  border-color: rgba(201,72,90,0.18);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.40);
+}
+[data-theme="dark"] .index-item {
+  border-right-color: rgba(201,72,90,0.12);
+}
+[data-theme="dark"] .index-item.is-active {
+  background: #c9485a !important;
+  border-color: #c9485a !important;
+}
+[data-theme="dark"] .index-section-divider {
+  background: rgba(201,72,90,0.20);
 }
 .index-bar::-webkit-scrollbar { display: none; }
 
