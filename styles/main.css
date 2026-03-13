@@ -1048,7 +1048,7 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
 
 .end-overlay__kicker {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 15px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--burgundy);
@@ -1160,7 +1160,7 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
 .about-block { margin-bottom: 24px; }
 .about-block__heading {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--burgundy);

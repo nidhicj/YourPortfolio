@@ -172,7 +172,9 @@ class PortfolioApp {
         // Hide contact once about is fully in
         if (contactEl) {
             const contactOut = clamp((px - aboutStart) / 200, 0, 1);
-            contactEl.style.opacity = Math.max(0, contactT - contactOut);
+            const finalOpacity = Math.max(0, contactT - contactOut);
+            contactEl.style.opacity = finalOpacity;
+            if (finalOpacity <= 0) contactEl.style.pointerEvents = 'none';
         }
 
         // Nav highlights for contact/about
@@ -251,6 +253,16 @@ class PortfolioApp {
             transform: `scale(${1 - 0.04 * tB})`
         });
         landing.style.pointerEvents = tB > 0.98 ? 'none' : 'auto';
+
+        // Also disable pointer-events on landing children that have pointer-events:auto in CSS.
+        // Without this they sit at z-index 10000 and block clicks on the contact overlay (z-index 9500).
+        if (tB > 0.98) {
+            landing.querySelectorAll('.landing-hero, .landing-nav, .landing-content')
+                .forEach(el => { el.style.pointerEvents = 'none'; });
+        } else {
+            landing.querySelectorAll('.landing-hero, .landing-nav, .landing-content')
+                .forEach(el => { el.style.pointerEvents = ''; }); // restore CSS default
+        }
         const vignette = document.getElementById('vignetteOverlay');
         if (vignette) gsap.set(vignette, { opacity: 0.85 * tB });
 
