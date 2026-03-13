@@ -85,7 +85,7 @@ export class Placard {
         const maxTW = W * 0.50;
 
         const typeLabel = isWork ? 'Work Experience' : 'Key Project';
-        ctx.font = '500 18px "DM Sans",sans-serif';
+        ctx.font = '500 16px "DM Mono",monospace';
         const pillW = ctx.measureText(typeLabel).width + 28;
         const pillX = isLeft ? PAD : W - PAD - pillW;
 
@@ -95,34 +95,53 @@ export class Placard {
         ctx.textAlign = 'left';
         ctx.fillText(typeLabel, pillX + 14, 74);
 
-        ctx.font = '400 17px "DM Sans",sans-serif';
+        ctx.font = '400 15px "DM Mono",monospace';
         ctx.fillStyle = SOFT;
         ctx.textAlign = isLeft ? 'left' : 'right';
         const dateX = isLeft ? pillX + pillW + 20 : pillX - 20;
         ctx.fillText(this.entry.date || '', dateX, 74);
 
-        ctx.font = '900 88px "Epilogue","DM Sans",sans-serif';
+        // 2px top rule below pill row
+        ctx.strokeStyle = INK;
+        ctx.globalAlpha = 0.9;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(PAD, 108); ctx.lineTo(W - PAD, 108);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        ctx.font = '400 82px "Bowlby One",sans-serif';
         ctx.fillStyle = INK;
         ctx.textAlign = tal;
-        ctx.fillText(this.entry.title, tx, 200);
+        ctx.fillText(this.entry.title, tx, 220);
 
         const co = [this.entry.company, this.entry.location].filter(Boolean).join('  \u00b7  ');
         if (co) {
-            ctx.font = '600 20px "DM Sans",sans-serif';
+            ctx.font = 'italic 19px "Crete Round",serif';
             ctx.fillStyle = BRG;
             ctx.textAlign = tal;
-            ctx.fillText(co, tx, 320);
+            ctx.fillText(co, tx, 308);
         }
 
-        ctx.font = '400 22px "DM Sans",sans-serif';
+        // thin rule before description
+        ctx.strokeStyle = BRG;
+        ctx.globalAlpha = 0.20;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const ruleX = isLeft ? PAD : W - PAD - maxTW;
+        ctx.moveTo(ruleX, 334); ctx.lineTo(ruleX + maxTW, 334);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        ctx.font = '400 21px "Crete Round",serif';
         ctx.fillStyle = pal.inkMuted;
         ctx.textAlign = tal;
-        this._wrap(ctx, this.entry.description, tx, 374, maxTW, 34, 4, tal);
+        this._wrap(ctx, this.entry.description, tx, 378, maxTW, 33, 4, tal);
 
         const botY = H - 56;
 
         if (this.entry.highlight) {
-            ctx.font = '700 17px "DM Sans",sans-serif';
+            ctx.font = '500 15px "DM Mono",monospace';
             ctx.fillStyle = BRG;
             ctx.textAlign = tal;
             ctx.fillText('\u2191  ' + this.entry.highlight, tx, botY);
@@ -130,7 +149,7 @@ export class Placard {
 
         const tags = (this.entry.tags || []).slice(0, 5);
         if (tags.length) {
-            ctx.font = '400 15px "DM Sans",sans-serif';
+            ctx.font = '400 13px "DM Mono",monospace';
             ctx.fillStyle = pal.inkVerysoft;
             const tagStr = tags.join('  \u00b7  ');
             const tagAnchor = isLeft
@@ -181,7 +200,7 @@ export class Placard {
 
         // ── Pill + date row ──
         const typeLabel = isWork ? 'Work Experience' : 'Key Project';
-        ctx.font = '500 26px "DM Sans",sans-serif';
+        ctx.font = '500 23px "DM Mono",monospace';
         const pillW = ctx.measureText(typeLabel).width + 36;
 
         ctx.fillStyle = pal.pillBg;
@@ -190,13 +209,22 @@ export class Placard {
         ctx.textAlign = 'left';
         ctx.fillText(typeLabel, PAD + 18, 88);
 
-        ctx.font = '400 24px "DM Sans",sans-serif';
+        ctx.font = '400 22px "DM Mono",monospace';
         ctx.fillStyle = SOFT;
         ctx.textAlign = 'right';
         ctx.fillText(this.entry.date || '', W - PAD, 88);
 
+        // 2px rule
+        ctx.strokeStyle = INK;
+        ctx.globalAlpha = 0.85;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(PAD, 126); ctx.lineTo(W - PAD, 126);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
         // ── Big title ──
-        ctx.font = '900 96px "Epilogue","DM Sans",sans-serif';
+        ctx.font = '400 90px "Bowlby One",sans-serif';
         ctx.fillStyle = INK;
         ctx.textAlign = 'left';
         this._wrap(ctx, this.entry.title, PAD, 220, textW, 108, 2, 'left');
@@ -213,23 +241,23 @@ export class Placard {
         // ── Company · location ──
         const co = [this.entry.company, this.entry.location].filter(Boolean).join('  \u00b7  ');
         if (co) {
-            ctx.font = '600 28px "DM Sans",sans-serif';
+            ctx.font = 'italic 26px "Crete Round",serif';
             ctx.fillStyle = BRG;
             ctx.textAlign = 'left';
             ctx.fillText(co, PAD, 428);
         }
 
         // ── Description ──
-        ctx.font = '400 30px "DM Sans",sans-serif';
+        ctx.font = '400 28px "Crete Round",serif';
         ctx.fillStyle = pal.inkMuted;
         ctx.textAlign = 'left';
-        this._wrap(ctx, this.entry.description, PAD, 508, textW, 46, 5, 'left');
+        this._wrap(ctx, this.entry.description, PAD, 508, textW, 44, 5, 'left');
 
         // ── Bottom strip ──
         const botY = H - 64;
 
         if (this.entry.highlight) {
-            ctx.font = '700 26px "DM Sans",sans-serif';
+            ctx.font = '500 24px "DM Mono",monospace';
             ctx.fillStyle = BRG;
             ctx.textAlign = 'left';
             ctx.fillText('\u2191  ' + this.entry.highlight, PAD, botY);
@@ -237,7 +265,7 @@ export class Placard {
 
         const tags = (this.entry.tags || []).slice(0, 4);
         if (tags.length) {
-            ctx.font = '400 22px "DM Sans",sans-serif';
+            ctx.font = '400 20px "DM Mono",monospace';
             ctx.fillStyle = pal.inkVerysoft;
             ctx.textAlign = 'right';
             ctx.fillText(tags.join('  \u00b7  '), W - PAD, botY);
