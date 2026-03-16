@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Unlock on the first real scroll ONLY ONCE
-  const onFirstScroll = () => unlockChat({ openPanel: true });
+  const onFirstScroll = () => unlockChat({ openPanel: false });
   window.addEventListener("scroll", onFirstScroll, { passive: true, once: true });
 
   fab.addEventListener("click", (e) => {
@@ -193,4 +193,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
