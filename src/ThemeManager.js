@@ -56,7 +56,7 @@ light: {
 
 dark: {
     sceneBg:     0x0b0b0b,
-    cardBg:      '#111111',
+    cardBg:      '#0b0b0b',
     ink:         '#ffffff',
     inkMuted:    '#e6e6e6',
     inkSoft:     '#cfcfcf',
