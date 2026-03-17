@@ -5,8 +5,8 @@ import { THEME_COLORS } from '../ThemeManager.js';
 const isMobile = () => window.innerWidth < 640;
 
 // ─── 3D Scene layout ─────────────────────────────────────────────────────────
-const READ_Z        = () => isMobile() ? -1   : -2;
-const STACK_SPACING = 0.5;
+const READ_Z        = () => isMobile() ? -3   : -2;
+const STACK_SPACING = 2;
 const PW            = () => isMobile() ? 2.0  : 2.8;
 const PH            = () => isMobile() ? 2.75 : 1.55;
 const CARD_Y        = () => isMobile() ? 1.55 : 1.7;
