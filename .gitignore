@@ -13,3 +13,20 @@ ABOUTME.MD
 claude_files/
 favicon/
 help.commands
+
+
+
+# Build output
+dist/*
+
+# Local dev secrets — NEVER commit these
+.dev.vars
+.env
+.env.local
+
+# Wrangler
+.wrangler/
+
+# OS
+.DS_Store
+Thumbs.db

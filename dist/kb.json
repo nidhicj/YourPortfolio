@@ -1,57 +1,85 @@
 {
   "version": "1.0",
   "meta": {
-    "ownerName": "Nidhi",
-    "headline": "AI Engineer · Systems & Automation",
+    "ownerName": "Nidhi Joshi",
+    "headline": "AI/ML Engineer · Robotics & Automation",
     "contact": {
       "email": "mailto:joshichi.nidhi@gmail.com",
-      "linkedin": "https://linkedin.com/in/yourprofile",
-      "github": "https://github.com/yourusername",
+      "linkedin": "https://www.linkedin.com/in/connect-nidhichijoshi/",
+      "github": "https://github.com/nidhicj",
       "resumePdf": "/resume.pdf"
     }
   },
   "chunks": [
     {
       "id": "about-summary",
-      "title": "About",
-      "tags": ["about", "bio", "summary"],
-      "keywords": ["who are you", "about", "background", "intro", "summary", "tell me about yourself"],
-      "text": "I build applied AI systems that automate decisions. I care about reliability, guardrails, and practical delivery (not demos that break in production)."
+      "title": "About Nidhi",
+      "tags": ["about", "bio", "summary", "who"],
+      "keywords": ["who are you", "about", "background", "intro", "summary", "tell me about yourself", "who is nidhi"],
+      "text": "I'm an AI/ML engineer who bridges research and production — building systems that are robust, explainable, and ready to ship. I specialise in computer vision, robotics automation, and RAG-based document intelligence. I'm always looking for systems that need automating so colleagues aren't bogged down by repetitive manual work. AI is an incredible tool for translating human cognitive abilities — pattern recognition, fault detection, classification — into scalable systems."
     },
     {
-      "id": "work-style-guardrails",
-      "title": "Work style: guardrails",
-      "tags": ["work-style", "quality", "reliability"],
-      "keywords": ["guardrails", "reliable", "production", "quality", "testing", "robust", "safe"],
-      "text": "I don’t ship AI without guardrails: validation, deterministic fallbacks, monitoring, and clear failure modes. If something is unknown, I say so and route it correctly."
+      "id": "education",
+      "title": "Education",
+      "tags": ["education", "degree", "university", "study"],
+      "keywords": ["education", "degree", "university", "studied", "masters", "bachelor", "msc", "be", "stuttgart", "ramaiah"],
+      "text": "M.Sc. in Information Technology from the University of Stuttgart, Germany (2019–2022). B.E. in Electrical & Electronics Engineering from Ramaiah Institute of Technology, Bangalore (2013–2017)."
     },
     {
-      "id": "skills-core",
-      "title": "Core skills",
-      "tags": ["skills", "stack"],
-      "keywords": ["skills", "tech stack", "tools", "languages", "javascript", "python", "automation", "systems"],
-      "text": "Core focus: automation-first systems, clean interfaces, and practical AI integration. (Edit this block to list your exact tools: Python, JS, n8n, Jira/Confluence, etc.)"
+      "id": "skills",
+      "title": "Skills & Tech Stack",
+      "tags": ["skills", "stack", "tools", "languages"],
+      "keywords": ["skills", "tech stack", "tools", "languages", "python", "pytorch", "yolo", "docker", "ros", "langchain", "rag", "n8n", "fastapi", "react"],
+      "text": "Python, PyTorch, TensorFlow, YOLOv8, LangChain, RAG, ROS/ROS2, Docker, C++, n8n, Kuka Robotics, Jetson Nano, FastAPI, React, OpenCV, NumPy. Strong in building production ML pipelines, computer vision systems, IoT integrations, and AI-powered workflow automation."
+    },
+    {
+      "id": "work-escarda",
+      "title": "AI/ML Engineer at Escarda Technologies",
+      "tags": ["work", "experience", "escarda", "yolo", "robotics", "iot"],
+      "keywords": ["escarda", "work experience", "job", "yolov8", "weed detection", "jetson", "raspberry pi", "iot", "agile", "ci cd", "robotics engineer"],
+      "text": "AI/ML Engineer at Escarda Technologies, Berlin, Germany (Jan 2023 – Sep 2024). Led algorithm development for autonomous weed detection achieving 92% accuracy, reducing chemical usage by 40%. Delivered Smart Checkpot — an IoT plant monitor using YOLOv8 + Raspberry Pi. Standardised Agile sprint processes and CI/CD pipelines across the engineering team."
+    },
+    {
+      "id": "project-autodoc",
+      "title": "AutoDoc — Workflow Documentation Platform",
+      "tags": ["project", "chrome extension", "nestjs", "fastapi", "gemini", "ai", "automation"],
+      "keywords": ["autodoc", "chrome extension", "documentation", "workflow", "nestjs", "fastapi", "gemini", "pii", "pdf export", "iframe", "mv3"],
+      "text": "Production-grade workflow documentation platform (Nov 2025 – Feb 2026). A Chrome MV3 extension captures clicks, DOM events, and throttled screenshots — piped through a NestJS backend and FastAPI AI service to auto-generate step-by-step guides with PII redaction, PDF export, and embeddable iframes. Tech: Chrome Extension, NestJS, FastAPI, Gemini AI, Next.js, Docker."
+    },
+    {
+      "id": "project-lumen",
+      "title": "Lumen — RAG Document Intelligence",
+      "tags": ["project", "rag", "fastapi", "react", "llm", "google drive", "documents"],
+      "keywords": ["lumen", "rag", "document", "pdf", "chat with documents", "openrouter", "llama", "gemma", "mistral", "google drive", "citations", "retrieval"],
+      "text": "Lumen is a chat-with-your-documents app (Mar 2026 – Present). Drop a PDF, paste a URL, or connect a Google Drive folder — Lumen chunks and retrieves relevant excerpts, then answers questions with inline citations. Runs on free LLMs via OpenRouter with an automatic model fallback chain (Llama → Gemma → Mistral). Tech: FastAPI, React, OpenRouter, RAG, Google Drive API, Vercel, Railway."
+    },
+    {
+      "id": "project-projection-mapper",
+      "title": "Projection Mapper — Real-time Projection Mapping Tool",
+      "tags": ["project", "python", "opencv", "computer vision", "pyside6"],
+      "keywords": ["projection mapper", "projection mapping", "homography", "opencv", "pyside6", "perspective warp", "quad", "surfaces", "video mapping"],
+      "text": "Desktop tool for real-time projection mapping onto physical surfaces (Oct 2025 – Jan 2026). Load images or video, drag four corner handles to warp perspective via live homography, layer multiple surfaces, and save/restore quad configurations as JSON presets. Tech: Python, PySide6, OpenCV, NumPy, Homography."
+    },
+    {
+      "id": "work-style",
+      "title": "How I work",
+      "tags": ["work-style", "quality", "guardrails", "approach"],
+      "keywords": ["guardrails", "reliable", "production", "quality", "testing", "robust", "how do you work", "approach", "methodology"],
+      "text": "I care about reliability, explainability, and practical delivery. I don't ship AI without guardrails: validation, deterministic fallbacks, monitoring, and clear failure modes. If something is unknown, I say so and route it correctly. I look for systems that need automating and eliminate manual labour."
     },
     {
       "id": "portfolio-site",
       "title": "This portfolio",
-      "tags": ["projects", "portfolio"],
-      "keywords": ["portfolio", "corridor", "website", "site", "3d", "three.js", "projects"],
-      "text": "This site is an interactive portfolio corridor. Scroll to explore projects and click doors to open details."
+      "tags": ["portfolio", "website", "threejs", "paperroll"],
+      "keywords": ["portfolio", "website", "site", "3d", "three.js", "how did you build", "paper roll", "scroll", "animation"],
+      "text": "Built with Three.js and GSAP — a scroll-driven 3D paper roll where each work experience scrolls into view like a physical roll of paper. The chatbot runs on a Cloudflare Pages Function backed by a knowledge base. No LLM API calls — deterministic keyword retrieval only."
     },
     {
-      "id": "resume",
-      "title": "Resume",
-      "tags": ["resume", "cv"],
-      "keywords": ["resume", "cv", "pdf"],
-      "text": "Resume PDF is available here: {resumePdf}"
-    },
-    {
-      "id": "contact",
-      "title": "Contact",
-      "tags": ["contact", "email"],
-      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect"],
-      "text": "Email: {email}\nLinkedIn: {linkedin}\nGitHub: {github}"
+      "id": "availability",
+      "title": "Availability & Contact",
+      "tags": ["contact", "hire", "available", "open to work"],
+      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect", "hire", "available", "open to work", "freelance", "job", "opportunity"],
+      "text": "Open to the right opportunity. Email: {email} — LinkedIn: {linkedin} — GitHub: {github} — Resume: {resumePdf}"
     }
   ]
 }
