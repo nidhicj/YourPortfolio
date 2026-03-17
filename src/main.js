@@ -6,15 +6,15 @@ import aboutHTML   from './overlays/about.html?raw';
 import landingHTML from './overlays/landing.html?raw';
 import { SceneSetup } from './scene/SceneSetup.js';
 import { Lights } from './scene/Lights.js';
-import { Placard, CARD_PX, SLIDE_PX, EXIT_PX, HOLD_PX, LANDING_PX } from './scene/Placard.js';
+import { Placard, CARD_PX, SLIDE_PX, EXIT_PX, HOLD_PX, LANDING_PX, CARD0_EARLY } from './scene/Placard.js';
 import { ThemeManager } from './ThemeManager.js';
 import { allEntries as rawEntries } from './data/projects.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Extra scroll px after last card
-const CONTACT_PX = EXIT_PX + 600;
-const ABOUT_PX   = 800;
+const CONTACT_PX = EXIT_PX + 700;  // extra room after last card exits before contact appears
+const ABOUT_PX   = 900;
 
 function ensureEntryIds(entries) {
     return entries.map((entry, index) => {
@@ -96,7 +96,7 @@ class ManifestStack {
                 const placard = placards.find(p => p.entryId === entryId);
                 if (!placard) return;
                 // Scroll to the hold phase of this card so it fully re-appears
-                const target = LANDING_PX + placard.index * CARD_PX + SLIDE_PX;
+                const target = LANDING_PX + placard.index * CARD_PX + SLIDE_PX - (placard.index === 0 ? CARD0_EARLY : 0);
                 window.scrollTo({ top: target, behavior: 'smooth' });
             });
         });
@@ -108,7 +108,8 @@ class ManifestStack {
         let activeId = null;
 
         placards.forEach(placard => {
-            const localPx   = scrollPx - (LANDING_PX + placard.index * CARD_PX);
+            const earlyOffset = placard.index === 0 ? CARD0_EARLY : 0;
+            const localPx   = scrollPx - (LANDING_PX + placard.index * CARD_PX - earlyOffset);
             const exitStart = SLIDE_PX + HOLD_PX;
             const exitT     = clamp((localPx - exitStart) / EXIT_PX, 0, 1);
             const shouldShow = exitT > 0;
@@ -168,6 +169,23 @@ class PortfolioApp {
         this._loadOverlays();
         this.handleLoading();
         this.setupResizeForPlacards();
+        this._ensureFonts();
+    }
+
+    // Force a canvas redraw on all placards once web fonts are confirmed loaded.
+    // Without this, _build() fires before Bowlby One / DM Mono / Crete Round are
+    // available and the browser falls back to generic families on first render.
+    _ensureFonts() {
+        const fonts = [
+            'bold 1px "Bowlby One"',
+            '400 1px "DM Mono"',
+            '400 1px "Crete Round"',
+        ];
+        Promise.all(fonts.map(f => document.fonts.load(f)))
+            .then(() => {
+                this.placards.forEach(p => p.rebuildCanvas());
+            })
+            .catch(() => {}); // non-fatal — fonts may already be loaded
     }
 
     _loadOverlays() {
@@ -192,7 +210,7 @@ class PortfolioApp {
             trigger: 'body',
             start: 'top top',
             end: 'bottom bottom',
-            scrub: 1,
+            scrub: 1.5,
             onUpdate: (self) => {
                 this.scrollProgress = self.progress;
                 this.scrollPx = window.scrollY;
@@ -254,7 +272,7 @@ class PortfolioApp {
     jumpToEntryById(entryId) {
         const placard = this.placards.find(p => p.entryId === entryId);
         if (!placard) return;
-        window.scrollTo({ top: LANDING_PX + placard.index * CARD_PX + SLIDE_PX, behavior: 'smooth' });
+        window.scrollTo({ top: LANDING_PX + placard.index * CARD_PX + SLIDE_PX - (placard.index === 0 ? CARD0_EARLY : 0), behavior: 'smooth' });
     }
 
     // ─── Contact + About overlays ─────────────────────────────────────────────
@@ -266,8 +284,8 @@ class PortfolioApp {
         const px    = this.scrollPx;
         const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
 
-        const contactT = clamp((px - contactStart) / 300, 0, 1);
-        const aboutT   = clamp((px - aboutStart)   / 300, 0, 1);
+        const contactT = clamp((px - contactStart) / 500, 0, 1); // was 300 — slower, more graceful
+        const aboutT   = clamp((px - aboutStart)   / 500, 0, 1); // was 300
 
         const contactEl = document.getElementById('contactOverlay');
         const aboutEl   = document.getElementById('aboutOverlay');
@@ -275,12 +293,12 @@ class PortfolioApp {
         if (contactEl) {
             contactEl.style.opacity       = contactT;
             contactEl.style.pointerEvents = contactT > 0.05 ? 'auto' : 'none';
-            contactEl.style.transform     = `translateY(${(1 - contactT) * 40}px)`;
+            contactEl.style.transform     = `translateY(${(1 - contactT) * 24}px)`; // was 40px — subtler lift
         }
         if (aboutEl) {
             aboutEl.style.opacity       = aboutT;
             aboutEl.style.pointerEvents = aboutT > 0.05 ? 'auto' : 'none';
-            aboutEl.style.transform     = `translateY(${(1 - aboutT) * 40}px)`;
+            aboutEl.style.transform     = `translateY(${(1 - aboutT) * 24}px)`;
         }
 
         if (contactEl) {
@@ -297,7 +315,7 @@ class PortfolioApp {
     }
 
     updateIndexBar() {
-        const offsetPx      = Math.max(0, this.scrollPx - LANDING_PX);
+        const offsetPx      = Math.max(0, this.scrollPx - LANDING_PX + CARD0_EARLY);
         const activeIndex   = Math.min(this.placards.length - 1, Math.max(0, Math.floor(offsetPx / CARD_PX)));
         const activePlacard = this.placards[activeIndex];
         const activeId      = activePlacard?.entryId ?? null;
@@ -331,55 +349,60 @@ class PortfolioApp {
         const landing = document.getElementById('landingPage');
         if (!landing) return;
 
-        const px    = this.scrollPx;
-        const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
-        const ease  = t => t * t * (3 - 2 * t); // smoothstep
+        const px     = this.scrollPx;
+        const clamp  = (v,a,b) => Math.max(a, Math.min(b, v));
+        // easeInQuart: objects accelerate away — exits feel physical, not floaty
+        const easeIn = t => t * t * t * t;
+        // easeInOutCubic: for the full-page fade — slow start, peak mid, slow finish
+        const easeIO = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
 
-        // ── LEFT RAIL: per .lx-item stagger left ──────────────────────────
-        // Line 0 begins at px=0, each subsequent line starts 25px later.
-        // Each line takes 260px to fully exit.
+        // ── LEFT RAIL: per .lx-item stagger ──────────────────────────────
+        // Items exit with a 60px stagger, over 420px each — uses full 700px budget
         const lxItems = landing.querySelectorAll('.lx-item');
         lxItems.forEach((el, i) => {
-            const start = i * 25;
-            const end   = start + 260;
-            const t     = ease(clamp((px - start) / (end - start), 0, 1));
-            el.style.transform = `translate3d(${-window.innerWidth * 1.1 * t}px, 0, 0)`;
-            el.style.opacity   = String(1 - t);
+            const start = i * 60;
+            const end   = start + 420;
+            const raw   = clamp((px - start) / (end - start), 0, 1);
+            const t     = easeIn(raw);
+            el.style.transform = `translate3d(${-window.innerWidth * t}px, 0, 0)`;
+            el.style.opacity   = String(clamp(1 - raw * 1.6, 0, 1)); // fades before fully off-screen
         });
 
-        // ── RIGHT RAIL: 3 sequential units ────────────────────────────────
-        // Unit A: hero-blocks  → exits first  (px 20–220)
-        // Unit B: hero-photo   → exits second (px 80–320)
-        // Unit C: hero-links   → exits last   (px 150–380)
-
+        // ── RIGHT RAIL ────────────────────────────────────────────────────
+        // Unit A: hero-blocks  (px  60–460)
+        // Unit B: hero-photo   (px 140–520)
+        // Unit C: hero-links   (px 220–580)
         const heroBlocks = landing.querySelectorAll('.hero-block');
-        const blockT = ease(clamp((px - 20) / 200, 0, 1));
+        const blockRaw   = clamp((px - 60)  / 400, 0, 1);
+        const blockT     = easeIn(blockRaw);
         heroBlocks.forEach(b => {
-            b.style.transform = `translateX(${window.innerWidth * 0.6 * blockT}px)`;
-            b.style.opacity   = String(1 - blockT);
+            b.style.transform = `translateX(${window.innerWidth * blockT}px)`;
+            b.style.opacity   = String(clamp(1 - blockRaw * 1.6, 0, 1));
         });
 
         const photoEl = landing.querySelector('.hero-photo');
         if (photoEl) {
-            const t = ease(clamp((px - 80) / 240, 0, 1));
-            photoEl.style.transform = `translateX(${window.innerWidth * 0.5 * t}px)`;
-            photoEl.style.opacity   = String(1 - t);
+            const raw = clamp((px - 140) / 380, 0, 1);
+            const t   = easeIn(raw);
+            photoEl.style.transform = `translateX(${window.innerWidth * t}px)`;
+            photoEl.style.opacity   = String(clamp(1 - raw * 1.6, 0, 1));
         }
 
         const linksEl = landing.querySelector('.hero-links');
         if (linksEl) {
-            const t = ease(clamp((px - 150) / 230, 0, 1));
-            linksEl.style.transform = `translateX(${window.innerWidth * 0.4 * t}px)`;
-            linksEl.style.opacity   = String(1 - t);
+            const raw = clamp((px - 220) / 360, 0, 1);
+            const t   = easeIn(raw);
+            linksEl.style.transform = `translateX(${window.innerWidth * t}px)`;
+            linksEl.style.opacity   = String(clamp(1 - raw * 1.6, 0, 1));
         }
 
-        // ── Whole landing overlay: blur + fade after lines are gone ───────
-        const tB = clamp((px - 80) / 320, 0, 1);
-        const tBe = ease(tB);
+        // ── Whole landing overlay: scale + blur across full 700px budget ──
+        const tB  = clamp((px - 80) / 620, 0, 1);
+        const tBe = easeIO(tB);
         gsap.set(landing, {
             opacity:   1 - tBe,
-            filter:    `blur(${8 * tBe}px)`,
-            transform: `scale(${1 - 0.03 * tBe})`
+            filter:    `blur(${14 * tBe}px)`,
+            transform: `scale(${1 - 0.04 * tBe})`
         });
         landing.style.pointerEvents = tBe > 0.98 ? 'none' : 'auto';
 

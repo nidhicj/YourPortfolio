@@ -5,18 +5,31 @@ import { THEME_COLORS } from '../ThemeManager.js';
 const isMobile = () => window.innerWidth < 640;
 
 // ─── 3D Scene layout ─────────────────────────────────────────────────────────
-const READ_Z        = () => isMobile() ? -3   : -2;
-const STACK_SPACING = 2;
-const PW            = () => isMobile() ? 2.0  : 2.8;
-const PH            = () => isMobile() ? 2.75 : 1.55;
-const CARD_Y        = () => isMobile() ? 1.55 : 1.7;
+const READ_Z   = () => isMobile() ? -3    : -2;
+const PW       = () => isMobile() ? 2.0   : 2.8;
+const PH       = () => isMobile() ? 2.75  : 1.55;
+
+// Y positions (world space, camera at y=1.6, fov=60, READ_Z=-2)
+// START_Y: card center just above top of viewport
+// READ_Y:  card center in middle of viewport (readable)
+// EXIT_Y:  card center just below bottom of viewport
+// PEEK_Y:  where next card sits while current is at READ_Y (~30% peeking above top)
+const CAM_Y    = 1.6;
+const START_Y  = () => isMobile() ? 4.2   : 3.73;
+const READ_Y   = () => isMobile() ? 1.55  : 1.70;
+const EXIT_Y   = () => isMobile() ? -1.2  : -0.53;
+const PEEK_Y   = () => isMobile() ? 2.8   : 2.29; // next card peeking from top
 
 // ─── Scroll budget ────────────────────────────────────────────────────────────
-export const LANDING_PX = 600;
-export const SLIDE_PX   = 500;
-export const HOLD_PX    = 200;
-export const EXIT_PX    = 500;
+export const LANDING_PX = 700;
+export const SLIDE_PX   = 400;  // shorter slide — card arrives faster, less dead time
+export const HOLD_PX    = 250;  // reading window
+export const EXIT_PX    = 450;  // exit — card rolls down while disintegrating
 export const CARD_PX    = SLIDE_PX + HOLD_PX + EXIT_PX;
+
+// Card 0 begins sliding this many px BEFORE LANDING_PX — overlaps landing exit
+// so the first card is already mid-arrival as the landing fades out
+export const CARD0_EARLY = 350;
 
 // ─── Layout configs ───────────────────────────────────────────────────────────
 import { DESKTOP_CFG } from './cardConfigs/desktop.js';
@@ -38,8 +51,11 @@ function drawCard(ctx, cfg, entry, palette, side, isDark) {
     const maxTW = W - PAD * 2;
 
     // ── Background ────────────────────────────────────────────────────────────
-    ctx.fillStyle = cardBg;
-    ctx.beginPath(); ctx.roundRect(0, 0, W, H, cfg.radius); ctx.fill();
+    if (!isDark) {
+        ctx.fillStyle = cardBg;
+        ctx.beginPath(); ctx.roundRect(0, 0, W, H, cfg.radius); ctx.fill();
+    }
+    // Dark mode: no background fill — content floats directly on scene bg (#0b0b0b)
 
     // ── Title — centered ─────────────────────────────────────────────────────
     ctx.font      = cfg.titleFont;
@@ -99,32 +115,34 @@ function _wrap(ctx, text, x, y, maxW, lh, maxLines, align) {
 }
 
 // ─── Exit canvas draw ─────────────────────────────────────────────────────────
-// Mirrors drawCard layout exactly.
-// Zones fall bottom-first: desc(0) → tags(1) → highlight(2) → title(3)
+// Text zones fall downward, bottom-first stagger. easeOutQuart so each zone
+// drops fast then decelerates — gravity with air resistance, not a slam.
 function drawCardExit(ctx, cfg, entry, palette, side, isDark, exitT) {
     const W   = cfg.canvasW;
     const H   = cfg.canvasH;
     const PAD = cfg.pad;
     const { ink: INK, inkMuted, inkVerysoft, burgundy: BRG, cardBg } = palette;
-
     const maxTW = W - PAD * 2;
 
-    const smooth  = t => t * t * (3 - 2 * t);
+    const easeOut = t => 1 - Math.pow(1 - t, 4); // easeOutQuart — fast drop, graceful finish
     const clamp   = (v, a, b) => Math.max(a, Math.min(b, v));
-    const STAGGER = 0.22;
-    const FALL    = H * 0.55;
+    const STAGGER = 0.20; // zone 0 leads, zone 3 (title) follows
+    const FALL    = H * 0.35; // modest fall — enough to read as falling, not theatrical
 
     const zoneT = (zone) => {
-        const offset = zone * STAGGER;
-        return smooth(clamp((exitT - offset) / (1 - offset), 0, 1));
+        const start = zone * STAGGER;
+        const raw   = clamp((exitT - start) / (1 - start), 0, 1);
+        return easeOut(raw);
     };
 
     // ── Background ───────────────────────────────────────────────────────────
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cardBg;
-    ctx.beginPath(); ctx.roundRect(0, 0, W, H, cfg.radius); ctx.fill();
+    if (!isDark) {
+        ctx.fillStyle = cardBg;
+        ctx.beginPath(); ctx.roundRect(0, 0, W, H, cfg.radius); ctx.fill();
+    }
 
-    // ── Zone 3: Title — centered ──────────────────────────────────────────────
+    // ── Zone 3: Title (last to fall) ─────────────────────────────────────────
     const t3 = zoneT(3); const op3 = 1 - t3;
     if (op3 > 0.01) {
         ctx.globalAlpha = op3;
@@ -154,7 +172,7 @@ function drawCardExit(ctx, cfg, entry, palette, side, isDark, exitT) {
         ctx.globalAlpha = 1;
     }
 
-    // ── Desc rule fades with zone 0 ───────────────────────────────────────────
+    // ── Zone 0: Description + rule (first to fall) ───────────────────────────
     const t0 = zoneT(0); const op0 = 1 - t0;
     if (op0 > 0.01) {
         ctx.strokeStyle = BRG; ctx.globalAlpha = op0 * cfg.descRuleAlpha; ctx.lineWidth = 1;
@@ -162,10 +180,7 @@ function drawCardExit(ctx, cfg, entry, palette, side, isDark, exitT) {
         ctx.moveTo(PAD, cfg.descRuleY + FALL * t0); ctx.lineTo(W - PAD, cfg.descRuleY + FALL * t0);
         ctx.stroke();
         ctx.globalAlpha = 1;
-    }
 
-    // ── Zone 0: Description ───────────────────────────────────────────────────
-    if (op0 > 0.01) {
         ctx.globalAlpha = op0;
         ctx.font = cfg.descFont; ctx.fillStyle = inkMuted;
         _wrap(ctx, entry.description, PAD, cfg.descY + FALL * t0, maxTW, cfg.descLH, cfg.descLines, 'left');
@@ -177,6 +192,7 @@ function drawCardExit(ctx, cfg, entry, palette, side, isDark, exitT) {
 //  PLACARD CLASS
 // ─────────────────────────────────────────────────────────────────────────────
 
+
 export class Placard {
     constructor(scene, entry, index, total) {
         this.scene   = scene;
@@ -184,12 +200,7 @@ export class Placard {
         this.entryId = entry.id;
         this.index   = index;
         this._total  = total;
-
-        this.side  = index % 2 === 0 ? -1 : 1;
-        this.restZ = READ_Z() - (index + 1) * STACK_SPACING;
-
-        this.currentZ = this.restZ;
-        this.exitT    = 0;
+        this.exitT   = 0;
 
         this._isDark   = false;
         this._isMobile = isMobile();
@@ -205,7 +216,7 @@ export class Placard {
         cvs.height = cfg.canvasH;
         const ctx  = cvs.getContext('2d');
         const pal  = this._isDark ? THEME_COLORS.dark : THEME_COLORS.light;
-        drawCard(ctx, cfg, this.entry, pal, this.side, this._isDark);
+        drawCard(ctx, cfg, this.entry, pal, 1, this._isDark);
         this._cvs = cvs;
         this._ctx = ctx;
         return cvs;
@@ -224,8 +235,15 @@ export class Placard {
             })
         );
 
-        this.mesh.position.set(0, CARD_Y(), this.restZ);
+        // All cards start above viewport — Y drives everything, Z is fixed
+        this.mesh.position.set(0, START_Y(), READ_Z());
         this.scene.add(this.mesh);
+    }
+
+    rebuildCanvas() {
+        const tex = this.mesh.material.map;
+        tex.image = this._buildCanvas();
+        tex.needsUpdate = true;
     }
 
     setTheme(isDark) {
@@ -239,23 +257,16 @@ export class Placard {
     onResize() {
         const nowMobile = isMobile();
         if (nowMobile === this._isMobile) return;
-
         this._isMobile = nowMobile;
-        this.restZ = READ_Z() - (this.index + 1) * STACK_SPACING;
-
         this.mesh.geometry.dispose();
         this.mesh.geometry = new THREE.PlaneGeometry(PW(), PH());
-
         const tex = this.mesh.material.map;
         tex.image = this._buildCanvas();
         tex.needsUpdate = true;
-
-        this.mesh.position.set(0, CARD_Y(), this.restZ);
     }
 
     getScreenZones(camera, renderer) {
         if (this.mesh.material.opacity < 0.02) return null;
-        if (this.mesh.position.z < -80) return null;
 
         const W = renderer.domElement.clientWidth;
         const H = renderer.domElement.clientHeight;
@@ -290,52 +301,50 @@ export class Placard {
     }
 
     update(scrollPx) {
-        const cardStart = LANDING_PX + this.index * CARD_PX;
+        // Card 0 starts CARD0_EARLY px before LANDING_PX so it overlaps the landing exit
+        const earlyOffset = this.index === 0 ? CARD0_EARLY : 0;
+        const cardStart = LANDING_PX + this.index * CARD_PX - earlyOffset;
         const local     = scrollPx - cardStart;
         const clamp     = (v, a, b) => Math.max(a, Math.min(b, v));
-        const smooth    = t => t * t * (3 - 2 * t);
+        const easeOut   = t => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
+        // ── Exit phase ────────────────────────────────────────────────────
         const exitStart = SLIDE_PX + HOLD_PX;
         const rawExitT  = clamp((local - exitStart) / EXIT_PX, 0, 1);
-        const exitT     = smooth(rawExitT);
+        const exitT     = easeOut(rawExitT);
+        this.exitT      = exitT;
 
-        // Once fully exited, park far behind the camera — never ghost
+        // Once fully off-screen below, hide
         if (rawExitT >= 1) {
             this.mesh.material.opacity = 0;
-            this.mesh.position.z = -9999;
-            this.currentZ = -9999;
-            this.exitT    = 1;
+            this.mesh.position.set(0, EXIT_Y() - 2, READ_Z());
             return;
         }
 
-        // Stack shift
-        const offsetPx     = Math.max(0, scrollPx - LANDING_PX);
-        const activeIndex  = Math.floor(offsetPx / CARD_PX);
-        const activeLocal  = offsetPx - activeIndex * CARD_PX;
-        const activeSlideT = smooth(clamp(activeLocal / SLIDE_PX, 0, 1));
-        let   stackShift   = (activeIndex + activeSlideT) * STACK_SPACING;
+        // ── Slide phase: START_Y → READ_Y ────────────────────────────────
+        const rawSlideT = clamp(local / SLIDE_PX, 0, 1);
+        const slideT    = easeOut(rawSlideT);
+        const slideY    = START_Y() + (READ_Y() - START_Y()) * slideT;
 
-        const isLast = this.index === this._total - 1;
-        if (isLast && exitT > 0) stackShift = (this.index + 1) * STACK_SPACING;
+        // ── Final Y ───────────────────────────────────────────────────────
+        const finalY = rawExitT > 0
+            ? READ_Y() + (EXIT_Y() - READ_Y()) * exitT
+            : slideY;
 
-        const currentZ = Math.min(READ_Z(), this.restZ + stackShift);
-
-        this.currentZ = currentZ;
-        this.exitT    = exitT;
-
-        this.mesh.position.set(0, CARD_Y(), currentZ);
+        this.mesh.rotation.z = 0;
         this.mesh.material.opacity = 1;
+        this.mesh.position.set(0, finalY, READ_Z());
 
-        // Redraw canvas with falling-text exit animation
+        // ── Canvas redraw ─────────────────────────────────────────────────
         if (rawExitT > 0) {
             const cfg = this._isMobile ? MOBILE_CFG : DESKTOP_CFG;
             const pal = this._isDark ? THEME_COLORS.dark : THEME_COLORS.light;
-            drawCardExit(this._ctx, cfg, this.entry, pal, this.side, this._isDark, exitT);
+            drawCardExit(this._ctx, cfg, this.entry, pal, 1, this._isDark, exitT);
             this.mesh.material.map.needsUpdate = true;
         } else if (this._needsStaticRedraw) {
             const cfg = this._isMobile ? MOBILE_CFG : DESKTOP_CFG;
             const pal = this._isDark ? THEME_COLORS.dark : THEME_COLORS.light;
-            drawCard(this._ctx, cfg, this.entry, pal, this.side, this._isDark);
+            drawCard(this._ctx, cfg, this.entry, pal, 1, this._isDark);
             this.mesh.material.map.needsUpdate = true;
             this._needsStaticRedraw = false;
         }
@@ -343,5 +352,5 @@ export class Placard {
     }
 
     static totalScrollHeight(n) { return LANDING_PX + n * CARD_PX; }
-    get positionZ() { return this.restZ; }
+    get positionZ() { return READ_Z(); }
 }
