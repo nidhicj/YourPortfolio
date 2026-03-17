@@ -1,20 +1,17 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import contactHTML from './overlays/contact.html?raw';
-import aboutHTML   from './overlays/about.html?raw';
 import landingHTML from './overlays/landing.html?raw';
 import { SceneSetup } from './scene/SceneSetup.js';
 import { Lights } from './scene/Lights.js';
-import { Placard, CARD_PX, SLIDE_PX, EXIT_PX, HOLD_PX, LANDING_PX, CARD0_EARLY } from './scene/Placard.js';
+import { PaperRoll, LANDING_PX, ENTRY_PX, rollScrollPx } from './scene/PaperRoll.js';
 import { ThemeManager } from './ThemeManager.js';
 import { allEntries as rawEntries } from './data/projects.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Extra scroll px after last card
-const CONTACT_PX = EXIT_PX + 700;  // extra room after last card exits before contact appears
-const ABOUT_PX   = 900;
+
 
 function ensureEntryIds(entries) {
     return entries.map((entry, index) => {
@@ -96,7 +93,7 @@ class ManifestStack {
                 const placard = placards.find(p => p.entryId === entryId);
                 if (!placard) return;
                 // Scroll to the hold phase of this card so it fully re-appears
-                const target = LANDING_PX + placard.index * CARD_PX + SLIDE_PX - (placard.index === 0 ? CARD0_EARLY : 0);
+                const target = LANDING_PX + placard.index * ENTRY_PX;
                 window.scrollTo({ top: target, behavior: 'smooth' });
             });
         });
@@ -108,10 +105,7 @@ class ManifestStack {
         let activeId = null;
 
         placards.forEach(placard => {
-            const earlyOffset = placard.index === 0 ? CARD0_EARLY : 0;
-            const localPx   = scrollPx - (LANDING_PX + placard.index * CARD_PX - earlyOffset);
-            const exitStart = SLIDE_PX + HOLD_PX;
-            const exitT     = clamp((localPx - exitStart) / EXIT_PX, 0, 1);
+            const exitT      = placard.exitT ?? 0;
             const shouldShow = exitT > 0;
             const strip      = this._strips.get(placard.entryId);
             if (!strip) return;
@@ -132,10 +126,8 @@ class ManifestStack {
                 setTimeout(hide, 400); // fallback
             }
 
-            // Active = card in HOLD or first half of EXIT
-            const inHold  = localPx >= SLIDE_PX && localPx < exitStart;
-            const earlyEx = exitT > 0 && exitT < 0.5;
-            if (inHold || earlyEx) activeId = placard.entryId;
+            // Active = entry currently near center (exitT around 0→0.5)
+            if (exitT >= 0 && exitT < 0.6) activeId = placard.entryId;
         });
 
         this._strips.forEach((strip, id) => {
@@ -149,7 +141,10 @@ class PortfolioApp {
         this.sceneSetup     = new SceneSetup();
         this.lights         = null;
         this.placards       = [];
+        this.roll           = null;
         this.themeManager   = null;
+        this._cachedMeshY   = null;
+        this._cachedSW      = null;
         this.manifest       = null;
         this.scrollProgress = 0;
         this.scrollPx       = 0;
@@ -183,7 +178,7 @@ class PortfolioApp {
         ];
         Promise.all(fonts.map(f => document.fonts.load(f)))
             .then(() => {
-                this.placards.forEach(p => p.rebuildCanvas());
+                this.roll?.rebuildCanvas();
             })
             .catch(() => {}); // non-fatal — fonts may already be loaded
     }
@@ -194,8 +189,6 @@ class PortfolioApp {
             if (mount) mount.outerHTML = html;
         };
         inject(landingHTML,  'landingMount');
-        inject(contactHTML,  'contactOverlayMount');
-        inject(aboutHTML,    'aboutOverlayMount');
         // Tell CSS how tall the manifest stack can grow so about-bio clears it
         const stackMax = allEntries.length * 34;
         document.documentElement.style.setProperty('--stack-max-height', `${stackMax}px`);
@@ -203,7 +196,9 @@ class PortfolioApp {
 
     // ─── Scroll ───────────────────────────────────────────────────────────────
     setupScroll() {
-        const scrollHeight = LANDING_PX + allEntries.length * CARD_PX + CONTACT_PX + ABOUT_PX;
+        const n = allEntries.length;
+        // Roll has work entries + 3 extra slots (contact, blog, about)
+        const scrollHeight = LANDING_PX + rollScrollPx(n + 3) + 600;
         document.body.style.height = `${scrollHeight}px`;
 
         ScrollTrigger.create({
@@ -224,12 +219,16 @@ class PortfolioApp {
         window.addEventListener('scroll', () => { this.scrollPx = window.scrollY; }, { passive: true });
     }
 
-    // ─── Placards ─────────────────────────────────────────────────────────────
+    // ─── Paper Roll ───────────────────────────────────────────────────────────
     createPlacards() {
-        allEntries.forEach((entry, i) => {
-            const p = new Placard(this.sceneSetup.scene, entry, i, allEntries.length);
-            this.placards.push(p);
-        });
+        this.roll = new PaperRoll(this.sceneSetup.scene, allEntries);
+        // Expose .placards shims so ManifestStack / index bar code still works.
+        // Add setTheme and rebuildCanvas stubs so ThemeManager keeps working.
+        this.placards = this.roll.placards.map(shim => ({
+            ...shim,
+            setTheme:     (dark) => this.roll.setTheme(dark),
+            rebuildCanvas:()     => this.roll.rebuildCanvas(),
+        }));
     }
 
     // ─── Index bars ───────────────────────────────────────────────────────────
@@ -270,63 +269,27 @@ class PortfolioApp {
     }
 
     jumpToEntryById(entryId) {
-        const placard = this.placards.find(p => p.entryId === entryId);
-        if (!placard) return;
-        window.scrollTo({ top: LANDING_PX + placard.index * CARD_PX + SLIDE_PX - (placard.index === 0 ? CARD0_EARLY : 0), behavior: 'smooth' });
+        const shim = this.placards.find(p => p.entryId === entryId);
+        if (!shim) return;
+        window.scrollTo({ top: LANDING_PX + shim.index * ENTRY_PX, behavior: 'smooth' });
     }
 
-    // ─── Contact + About overlays ─────────────────────────────────────────────
-    updateEndSections() {
-        const lastCardExitEnd = LANDING_PX + allEntries.length * CARD_PX;
-        const contactStart    = lastCardExitEnd;
-        const aboutStart      = contactStart + CONTACT_PX - 300;
-
-        const px    = this.scrollPx;
-        const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
-
-        const contactT = clamp((px - contactStart) / 500, 0, 1); // was 300 — slower, more graceful
-        const aboutT   = clamp((px - aboutStart)   / 500, 0, 1); // was 300
-
-        const contactEl = document.getElementById('contactOverlay');
-        const aboutEl   = document.getElementById('aboutOverlay');
-
-        if (contactEl) {
-            contactEl.style.opacity       = contactT;
-            contactEl.style.pointerEvents = contactT > 0.05 ? 'auto' : 'none';
-            contactEl.style.transform     = `translateY(${(1 - contactT) * 24}px)`; // was 40px — subtler lift
-        }
-        if (aboutEl) {
-            aboutEl.style.opacity       = aboutT;
-            aboutEl.style.pointerEvents = aboutT > 0.05 ? 'auto' : 'none';
-            aboutEl.style.transform     = `translateY(${(1 - aboutT) * 24}px)`;
-        }
-
-        if (contactEl) {
-            const contactOut   = clamp((px - aboutStart) / 200, 0, 1);
-            const finalOpacity = Math.max(0, contactT - contactOut);
-            contactEl.style.opacity       = finalOpacity;
-            if (finalOpacity <= 0) contactEl.style.pointerEvents = 'none';
-        }
-
-        const navContact = document.getElementById('navContact');
-        const navAbout   = document.getElementById('navAbout');
-        if (navContact) navContact.classList.toggle('is-active', contactT > 0.5 && aboutT < 0.5);
-        if (navAbout)   navAbout.classList.toggle('is-active',   aboutT > 0.5);
-    }
+    // ─── End sections ─────────────────────────────────────────────────────────
+    // Contact, Blog, About are all drawn on the paper roll — no DOM overlays.
+    updateEndSections() {}
 
     updateIndexBar() {
-        const offsetPx      = Math.max(0, this.scrollPx - LANDING_PX + CARD0_EARLY);
-        const activeIndex   = Math.min(this.placards.length - 1, Math.max(0, Math.floor(offsetPx / CARD_PX)));
-        const activePlacard = this.placards[activeIndex];
-        const activeId      = activePlacard?.entryId ?? null;
+        const activeId = this.roll?.activeEntryId(this.scrollPx) ?? null;
 
         document.querySelectorAll('.index-item').forEach((item) => {
             item.classList.toggle('is-active', item.dataset.entryId === activeId);
         });
 
         const landingGone    = this.scrollPx >= LANDING_PX * 0.65;
-        const lastCardEnd    = LANDING_PX + allEntries.length * CARD_PX;
-        const inContactAbout = this.scrollPx >= lastCardEnd;
+        const n              = allEntries.length;
+        // Bar disappears as soon as the contact slot starts rolling in
+        const workSectionEnd = LANDING_PX + rollScrollPx(n);
+        const inContactAbout = this.scrollPx >= workSectionEnd;
 
         const navHome = document.getElementById('navHome');
         const navWork = document.getElementById('navWork');
@@ -436,11 +399,111 @@ class PortfolioApp {
         const navContact = document.getElementById('navContact');
         const navAbout   = document.getElementById('navAbout');
 
+        const n = allEntries.length;
         if (navHome)    navHome.addEventListener('click',    e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-        if (navWork)    navWork.addEventListener('click',    e => { e.preventDefault(); const f = this.placards[0]; if (f) window.scrollTo({ top: LANDING_PX + f.index * CARD_PX + SLIDE_PX, behavior: 'smooth' }); });
-        if (navBlog)    navBlog.addEventListener('click',    e => { e.preventDefault(); /* placeholder — wire to blog route when ready */ });
-        if (navContact) navContact.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX + allEntries.length * CARD_PX + 300, behavior: 'smooth' }); });
-        if (navAbout)   navAbout.addEventListener('click',   e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX + allEntries.length * CARD_PX + CONTACT_PX, behavior: 'smooth' }); });
+        if (navWork)    navWork.addEventListener('click',    e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX, behavior: 'smooth' }); });
+        if (navBlog)    navBlog.addEventListener('click',    e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX + rollScrollPx(n + 1), behavior: 'smooth' }); });
+        if (navContact) navContact.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX + rollScrollPx(n),     behavior: 'smooth' }); });
+        if (navAbout)   navAbout.addEventListener('click',   e => { e.preventDefault(); window.scrollTo({ top: LANDING_PX + rollScrollPx(n + 2), behavior: 'smooth' }); });
+    }
+
+    // ─── Roll link hit areas ──────────────────────────────────────────────────
+    // Positions transparent <a> tags over the canvas-drawn contact link cards.
+    // A CSS div handles the hover highlight — zero canvas redraws, instant response.
+    updateRollLinks() {
+        const mesh = this.roll?._mesh;
+        const hl   = document.getElementById('rollLinkHighlight');
+
+        if (!mesh || mesh.material.opacity < 0.05) {
+            if (hl) hl.style.opacity = '0';
+            ['rollLinkEmail','rollLinkLinkedIn','rollLinkGitHub'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.pointerEvents = 'none';
+            });
+            return;
+        }
+
+        const camera = this.sceneSetup.camera;
+        const sw     = this.sceneSetup.renderer.domElement.clientWidth;
+        const sh     = this.sceneSetup.renderer.domElement.clientHeight;
+
+        // Geometry — reuse cached values, only recompute when mesh moves
+        const meshY = mesh.position.y;
+        const meshZ = mesh.position.z;
+        if (meshY === this._cachedMeshY && sw === this._cachedSW) {
+            // Mesh hasn't moved — hit areas are still correct, skip
+            return;
+        }
+        this._cachedMeshY = meshY;
+        this._cachedSW    = sw;
+
+        const nAll       = allEntries.length + 3;
+        const rollH      = mesh.geometry.parameters.height;
+        const slotWorldH = rollH / nAll;
+        const meshW      = mesh.geometry.parameters.width;
+
+        // Contact slot Y center in world space
+        const contactIdx      = allEntries.length;
+        const slotLocalY      = rollH / 2 - slotWorldH * (contactIdx + 0.5);
+        const slotWorldY      = meshY + slotLocalY;
+
+        // Project to screen — reuse a single vector, no allocation
+        const fovHalfTan = Math.tan(camera.fov * Math.PI / 360);
+        const dist       = Math.abs(meshZ - camera.position.z);
+        const pxPerUnit  = sh / (2 * fovHalfTan * dist);
+
+        // Slot screen center Y
+        const slotScreenCY = sh / 2 - (slotWorldY - camera.position.y) * pxPerUnit;
+        const slotScreenH  = slotWorldH * pxPerUnit;
+
+        // Mesh screen X extents
+        const meshScreenCX = sw / 2;  // mesh is centered at x=0
+        const meshScreenW  = meshW * pxPerUnit;
+        const screenLeft   = meshScreenCX - meshScreenW / 2;
+
+        // Link cards: lY = slotY + H*0.70, lH = H*0.18 (canvas fractions)
+        const cardTop    = slotScreenCY - slotScreenH * 0.5 + slotScreenH * 0.70;
+        const cardHeight = slotScreenH * 0.18;
+        const cardW      = meshScreenW / 3;
+
+        const visible = cardTop > -cardHeight && cardTop < sh + cardHeight;
+
+        const ids = ['rollLinkEmail', 'rollLinkLinkedIn', 'rollLinkGitHub'];
+        ids.forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            if (!el._hoverWired) {
+                el._hoverWired = true;
+                el.addEventListener('mouseenter', () => {
+                    if (!hl) return;
+                    // Snap highlight to this card's position (already computed above)
+                    const hx = parseFloat(el.style.left);
+                    const hy = parseFloat(el.style.top);
+                    const hw = parseFloat(el.style.width);
+                    const hh = parseFloat(el.style.height);
+                    hl.style.left    = `${hx}px`;
+                    hl.style.top     = `${hy}px`;
+                    hl.style.width   = `${hw}px`;
+                    hl.style.height  = `${hh}px`;
+                    hl.style.opacity = '1';
+                });
+                el.addEventListener('mouseleave', () => {
+                    if (hl) hl.style.opacity = '0';
+                });
+            }
+
+            if (!visible) { el.style.pointerEvents = 'none'; return; }
+
+            const x = screenLeft + i * cardW + cardW * 0.04;
+            const w = cardW * 0.92;
+            el.style.left          = `${x}px`;
+            el.style.top           = `${cardTop}px`;
+            el.style.width         = `${w}px`;
+            el.style.height        = `${cardHeight}px`;
+            el.style.pointerEvents = 'auto';
+            el.style.cursor        = 'pointer';
+        });
     }
 
     handleLoading() {
@@ -449,15 +512,16 @@ class PortfolioApp {
 
     setupResizeForPlacards() {
         window.addEventListener('resize', () => {
-            this.placards.forEach(p => p.onResize());
+            this.roll?.onResize();
         }, { passive: true });
     }
 
     // ─── Render loop ──────────────────────────────────────────────────────────
     animate() {
         requestAnimationFrame(() => this.animate());
-        this.placards.forEach(p => p.update(this.scrollPx));
+        this.roll?.update(this.scrollPx);
         this.manifest?.update(this.scrollPx, this.placards);
+        this.updateRollLinks();
         this.sceneSetup.render();
     }
 }

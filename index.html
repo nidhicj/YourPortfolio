@@ -83,13 +83,23 @@
   <!-- ─── Landing page — loaded from src/overlays/landing.html ─────────── -->
   <div id="landingMount"></div>
 
-  <!-- ─── Contact overlay — loaded from src/overlays/contact.html ──────── -->
-  <div id="contactOverlayMount"></div>
-
-  <!-- ─── About overlay — loaded from src/overlays/about.html ─────────── -->
-  <div id="aboutOverlayMount"></div>
-
-  <!-- ─── Chat bubble ───────────────────────────────────────────────────── -->
+<!-- ─── Roll contact links — transparent clickable layer over canvas ─── -->
+  <div id="rollLinks" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:200;">
+    <a id="rollLinkEmail"    href="mailto:joshichi.nidhi@gmail.com"                                    style="position:absolute;pointer-events:none;opacity:0;" aria-label="Email"></a>
+    <a id="rollLinkLinkedIn" href="https://www.linkedin.com/in/connect-nidhichijoshi/" target="_blank" rel="noopener noreferrer" style="position:absolute;pointer-events:none;opacity:0;" aria-label="LinkedIn"></a>
+    <a id="rollLinkGitHub"   href="https://github.com/nidhicj"   target="_blank"                      rel="noopener noreferrer" style="position:absolute;pointer-events:none;opacity:0;" aria-label="GitHub"></a>
+    <!-- Highlight ring — CSS-driven, moves instantly to hovered card -->
+    <div id="rollLinkHighlight" style="
+      position:absolute;
+      border-radius:10px;
+      border:2px solid var(--burgundy,#1f1f1f);
+      background:transparent;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.15s ease, left 0.12s ease, top 0.12s ease, width 0.12s ease, height 0.12s ease;
+      box-shadow:0 0 0 4px rgba(0,0,0,0.04);
+    "></div>
+  </div>
   <button class="chat-fab" id="chatFab" aria-label="Open chatbot" hidden>Chat</button>
 
   <section class="chat-panel" id="chatPanel" aria-label="Chatbot" hidden>
