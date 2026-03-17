@@ -77,6 +77,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!fab || !panel || !closeBtn || !form || !input || !log) return;
 
+  // ── Top-left drag-to-resize ──────────────────────────────────────────────
+  // Dragging the grip pulls the top-left corner outward.
+  // Panel is fixed bottom-right, so increasing width/height grows it up and left.
+  const grip = panel.querySelector('.chat-grip');
+  if (grip) {
+    let dragging = false, startX, startY, startW, startH;
+
+    const MIN_W = 280, MAX_W = Math.min(600, window.innerWidth - 32);
+    const MIN_H = 280, MAX_H = window.innerHeight - 128;
+
+    grip.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      dragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = panel.offsetWidth;
+      startH = panel.offsetHeight;
+      grip.classList.add('dragging');
+      // Disable transitions during drag so it tracks mouse instantly
+      panel.style.transition = 'none';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      // Moving left  = deltaX negative = panel gets wider
+      // Moving up    = deltaY negative = panel gets taller
+      const newW = Math.min(MAX_W, Math.max(MIN_W, startW - (e.clientX - startX)));
+      const newH = Math.min(MAX_H, Math.max(MIN_H, startH - (e.clientY - startY)));
+      panel.style.width  = `${newW}px`;
+      panel.style.height = `${newH}px`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      grip.classList.remove('dragging');
+      panel.style.transition = '';
+      document.body.style.userSelect = '';
+    });
+  }
+
   // Load KB once at startup (KB-only bot)
   // window.__kb = null;
   // loadKB()

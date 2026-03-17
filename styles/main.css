@@ -369,7 +369,9 @@ html.chat-unlocked .chat-fab {
 
 .chat-panel {
   position: fixed; right: 2rem; bottom: calc(5.5rem + 52px);
-  width: min(360px, calc(100vw - 4rem)); height: 320px;
+  width: min(360px, calc(100vw - 4rem)); height: 420px;
+  min-width: 280px; max-width: min(600px, calc(100vw - 2rem));
+  min-height: 280px; max-height: calc(100vh - 8rem);
   opacity: 0; transform: translateY(10px) scale(0.98);
   transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1), transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 99999; pointer-events: auto;
@@ -399,10 +401,29 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
   width: 36px; height: 36px; border-radius: 10px;
 }
 .chat-close:hover { background: var(--burgundy-dim); }
-.chat-log { flex: 1; padding: 12px; overflow: auto; }
+.chat-log { flex: 1; padding: 12px; overflow-y: auto; min-height: 0; }
 .chat-msg { margin: 10px 0; }
 .chat-role { font-size: 12px; opacity: 0.6; margin-bottom: 4px; color: var(--mid); }
 .chat-text { white-space: pre-wrap; line-height: 1.45; font-size: 14px; color: var(--ink); }
+
+/* Resize grip — top-left corner, JS-driven drag */
+.chat-grip {
+  position: absolute; top: 0; left: 0;
+  width: 18px; height: 18px;
+  cursor: nw-resize;
+  opacity: 0.35;
+  background:
+    linear-gradient(-135deg,
+      transparent 40%, var(--mid) 40%, var(--mid) 50%, transparent 50%,
+      transparent 60%, var(--mid) 60%, var(--mid) 70%, transparent 70%,
+      transparent 80%, var(--mid) 80%, var(--mid) 90%, transparent 90%
+    );
+  border-radius: 14px 0 0 0;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+.chat-panel:hover .chat-grip,
+.chat-grip.dragging { opacity: 0.75; }
 .chat-form {
   display: flex; gap: 8px; padding: 10px 12px;
   border-top: 1px solid rgba(103, 98, 99,0.10);
@@ -639,7 +660,9 @@ html.chat-open .chat-panel { opacity: 1; transform: translateY(0) scale(1); }
     width: 100%;
     border-radius: 14px 14px 0 0;
     height: 300px;
+    resize: none;   /* no resize on mobile — panel fills full width */
   }
+  .chat-grip { display: none; }
 
 }
 
