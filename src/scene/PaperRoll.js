@@ -200,92 +200,151 @@ function drawBlogSlot(ctx, cfg, palette, isDark, slotY) {
 function drawAboutSlot(ctx, cfg, palette, isDark, slotY) {
     const W = cfg.canvasW, H = cfg.canvasH, PAD = cfg.pad;
     const { ink: INK, inkMuted, inkVerysoft, burgundy: BRG, cardBg } = palette;
-    const CX = W / 2;
-    const COL_W = (W - PAD * 3) / 2;  // two columns
 
     if (!isDark) { ctx.fillStyle = cardBg; ctx.fillRect(0, slotY, W, H); }
     _divider(ctx, W, PAD, slotY, isDark);
 
+    // ── Layout constants ──────────────────────────────────────────────────────
+    const COL_W   = (W - PAD * 3) / 2;  // each column width
+    const RX      = PAD * 2 + COL_W;    // right column X start
+    const TOP     = slotY + H * 0.10;   // both columns start here
+
+    // Font sizes — at 2x canvas these render at half size on screen
+    const kickerFS = Math.round(PAD * 0.22);  // ~40px canvas = 20px screen
+    const titleFS  = Math.round(PAD * 0.72);  // ~130px canvas = 65px screen — big and readable
+    const funFS    = Math.round(PAD * 0.20);  // ~36px canvas = 18px screen
+    const labelFS  = Math.round(PAD * 0.22);
+    const degreeFS = Math.round(PAD * 0.26);  // ~47px canvas = 23px screen
+    const schoolFS = Math.round(PAD * 0.21);
+    const yearFS   = Math.round(PAD * 0.19);
+    const chipFS   = Math.round(PAD * 0.20);  // ~36px canvas = 18px screen
+
+    // Line heights — explicit, no fractional math
+    const kickerLH = Math.round(kickerFS * 1.5);
+    const titleLH  = Math.round(titleFS  * 1.3);
+    const degreeLH = Math.round(degreeFS * 1.5);
+    const schoolLH = Math.round(schoolFS * 1.5);
+    const yearLH   = Math.round(yearFS   * 1.5);
+    const chipH    = Math.round(chipFS   * 1.9);
+    const chipGap  = Math.round(PAD * 0.15);
+
+    // ── LEFT COLUMN ───────────────────────────────────────────────────────────
+    let ly = TOP;
+
     // Kicker
-    ctx.font = `500 ${cfg.pad * 0.22}px "DM Mono",monospace`;
+    ctx.font = `500 ${kickerFS}px "DM Mono",monospace`;
     ctx.fillStyle = BRG; ctx.globalAlpha = 0.7; ctx.textAlign = 'left';
-    ctx.fillText('ABOUT ME', PAD, slotY + H * 0.15);
+    ctx.fillText('ABOUT ME', PAD, ly + kickerFS);
     ctx.globalAlpha = 1;
+    ly += kickerLH + Math.round(PAD * 0.3);
 
-    // Title — left column
-    ctx.font = cfg.titleFont; ctx.fillStyle = INK; ctx.textAlign = 'left';
-    ctx.fillText('Know', PAD, slotY + H * 0.26);
+    // Title
+    ctx.font = `400 ${titleFS}px "Bowlby One",sans-serif`;
+    ctx.fillStyle = INK; ctx.textAlign = 'left';
+    ctx.fillText('Know', PAD, ly + titleFS);
+    ly += titleLH;
     ctx.fillStyle = BRG;
-    ctx.fillText('more.', PAD, slotY + H * 0.26 + cfg.titleLH);
+    ctx.fillText('more.', PAD, ly + titleFS);
+    ly += titleLH + Math.round(PAD * 0.55);
 
-    // Bio text — left column
-    const bioFont = `400 ${cfg.pad * 0.24}px "Crete Round",serif`;
-    const bioLH   = cfg.descLH * 0.88;
-    const bioMaxW = COL_W - PAD * 0.5;
+    // Bio — single block, enough lines for full text
+    const bioFS    = Math.round(PAD * 0.23);
+    const bioLH    = Math.round(bioFS * 1.70);
+    const BIO_LINES = 6;
 
-    ctx.font = bioFont; ctx.fillStyle = inkMuted; ctx.globalAlpha = 0.85;
-    const bio = "I'm an AI/ML engineer who bridges research and production — building systems that are robust, explainable, and ready to ship. Always looking for systems that need automating, so colleagues aren't bogged down by repetitive manual work.";
-    _wrap(ctx, bio, PAD, slotY + H * 0.46, bioMaxW, bioLH, 4, 'left');
+    ctx.font = `400 ${bioFS}px "Crete Round",serif`;
+    ctx.fillStyle = inkMuted; ctx.globalAlpha = 0.9;
+    _wrap(ctx,
+        "I\u2019m an AI/ML engineer who bridges research and production building systems that are robust, explainable, and ready to ship. Always looking for systems that need automating, so colleagues aren\u2019t bogged down by repetitive manual work. AI is my tool for turning cognitive tasks into scalable systems.",
+        PAD, ly + bioFS, COL_W, bioLH, BIO_LINES, 'left');
+    ly += bioLH * BIO_LINES + Math.round(PAD * 0.5);
     ctx.globalAlpha = 1;
 
-    // ── RIGHT COLUMN ─────────────────────────────────────────────────────────
-    const RX = PAD * 2 + COL_W;
+    // Fun line
+    ctx.font = `400 ${funFS}px "Crete Round",serif`;
+    ctx.fillStyle = inkVerysoft; ctx.globalAlpha = 0.65;
+    ctx.textAlign = 'left';
+    ctx.fillText('✦  Over-engineering my coffee routine since 2013.', PAD, ly + funFS);
+    ctx.globalAlpha = 1;
 
-    // Education heading
-    ctx.font = `500 ${cfg.pad * 0.22}px "DM Mono",monospace`;
+    // ── RIGHT COLUMN ──────────────────────────────────────────────────────────
+    let ry = TOP;
+
+    // ── Education ──
+    ctx.font = `500 ${labelFS}px "DM Mono",monospace`;
     ctx.fillStyle = BRG; ctx.globalAlpha = 0.6; ctx.textAlign = 'left';
-    ctx.fillText('EDUCATION', RX, slotY + H * 0.15);
+    ctx.fillText('EDUCATION', RX, ry + labelFS);
     ctx.globalAlpha = 1;
+    ry += kickerLH + Math.round(PAD * 0.2);
 
     const edu = [
-        { degree: 'M.Sc. Information Technology', school: 'University of Stuttgart', year: '2019–2022' },
-        { degree: 'B.E. Electrical & Electronics', school: 'Ramaiah Institute of Technology', year: '2013–2017' },
+        { degree: 'M.Sc. Information Technology', school: 'University of Stuttgart, Germany', year: '2019 – 2022' },
+        { degree: 'B.E. Electrical & Electronics',  school: 'Ramaiah Institute of Technology, Bangalore', year: '2013 – 2017' },
     ];
 
-    let eduY = slotY + H * 0.22;
     edu.forEach(e => {
-        // Left accent bar
-        ctx.fillStyle = BRG; ctx.globalAlpha = 0.3;
-        ctx.fillRect(RX, eduY, 4, cfg.titleLH * 0.8);
+        const barX = RX;
+        const barH = degreeLH * 2 + schoolLH;
+
+        // Accent bar
+        ctx.fillStyle = BRG; ctx.globalAlpha = 0.22;
+        ctx.fillRect(barX, ry, 5, barH);
         ctx.globalAlpha = 1;
 
-        ctx.font = `600 ${cfg.pad * 0.25}px "DM Sans",sans-serif`;
+        const tx = RX + Math.round(PAD * 0.25);
+
+        // Degree (up to 2 lines)
+        ctx.font = `500 ${degreeFS}px "DM Sans",sans-serif`;
         ctx.fillStyle = INK; ctx.textAlign = 'left';
-        _wrap(ctx, e.degree, RX + 24, eduY + cfg.titleLH * 0.35, COL_W - 40, cfg.descLH * 0.8, 2, 'left');
+        _wrap(ctx, e.degree, tx, ry + degreeFS, COL_W - PAD * 0.3, degreeLH, 2, 'left');
 
-        ctx.font = `400 ${cfg.pad * 0.20}px "DM Mono",monospace`;
+        // School
+        ctx.font = `400 ${schoolFS}px "DM Mono",monospace`;
         ctx.fillStyle = inkVerysoft;
-        ctx.fillText(e.school, RX + 24, eduY + cfg.titleLH * 0.7);
+        ctx.fillText(e.school, tx, ry + degreeLH * 2 + schoolFS);
 
-        ctx.font = `400 ${cfg.pad * 0.18}px "DM Mono",monospace`;
-        ctx.fillStyle = BRG; ctx.globalAlpha = 0.65;
-        ctx.fillText(e.year, RX + 24, eduY + cfg.titleLH * 0.95);
+        // Year
+        ctx.font = `400 ${yearFS}px "DM Mono",monospace`;
+        ctx.fillStyle = BRG; ctx.globalAlpha = 0.7;
+        ctx.fillText(e.year, tx, ry + degreeLH * 2 + schoolLH + yearFS);
         ctx.globalAlpha = 1;
 
-        eduY += cfg.titleLH * 1.2;
+        ry += degreeLH * 2 + schoolLH + yearLH + Math.round(PAD * 0.45);
     });
 
-    // Skills heading
-    ctx.font = `500 ${cfg.pad * 0.22}px "DM Mono",monospace`;
+    ry += Math.round(PAD * 0.35);
+
+    // ── Skills ──
+    ctx.font = `500 ${labelFS}px "DM Mono",monospace`;
     ctx.fillStyle = BRG; ctx.globalAlpha = 0.6; ctx.textAlign = 'left';
-    ctx.fillText('SKILLS', RX, slotY + H * 0.62);
+    ctx.fillText('SKILLS', RX, ry + labelFS);
     ctx.globalAlpha = 1;
+    ry += kickerLH + Math.round(PAD * 0.2);
 
-    const skills = ['Python', 'PyTorch', 'YOLOv8', 'LangChain', 'RAG', 'ROS2', 'Docker', 'C++', 'n8n'];
-    const chipFont = `400 ${cfg.pad * 0.18}px "DM Mono",monospace`;
-    const chipH = cfg.pad * 0.6, chipPad = cfg.pad * 0.3, chipGap = cfg.pad * 0.18;
-    ctx.font = chipFont;
+    const skills = ['Python', 'PyTorch', 'YOLOv8', 'LangChain', 'RAG', 'ROS2', 'Docker', 'C++', 'n8n', 'FastAPI', 'OpenCV'];
+    const chipPadX = Math.round(PAD * 0.28);
+    const maxChipW = COL_W; // never overflow column
 
-    let cx = RX, cy = slotY + H * 0.67;
+    ctx.font = `400 ${chipFS}px "DM Mono",monospace`;
+    let cx = RX, cy = ry;
+
     skills.forEach(skill => {
-        const tw = ctx.measureText(skill).width + chipPad * 2;
+        // Use measured width but clamp to column — guards against fallback font metrics
+        const measured = ctx.measureText(skill).width;
+        // DM Mono is ~0.62em per char — use whichever is larger as a safety net
+        const estimated = skill.length * chipFS * 0.62;
+        const tw = Math.min(Math.max(measured, estimated) + chipPadX * 2, maxChipW);
+
         if (cx + tw > RX + COL_W) { cx = RX; cy += chipH + chipGap; }
 
-        ctx.beginPath(); ctx.roundRect(cx, cy, tw, chipH, chipH / 2);
-        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'; ctx.fill();
-        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.12)'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = BRG; ctx.textAlign = 'center'; ctx.globalAlpha = 0.85;
-        ctx.fillText(skill, cx + tw / 2, cy + chipH * 0.68);
+        ctx.beginPath();
+        ctx.roundRect(cx, cy, tw, chipH, chipH / 2);
+        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; ctx.fill();
+        ctx.strokeStyle = BRG; ctx.globalAlpha = 0.20; ctx.lineWidth = 2; ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = BRG; ctx.globalAlpha = 0.85; ctx.textAlign = 'center';
+        ctx.fillText(skill, cx + tw / 2, cy + chipH * 0.67);
         ctx.globalAlpha = 1;
         cx += tw + chipGap;
     });
