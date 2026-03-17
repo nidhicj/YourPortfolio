@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!log.dataset.greeted) {
-        addMsg(log, "bot", "Hi — ask about my projects, skills, or how to contact me.");
+        addMsg(log, "Port Bot", "Hey there! Ask me anything about Nidhi.");
         log.dataset.greeted = "1";
       }
     }
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if (!log.dataset.greeted) {
-    addMsg(log, "bot", "Hi — ask about my projects, skills, or how to contact me.");
+    addMsg(log, "Port Bot", "Hey there! Ask me anything about Nidhi.");
     log.dataset.greeted = "1";
   }
  });
