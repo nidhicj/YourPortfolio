@@ -40,7 +40,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Crete+Round:ital@0;1&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <script type="module" crossorigin src="/assets/index-0BTsFnDw.js"></script>
+  <script type="module" crossorigin src="/assets/index-NZpPhhu8.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-C3tNEBmx.css">
 </head>
 <body>
@@ -84,7 +84,7 @@
   <!-- ─── Landing page — loaded from src/overlays/landing.html ─────────── -->
   <div id="landingMount"></div>
 
-<!-- ─── Roll contact links — transparent clickable layer over canvas ─── -->
+  <!-- ─── Roll contact links — transparent clickable layer over canvas ─── -->
   <div id="rollLinks" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:200;">
     <a id="rollLinkEmail"    href="mailto:joshichi.nidhi@gmail.com"                                    style="position:absolute;pointer-events:none;opacity:0;" aria-label="Email"></a>
     <a id="rollLinkLinkedIn" href="https://www.linkedin.com/in/connect-nidhichijoshi/" target="_blank" rel="noopener noreferrer" style="position:absolute;pointer-events:none;opacity:0;" aria-label="LinkedIn"></a>
@@ -111,9 +111,10 @@
     </header>
     <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
     <form class="chat-form" id="chatForm">
-      <input class="chat-input" id="chatInput" type="text" placeholder="Pre first talk checks..." autocomplete="off">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Ask about projects, skills, or contact..." autocomplete="off">
       <button class="chat-send" type="submit">Send</button>
     </form>
+    <small class="chat-hint">Powered by Claude · /api/chat</small>
   </section>
 
   <!-- ─── Scripts ───────────────────────────────────────────────────────── -->

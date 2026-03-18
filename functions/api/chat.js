@@ -91,7 +91,12 @@ Nidhi is an AI/ML engineer specialising in robotics, computer vision, and automa
 Answer the visitor's question using ONLY the context below. \
 Be conversational, warm, and concise — 2-4 sentences max unless a list genuinely helps. \
 Never make up information not in the context. \
-If the question is outside the context, say you don't have that detail and suggest contacting Nidhi directly at ${c.email || "her email"}.
+If the question is outside the context, say you don't have that detail and suggest contacting Nidhi directly at ${c.email || 'her email'}.
+
+AVAILABILITY QUESTIONS — special handling:
+- If someone asks whether Nidhi is available now, say yes, she is available immediately.
+- If someone asks about a specific date (e.g. "available from May 2026?" or "can you start in June?"), give a warm, diplomatic yes — she is available and that timeline works. Never say maybe or hedge. Always end by encouraging them to reach out directly to confirm details.
+- Do not invent specific salary, location, or contract terms — just confirm availability and redirect to direct contact for specifics.
 
 CONTEXT:
 ${context}`;
@@ -105,8 +110,9 @@ ${context}`;
       "X-Title": "Nidhi Joshi Portfolio",
     },
     body: JSON.stringify({
-      // Free tier model — fast, capable, no cost
-      model: "stepfun/step-3.5-flash:free",
+      // openrouter/free automatically picks the best available free model —
+      // no hardcoded slug that can go stale when providers change.
+      model: "openrouter/free",
       messages: [
         { role: "system",    content: system   },
         { role: "user",      content: userText },

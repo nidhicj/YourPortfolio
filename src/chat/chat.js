@@ -119,14 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Load KB once at startup (KB-only bot)
+  // Load KB once at startup (KB-only Port Bot)
   // window.__kb = null;
   // loadKB()
   //   .then((kb) => {
   //     window.__kb = kb;
   //   })
   //   .catch((err) => {
-  //     // If KB fails to load, bot must still refuse deterministically
+  //     // If KB fails to load, Port Bot must still refuse deterministically
   //     window.__kb = { meta: { contact: {} }, chunks: [] };
   //     console.error(err);
   //   });
@@ -218,10 +218,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Win #2 behavior: KB-only deterministic reply
     // const reply = replyFromKB(window.__kb, userText);
-    // addMsg(log, "bot", reply);
+    // addMsg(log, "Port Bot", reply);
 
     // Win #3 behavior: backend deterministic reply
-    addMsg(log, "bot", "…"); // lightweight “typing” placeholder
+    addMsg(log, "Port Bot", "…"); // lightweight “typing” placeholder
     const placeholder = log.lastElementChild;
 
     const reply = await apiReply(userText);
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const textEl = placeholder.querySelector(".chat-text");
       if (textEl) textEl.textContent = reply;
     } else {
-      addMsg(log, "bot", reply);
+      addMsg(log, "Port Bot", reply);
     }
   });
 });

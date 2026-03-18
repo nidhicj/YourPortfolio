@@ -76,10 +76,10 @@
     },
     {
       "id": "availability",
-      "title": "Availability & Contact",
-      "tags": ["contact", "hire", "available", "open to work"],
-      "keywords": ["contact", "email", "reach", "linkedin", "github", "connect", "hire", "available", "open to work", "freelance", "job", "opportunity"],
-      "text": "Open to the right opportunity. Email: {email} — LinkedIn: {linkedin} — GitHub: {github} — Resume: {resumePdf}"
+      "title": "Availability & When to Start",
+      "tags": ["contact", "hire", "available", "open to work", "start date", "notice period"],
+      "keywords": ["available", "availability", "when can you start", "start date", "notice period", "from when", "open to work", "looking for work", "hire", "hiring", "job", "opportunity", "freelance", "contract", "full time", "remote", "relocate", "may", "june", "july", "2026", "immediately", "asap", "soon"],
+      "text": "Nidhi is available immediately — actively looking for the right opportunity right now. There is no notice period. Whether the role starts this week, next month, or in a few months, she can accommodate. She is open to full-time roles, contract work, and freelance engagements. Remote-first is preferred but she is open to discussing hybrid or relocation for the right opportunity. If a specific start date is being asked about — the answer is yes, she can make it work. Best way to discuss details: Email: {email} or LinkedIn: {linkedin}"
     }
   ]
 }
