@@ -1,1 +1,2 @@
-Content-Security-Policy: script-src 'self' 'unsafe-inline' https://www.clarity.ms https://static.cloudflareinsights.com; connect-src 'self' https://w.clarity.ms https://cloudflareinsights.com
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://static.cloudflareinsights.com; connect-src 'self' https://w.clarity.ms https://cloudflareinsights.com https://static.cloudflareinsights.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; worker-src blob:;
