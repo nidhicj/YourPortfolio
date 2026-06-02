@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Palette — #000 · #14213d · #fca311</title>
+<style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600,700&display=swap');
+  @import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: #000; font-family: 'Satoshi', sans-serif; }
+
+  /* ── PALETTE ── */
+  :root {
+    --black:   #000000;
+    --navy:    #14213d;
+    --amber:   #fca311;
+    --white:   #F8F6F2;
+    --white2:  #EFEDE8;
+    --muted:   rgba(248,246,242,0.45);
+    --border:  rgba(252,163,17,0.15);
+  }
+
+  /* ── TOP INFO BAR ── */
+  .info-bar {
+    background: #000;
+    padding: 80px 56px 40px;
+    border-bottom: 1px solid rgba(252,163,17,0.2);
+  }
+  .info-bar h1 {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: rgba(248,246,242,0.4);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .swatch-row { display: flex; gap: 16px; align-items: center; }
+  .swatch-item { display: flex; align-items: center; gap: 10px; }
+  .swatch {
+    width: 40px; height: 40px;
+    border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .swatch-hex { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(248,246,242,0.5); letter-spacing: 0.05em; }
+
+  /* ── VARIANT DIVIDERS ── */
+  .vdivider {
+    padding: 20px 56px;
+    background: #000;
+    border-top: 1px solid rgba(252,163,17,0.12);
+    display: flex; align-items: center; gap: 20px;
+  }
+  .vdivider-name { font-family: 'Clash Display', sans-serif; font-size: 15px; font-weight: 600; color: rgba(248,246,242,0.7); }
+  .vdivider-desc { font-family: 'Satoshi', sans-serif; font-size: 12px; color: rgba(248,246,242,0.3); margin-top: 2px; }
+  .vdivider-dot { width: 8px; height: 8px; background: #fca311; border-radius: 50%; flex-shrink: 0; }
+
+  /* ══════════════════════════════════════════
+     VARIANT 1 — BLACK + NAVY + AMBER
+     Primary = black, accent cell = amber
+  ══════════════════════════════════════════ */
+
+  .zine {
+    display: grid;
+    grid-template-columns: 1fr 1fr 320px;
+    grid-template-rows: auto auto auto;
+  }
+
+  /* Cell 1 — Big word, pure black */
+  .z-c1 {
+    grid-column: 1 / 3; grid-row: 1;
+    background: var(--black);
+    padding: 64px 56px 56px;
+    position: relative; overflow: hidden;
+    min-height: 340px;
+    display: flex; align-items: flex-end;
+    border-right: 1px solid rgba(252,163,17,0.15);
+    border-bottom: 1px solid rgba(252,163,17,0.15);
+  }
+  .z-big {
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(88px, 11vw, 148px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+  }
+  .z-big .acc { color: var(--amber); }
+  .z-rotated {
+    position: absolute; top: 56px; right: -32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(252,163,17,0.25);
+    transform: rotate(90deg); transform-origin: right center;
+    white-space: nowrap;
+  }
+
+  /* Ghost overlay text */
+  .z-ghost {
+    position: absolute; top: 0; left: 56px;
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(88px, 11vw, 148px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+    opacity: 0.03;
+    pointer-events: none;
+    transform: translateX(14px);
+  }
+
+  /* Cell 2 — AMBER accent tall */
+  .z-c2 {
+    grid-column: 3; grid-row: 1 / 3;
+    background: var(--amber);
+    padding: 40px 32px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  .z-c2-bg {
+    position: absolute; top: 20px; left: 20px; right: 12px;
+    font-family: 'Clash Display', sans-serif;
+    font-size: 96px; font-weight: 700;
+    color: rgba(0,0,0,0.08);
+    line-height: 0.82; letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+  .z-c2-label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(0,0,0,0.5);
+    position: relative; z-index: 1;
+  }
+  .z-c2-name {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 26px; font-weight: 600;
+    color: #000;
+    letter-spacing: -0.02em;
+    position: relative; z-index: 1; margin-top: 4px;
+  }
+  .z-c2-role {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 11px; color: rgba(0,0,0,0.5);
+    position: relative; z-index: 1; margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+  .z-c2-arrow {
+    width: 48px; height: 48px;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--amber);
+    cursor: pointer; position: relative; z-index: 1;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    align-self: flex-end;
+  }
+  .z-c2-arrow:hover { transform: rotate(-45deg) scale(1.05); }
+
+  /* Cell 3 — About, NAVY */
+  .z-c3 {
+    grid-column: 1; grid-row: 2;
+    background: var(--navy);
+    padding: 44px 56px;
+    border-right: 1px solid rgba(252,163,17,0.12);
+    border-bottom: 1px solid rgba(252,163,17,0.12);
+  }
+  .z-tag {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(252,163,17,0.5); margin-bottom: 16px;
+  }
+  .z-desc {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 15px; color: rgba(248,246,242,0.65);
+    line-height: 1.75; font-weight: 300; max-width: 340px;
+  }
+
+  /* Cell 4 — Work, dark variant */
+  .z-c4 {
+    grid-column: 2; grid-row: 2;
+    background: #0A0A0A;
+    padding: 44px 48px;
+    border-bottom: 1px solid rgba(252,163,17,0.12);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .z-exp-label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(252,163,17,0.4);
+  }
+  .z-exp-role {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 26px; font-weight: 600;
+    color: var(--white); letter-spacing: -0.02em; line-height: 1.1; margin-top: 8px;
+  }
+  .z-exp-co {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 12px; color: rgba(248,246,242,0.35); margin-top: 4px;
+  }
+  .z-highlight {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 400;
+    color: var(--amber);
+    border: 1px solid rgba(252,163,17,0.3);
+    padding: 6px 14px;
+    display: inline-block; margin-top: 16px;
+    letter-spacing: 0.06em;
+  }
+
+  /* Cell 5 — Projects row, pure black */
+  .z-c5 {
+    grid-column: 1 / 4; grid-row: 3;
+    background: var(--black);
+    padding: 40px 56px;
+    display: flex; gap: 0;
+    border-top: 2px solid var(--amber);
+  }
+  .z-proj {
+    flex: 1; padding: 0 36px;
+    border-right: 1px solid rgba(252,163,17,0.1);
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 140px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .z-proj:first-child { padding-left: 0; }
+  .z-proj:last-child { border-right: none; }
+  .z-proj:hover { background: rgba(252,163,17,0.04); }
+  .z-proj-type {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(252,163,17,0.6);
+  }
+  .z-proj-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 20px; font-weight: 600; color: var(--white);
+    letter-spacing: -0.02em; margin-top: 6px;
+    transition: color 0.2s;
+  }
+  .z-proj:hover .z-proj-title { color: var(--amber); }
+  .z-proj-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: rgba(248,246,242,0.2);
+    letter-spacing: 0.08em;
+  }
+
+  /* ══════════════════════════════════════════
+     VARIANT 2 — NAVY PRIMARY, AMBER ACCENT
+     Swap: navy is the dominant dark, black = cell contrast
+  ══════════════════════════════════════════ */
+  .v2 .z-c1 { background: var(--navy); border-color: rgba(252,163,17,0.12); }
+  .v2 .z-c3 { background: #000; }
+  .v2 .z-c4 { background: var(--navy); border-color: rgba(252,163,17,0.1); }
+  .v2 .z-c5 { background: var(--navy); }
+  .v2 .z-proj { border-right-color: rgba(252,163,17,0.08); }
+
+  /* ══════════════════════════════════════════
+     VARIANT 3 — LIGHT MODE
+     White bg, navy cells, amber accent
+  ══════════════════════════════════════════ */
+  .v3 .z-c1 { background: var(--black); border-color: rgba(252,163,17,0.15); }
+  .v3 .z-c3 { background: var(--white); }
+  .v3 .z-c3 .z-tag { color: rgba(20,33,61,0.4); }
+  .v3 .z-c3 .z-desc { color: rgba(20,33,61,0.65); }
+  .v3 .z-c4 { background: var(--white2); border-color: rgba(20,33,61,0.1); }
+  .v3 .z-c4 .z-exp-label { color: rgba(252,163,17,0.7); }
+  .v3 .z-c4 .z-exp-role { color: #000; }
+  .v3 .z-c4 .z-exp-co { color: rgba(20,33,61,0.45); }
+  .v3 .z-c5 { background: var(--navy); border-top-color: var(--amber); }
+  .v3 .z-proj { border-right-color: rgba(248,246,242,0.08); }
+  .v3 .z-proj:hover { background: rgba(252,163,17,0.06); }
+</style>
+</head>
+<body>
+
+<!-- Palette Info -->
+<div class="info-bar">
+  <h1>Custom Palette · Your Colors</h1>
+  <div class="swatch-row">
+    <div class="swatch-item">
+      <div class="swatch" style="background:#000000;border-color:rgba(255,255,255,0.2)"></div>
+      <span class="swatch-hex">#000000 — Black</span>
+    </div>
+    <div class="swatch-item">
+      <div class="swatch" style="background:#14213d"></div>
+      <span class="swatch-hex">#14213d — Navy</span>
+    </div>
+    <div class="swatch-item">
+      <div class="swatch" style="background:#fca311"></div>
+      <span class="swatch-hex">#fca311 — Amber</span>
+    </div>
+  </div>
+</div>
+
+<!-- VARIANT 1 -->
+<div class="vdivider">
+  <div class="vdivider-dot"></div>
+  <div>
+    <div class="vdivider-name">V1 — Black Dominant · Navy Mid · Amber Pop</div>
+    <div class="vdivider-desc">Pure black as the base. Navy for contrast cell. Amber as the single accent. Most dramatic.</div>
+  </div>
+</div>
+<div class="zine v1">
+  <div class="z-c1">
+    <div class="z-ghost">RE<br>SEARCH<br>ED.</div>
+    <div class="z-big">RE<br>SEARCH<br><span class="acc">ED.</span></div>
+    <div class="z-rotated">Nidhi Joshi · AI/ML Engineer · 2025</div>
+  </div>
+  <div class="z-c2">
+    <div class="z-c2-bg">AI<br>ML</div>
+    <div>
+      <div class="z-c2-label">Available for work</div>
+      <div class="z-c2-name">Nidhi Joshi</div>
+      <div class="z-c2-role">AI/ML Engineer</div>
+    </div>
+    <div class="z-c2-arrow">→</div>
+  </div>
+  <div class="z-c3">
+    <div class="z-tag">About</div>
+    <p class="z-desc">I build AI systems that are robust, explainable, and ready to ship. I don't ship AI without guardrails — that's a constraint I design around.</p>
+  </div>
+  <div class="z-c4">
+    <div>
+      <div class="z-exp-label">Recent Work</div>
+      <div class="z-exp-role">AI/ML Engineer</div>
+      <div class="z-exp-co">Escarda Technologies · Berlin · 2023–2024</div>
+    </div>
+    <div class="z-highlight">92% accuracy · 40% less chemicals</div>
+  </div>
+  <div class="z-c5">
+    <div class="z-proj"><div class="z-proj-type">Agent</div><div><div class="z-proj-title">AutoDoc</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Weed Detection</div><div class="z-proj-year">2023–2024</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Projection Mapper</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">RAG</div><div><div class="z-proj-title">Lumen</div><div class="z-proj-year">2026</div></div></div>
+  </div>
+</div>
+
+<!-- VARIANT 2 -->
+<div class="vdivider">
+  <div class="vdivider-dot"></div>
+  <div>
+    <div class="vdivider-name">V2 — Navy Dominant · Black Contrast · Amber Pop</div>
+    <div class="vdivider-desc">Navy carries the hero. Pure black as contrast cell. Slightly softer than V1 — the navy gives more depth.</div>
+  </div>
+</div>
+<div class="zine v2">
+  <div class="z-c1">
+    <div class="z-ghost">RE<br>SEARCH<br>ED.</div>
+    <div class="z-big">RE<br>SEARCH<br><span class="acc">ED.</span></div>
+    <div class="z-rotated">Nidhi Joshi · AI/ML Engineer · 2025</div>
+  </div>
+  <div class="z-c2">
+    <div class="z-c2-bg">AI<br>ML</div>
+    <div>
+      <div class="z-c2-label">Available for work</div>
+      <div class="z-c2-name">Nidhi Joshi</div>
+      <div class="z-c2-role">AI/ML Engineer</div>
+    </div>
+    <div class="z-c2-arrow">→</div>
+  </div>
+  <div class="z-c3">
+    <div class="z-tag">About</div>
+    <p class="z-desc">I build AI systems that are robust, explainable, and ready to ship. I don't ship AI without guardrails — that's a constraint I design around.</p>
+  </div>
+  <div class="z-c4">
+    <div>
+      <div class="z-exp-label">Recent Work</div>
+      <div class="z-exp-role">AI/ML Engineer</div>
+      <div class="z-exp-co">Escarda Technologies · Berlin · 2023–2024</div>
+    </div>
+    <div class="z-highlight">92% accuracy · 40% less chemicals</div>
+  </div>
+  <div class="z-c5">
+    <div class="z-proj"><div class="z-proj-type">Agent</div><div><div class="z-proj-title">AutoDoc</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Weed Detection</div><div class="z-proj-year">2023–2024</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Projection Mapper</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">RAG</div><div><div class="z-proj-title">Lumen</div><div class="z-proj-year">2026</div></div></div>
+  </div>
+</div>
+
+<!-- VARIANT 3 -->
+<div class="vdivider">
+  <div class="vdivider-dot"></div>
+  <div>
+    <div class="vdivider-name">V3 — Light Mode · Black Hero · Navy Footer · Amber Accent</div>
+    <div class="vdivider-desc">Off-white light base. Black hero cell, navy projects row. Amber pops hard against both. Most readable in daylight.</div>
+  </div>
+</div>
+<div class="zine v3">
+  <div class="z-c1">
+    <div class="z-ghost">RE<br>SEARCH<br>ED.</div>
+    <div class="z-big">RE<br>SEARCH<br><span class="acc">ED.</span></div>
+    <div class="z-rotated">Nidhi Joshi · AI/ML Engineer · 2025</div>
+  </div>
+  <div class="z-c2">
+    <div class="z-c2-bg">AI<br>ML</div>
+    <div>
+      <div class="z-c2-label">Available for work</div>
+      <div class="z-c2-name">Nidhi Joshi</div>
+      <div class="z-c2-role">AI/ML Engineer</div>
+    </div>
+    <div class="z-c2-arrow">→</div>
+  </div>
+  <div class="z-c3">
+    <div class="z-tag">About</div>
+    <p class="z-desc">I build AI systems that are robust, explainable, and ready to ship. I don't ship AI without guardrails — that's a constraint I design around.</p>
+  </div>
+  <div class="z-c4">
+    <div>
+      <div class="z-exp-label">Recent Work</div>
+      <div class="z-exp-role">AI/ML Engineer</div>
+      <div class="z-exp-co">Escarda Technologies · Berlin · 2023–2024</div>
+    </div>
+    <div class="z-highlight">92% accuracy · 40% less chemicals</div>
+  </div>
+  <div class="z-c5">
+    <div class="z-proj"><div class="z-proj-type">Agent</div><div><div class="z-proj-title">AutoDoc</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Weed Detection</div><div class="z-proj-year">2023–2024</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">Vision</div><div><div class="z-proj-title">Projection Mapper</div><div class="z-proj-year">2025</div></div></div>
+    <div class="z-proj"><div class="z-proj-type">RAG</div><div><div class="z-proj-title">Lumen</div><div class="z-proj-year">2026</div></div></div>
+  </div>
+</div>
+
+</body>
+</html>

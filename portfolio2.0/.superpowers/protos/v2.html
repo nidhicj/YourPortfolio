@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2 — Hard Cuts</title>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+body{font-family:'Satoshi',sans-serif;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 48px;display:flex;justify-content:space-between;align-items:center}
+.nav-name{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.nav-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.35}
+
+/* MARQUEE — fixed, runs across all sections */
+.marquee-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;overflow:hidden;height:36px;border-top:1px solid rgba(255,255,255,0.08)}
+.marquee-track{display:flex;gap:0;animation:marquee 18s linear infinite;white-space:nowrap;height:100%;align-items:center}
+.marquee-item{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;padding:0 32px;opacity:0.4;flex-shrink:0}
+.marquee-item .dot{color:#fca311;margin-right:8px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+section{
+  height:100vh;
+  scroll-snap-align:start;
+  position:relative;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 48px;
+}
+
+/* S1 — White hero */
+#s1{background:#F8F6F2}
+#s1 nav .nav-name{color:#000}
+#s1 nav .nav-tag{color:#000}
+.s1-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#fca311;margin-bottom:32px}
+.s1-headline{font-family:'Clash Display',sans-serif;font-size:clamp(88px,13vw,180px);font-weight:700;line-height:0.82;letter-spacing:-0.05em;color:#000}
+.s1-headline .acc{color:#fca311}
+.s1-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:48px;padding-top:32px;border-top:1px solid rgba(0,0,0,0.1)}
+.s1-desc{font-size:15px;color:rgba(0,0,0,0.45);line-height:1.7;max-width:420px;font-weight:300}
+.s1-cta{font-family:'Satoshi',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#000;background:none;border:1.5px solid #000;padding:14px 36px;cursor:pointer;transition:background 0.2s,color 0.2s}
+.s1-cta:hover{background:#000;color:#F8F6F2}
+
+/* S2 — Black, AutoDoc */
+#s2{background:#000}
+.s2-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;color:rgba(252,163,17,0.5);margin-bottom:24px}
+.s2-big{font-family:'Clash Display',sans-serif;font-size:clamp(72px,10vw,148px);font-weight:700;line-height:0.82;letter-spacing:-0.05em;color:#F8F6F2;margin-bottom:24px}
+.s2-big .acc{color:#fca311}
+.s2-desc{font-size:16px;color:rgba(248,246,242,0.4);line-height:1.7;max-width:480px;font-weight:300;margin-bottom:24px}
+.s2-tags{display:flex;gap:12px;flex-wrap:wrap}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#fca311;border:1px solid rgba(252,163,17,0.3);padding:5px 12px}
+
+/* S3 — Navy, Weed Detection + metric */
+#s3{background:#14213d}
+.s3-split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.s3-metric{font-family:'Clash Display',sans-serif;font-size:clamp(120px,18vw,240px);font-weight:700;line-height:0.8;letter-spacing:-0.06em;color:#fca311}
+.s3-metric-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(248,246,242,0.3);margin-top:12px}
+.s3-right{}
+.s3-proj-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(252,163,17,0.5);margin-bottom:20px}
+.s3-proj-title{font-family:'Clash Display',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:700;line-height:0.88;letter-spacing:-0.04em;color:#F8F6F2;margin-bottom:16px}
+.s3-proj-desc{font-size:15px;color:rgba(248,246,242,0.4);line-height:1.7;font-weight:300}
+
+/* S4 — Black, Projection Mapper / Lumen side by side */
+#s4{background:#000}
+.s4-grid{display:grid;grid-template-columns:1fr 1px 1fr;gap:48px;align-items:start}
+.s4-divider{background:rgba(252,163,17,0.2);height:100%}
+.s4-item-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(252,163,17,0.4);margin-bottom:16px}
+.s4-item-title{font-family:'Clash Display',sans-serif;font-size:clamp(40px,5vw,72px);font-weight:700;line-height:0.88;letter-spacing:-0.04em;color:#F8F6F2;margin-bottom:16px}
+.s4-item-desc{font-size:14px;color:rgba(248,246,242,0.4);line-height:1.7;font-weight:300;margin-bottom:20px}
+.s4-item-tags{display:flex;gap:8px;flex-wrap:wrap}
+
+/* S5 — Navy, About / work experience */
+#s5{background:#14213d}
+.s5-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.s5-left{}
+.s5-headline-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(252,163,17,0.5);margin-bottom:20px}
+.s5-headline{font-family:'Clash Display',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:700;line-height:0.88;letter-spacing:-0.04em;color:#F8F6F2;margin-bottom:24px}
+.s5-desc{font-size:15px;color:rgba(248,246,242,0.4);line-height:1.75;font-weight:300}
+.s5-right{border-left:1px solid rgba(252,163,17,0.15);padding-left:48px}
+.exp-item{padding:24px 0;border-bottom:1px solid rgba(252,163,17,0.1)}
+.exp-item:first-child{border-top:1px solid rgba(252,163,17,0.1)}
+.exp-role{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:600;color:#F8F6F2;letter-spacing:-0.02em}
+.exp-co{font-size:12px;color:rgba(248,246,242,0.35);margin-top:4px}
+.exp-hl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;color:#fca311;margin-top:10px}
+
+/* S6 — White, closing / CTA */
+#s6{background:#F8F6F2}
+.s6-big{font-family:'Clash Display',sans-serif;font-size:clamp(72px,11vw,160px);font-weight:700;line-height:0.82;letter-spacing:-0.05em;color:#000;margin-bottom:40px}
+.s6-sub{font-size:16px;color:rgba(0,0,0,0.4);line-height:1.7;max-width:400px;font-weight:300;margin-bottom:40px}
+.s6-ctas{display:flex;gap:20px}
+.s6-btn-p{font-family:'Satoshi',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;background:#000;color:#F8F6F2;border:none;padding:16px 40px;cursor:pointer;transition:background 0.2s}
+.s6-btn-p:hover{background:#fca311;color:#000}
+.s6-btn-s{font-family:'Satoshi',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;background:none;color:#000;border:1.5px solid rgba(0,0,0,0.2);padding:16px 40px;cursor:pointer;transition:border-color 0.2s,color 0.2s}
+.s6-btn-s:hover{border-color:#000;color:#000}
+
+/* Marquee bg per section */
+#s1 .marquee-wrap,.marquee-on-light{background:#F8F6F2}
+.marquee-on-light .marquee-item{color:#000}
+#s2 .marquee-wrap,#s4 .marquee-wrap,.marquee-on-dark{background:#000}
+.marquee-on-dark .marquee-item{color:#F8F6F2}
+#s3 .marquee-wrap,#s5 .marquee-wrap,.marquee-on-navy{background:#14213d}
+.marquee-on-navy .marquee-item{color:#F8F6F2}
+</style>
+</head>
+<body>
+
+<!-- Fixed Marquee -->
+<div class="marquee-wrap" id="mbar">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="dot">✦</span>AutoDoc</span>
+    <span class="marquee-item"><span class="dot">✦</span>YOLOv8</span>
+    <span class="marquee-item"><span class="dot">✦</span>92% Accuracy</span>
+    <span class="marquee-item"><span class="dot">✦</span>FastAPI</span>
+    <span class="marquee-item"><span class="dot">✦</span>Projection Mapper</span>
+    <span class="marquee-item"><span class="dot">✦</span>Jetson Nano</span>
+    <span class="marquee-item"><span class="dot">✦</span>Lumen RAG</span>
+    <span class="marquee-item"><span class="dot">✦</span>LangChain</span>
+    <span class="marquee-item"><span class="dot">✦</span>Guardrails</span>
+    <span class="marquee-item"><span class="dot">✦</span>Docker</span>
+    <!-- duplicate for loop -->
+    <span class="marquee-item"><span class="dot">✦</span>AutoDoc</span>
+    <span class="marquee-item"><span class="dot">✦</span>YOLOv8</span>
+    <span class="marquee-item"><span class="dot">✦</span>92% Accuracy</span>
+    <span class="marquee-item"><span class="dot">✦</span>FastAPI</span>
+    <span class="marquee-item"><span class="dot">✦</span>Projection Mapper</span>
+    <span class="marquee-item"><span class="dot">✦</span>Jetson Nano</span>
+    <span class="marquee-item"><span class="dot">✦</span>Lumen RAG</span>
+    <span class="marquee-item"><span class="dot">✦</span>LangChain</span>
+    <span class="marquee-item"><span class="dot">✦</span>Guardrails</span>
+    <span class="marquee-item"><span class="dot">✦</span>Docker</span>
+  </div>
+</div>
+
+<!-- S1: WHITE HERO -->
+<section id="s1">
+  <nav><span class="nav-name" style="color:#000">Nidhi Joshi</span><span class="nav-tag" style="color:#000">V2 · Hard Cuts</span></nav>
+  <div class="s1-eyebrow">AI/ML Engineer · I don't ship AI without guardrails</div>
+  <div class="s1-headline">RESEARCH<br>ENGINE<span class="acc">RED</span><br>SHIPPED.</div>
+  <div class="s1-bottom">
+    <p class="s1-desc">Bridges research and production. Builds systems that are robust, explainable, and ready to ship.</p>
+    <button class="s1-cta">See my work ↓</button>
+  </div>
+</section>
+
+<!-- S2: BLACK — AutoDoc -->
+<section id="s2">
+  <nav><span class="nav-name" style="color:#F8F6F2">Nidhi Joshi</span><span class="nav-tag" style="color:#F8F6F2">V2 · Hard Cuts</span></nav>
+  <div class="s2-num">01 / Agent</div>
+  <div class="s2-big">AUTO<span class="acc">DOC</span></div>
+  <p class="s2-desc">A Chrome extension that watches you work and writes the documentation for you. Production-grade. PII-redacted. PDF export.</p>
+  <div class="s2-tags">
+    <span class="tag">Chrome MV3</span><span class="tag">NestJS</span><span class="tag">FastAPI</span><span class="tag">Gemini AI</span><span class="tag">Docker</span>
+  </div>
+</section>
+
+<!-- S3: NAVY — Weed Detection with giant metric -->
+<section id="s3">
+  <nav><span class="nav-name" style="color:#F8F6F2">Nidhi Joshi</span><span class="nav-tag" style="color:#F8F6F2">V2 · Hard Cuts</span></nav>
+  <div class="s3-split">
+    <div>
+      <div class="s3-metric">92%</div>
+      <div class="s3-metric-label">Detection accuracy</div>
+    </div>
+    <div class="s3-right">
+      <div class="s3-proj-label">02 / Vision · Work</div>
+      <div class="s3-proj-title">Autonomous<br>Weed<br>Detection</div>
+      <p class="s3-proj-desc">Led algorithm development at Escarda Technologies. YOLOv8 on Jetson Nano. 40% reduction in chemical usage. Deployed on field robots in Berlin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4: BLACK — Two projects side by side -->
+<section id="s4">
+  <nav><span class="nav-name" style="color:#F8F6F2">Nidhi Joshi</span><span class="nav-tag" style="color:#F8F6F2">V2 · Hard Cuts</span></nav>
+  <div class="s4-grid">
+    <div>
+      <div class="s4-item-num">03 / Vision · Lab</div>
+      <div class="s4-item-title">Projection<br>Mapper</div>
+      <p class="s4-item-desc">Real-time projection mapping tool. Drag corners, warp perspective via homography, layer surfaces, save JSON presets.</p>
+      <div class="s4-item-tags">
+        <span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">PySide6</span>
+      </div>
+    </div>
+    <div class="s4-divider"></div>
+    <div>
+      <div class="s4-item-num">04 / RAG · Lab</div>
+      <div class="s4-item-title">Lumen</div>
+      <p class="s4-item-desc">Drop a PDF, paste a URL, or connect Google Drive — then just ask questions. Answers with inline citations. Free LLMs via OpenRouter.</p>
+      <div class="s4-item-tags">
+        <span class="tag">FastAPI</span><span class="tag">RAG</span><span class="tag">OpenRouter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5: NAVY — About + Experience -->
+<section id="s5">
+  <nav><span class="nav-name" style="color:#F8F6F2">Nidhi Joshi</span><span class="nav-tag" style="color:#F8F6F2">V2 · Hard Cuts</span></nav>
+  <div class="s5-layout">
+    <div class="s5-left">
+      <div class="s5-headline-label">About</div>
+      <div class="s5-headline">Building AI<br>that ships.</div>
+      <p class="s5-desc">I'm an AI/ML engineer who bridges research and production. Always looking for what needs automating, so colleagues aren't bogged down by repetitive manual work.</p>
+    </div>
+    <div class="s5-right">
+      <div class="exp-item">
+        <div class="exp-role">AI/ML Engineer</div>
+        <div class="exp-co">Escarda Technologies · Berlin · 2023–2024</div>
+        <div class="exp-hl">92% accuracy · 40% less chemicals</div>
+      </div>
+      <div class="exp-item" style="opacity:0.4">
+        <div class="exp-role">Freelancing</div>
+        <div class="exp-co">Building in public · 2024–present</div>
+        <div class="exp-hl">RAG · Agents · Projection tools</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6: WHITE — Closing -->
+<section id="s6">
+  <nav><span class="nav-name" style="color:#000">Nidhi Joshi</span><span class="nav-tag" style="color:#000">V2 · Hard Cuts</span></nav>
+  <div class="s6-big">LET'S<br>WORK.</div>
+  <p class="s6-sub">Open to full-time, contract, and research roles. I work end-to-end — problem definition to deployment.</p>
+  <div class="s6-ctas">
+    <button class="s6-btn-p">See my work</button>
+    <button class="s6-btn-s">Talk to my AI</button>
+  </div>
+</section>
+
+<script>
+// Marquee bar color matches current section
+const sections = ['s1','s2','s3','s4','s5','s6'];
+const mbar = document.getElementById('mbar');
+const bgMap = {s1:'#F8F6F2',s2:'#000',s3:'#14213d',s4:'#000',s5:'#14213d',s6:'#F8F6F2'};
+const colorMap = {s1:'#000',s2:'#F8F6F2',s3:'#F8F6F2',s4:'#F8F6F2',s5:'#F8F6F2',s6:'#000'};
+
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting && e.intersectionRatio > 0.5){
+      mbar.style.background = bgMap[e.target.id];
+      mbar.style.borderTopColor = bgMap[e.target.id]==='#14213d' ? 'rgba(252,163,17,0.15)' : 'rgba(0,0,0,0.08)';
+      const items = mbar.querySelectorAll('.marquee-item');
+      items.forEach(i=>i.style.color=colorMap[e.target.id]);
+    }
+  });
+},{threshold:0.5});
+
+sections.forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) obs.observe(el);
+});
+</script>
+</body>
+</html>

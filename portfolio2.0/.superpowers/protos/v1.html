@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1 — Depth Parallax</title>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{background:#F8F6F2;font-family:'Satoshi',sans-serif;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:normal}
+.nav-name{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;color:#000;letter-spacing:-0.02em}
+.nav-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:rgba(0,0,0,0.35);text-transform:uppercase}
+
+/* LABEL */
+.proto-label{position:fixed;bottom:24px;left:48px;z-index:200;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(0,0,0,0.2);transition:color 0.4s}
+.proto-label.light{color:rgba(255,255,255,0.2)}
+
+/* SCROLL WRAPPER */
+#wrap{height:500vh;position:relative}
+
+/* STICKY STAGE */
+#stage{
+  position:sticky;top:0;height:100vh;width:100%;
+  overflow:hidden;
+  background:#F8F6F2;
+  transition:background 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+#stage.dark{background:#000}
+#stage.navy{background:#14213d}
+
+/* AMBER ANCHOR — stays fixed always */
+.amber-anchor{
+  position:absolute;bottom:0;left:0;right:0;
+  height:3px;background:#fca311;
+  z-index:50;
+}
+.amber-dot{
+  position:absolute;bottom:24px;right:48px;
+  width:10px;height:10px;border-radius:50%;
+  background:#fca311;z-index:50;
+}
+
+/* LAYER 0 — Ghost background word, slowest (0.15x) */
+#ghost{
+  position:absolute;
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  font-size:38vw;line-height:0.82;letter-spacing:-0.06em;
+  color:#000;opacity:0.03;
+  top:-10%;left:-5%;
+  pointer-events:none;z-index:0;
+  will-change:transform;
+  user-select:none;
+}
+#stage.dark #ghost,#stage.navy #ghost{color:#fff;opacity:0.04}
+
+/* LAYER 1 — Main type, standard speed (1x) */
+.line{
+  position:absolute;
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  line-height:0.84;letter-spacing:-0.04em;
+  color:#000;
+  will-change:transform;
+  z-index:10;
+}
+#stage.dark .line,#stage.navy .line{color:#F8F6F2}
+
+#l1{font-size:clamp(80px,12vw,160px);left:48px;top:15%}
+#l2{font-size:clamp(80px,12vw,160px);left:48px;top:35%}
+#l2 .acc{color:#fca311}
+#l3{font-size:clamp(80px,12vw,160px);left:48px;top:55%}
+
+/* Descriptor next to lines */
+.line-sub{
+  position:absolute;
+  font-family:'Satoshi',sans-serif;font-size:13px;font-weight:300;
+  color:rgba(0,0,0,0.4);line-height:1.6;max-width:260px;
+  will-change:transform;z-index:10;
+}
+#stage.dark .line-sub,#stage.navy .line-sub{color:rgba(248,246,242,0.4)}
+#sub1{right:10%;top:18%}
+#sub2{right:10%;top:38%}
+#sub3{right:10%;top:58%}
+
+/* LAYER 2 — Project cards, fastest (1.5x) */
+.card{
+  position:absolute;
+  background:#fff;
+  border:1px solid rgba(0,0,0,0.08);
+  padding:20px 24px;
+  will-change:transform;z-index:20;
+  cursor:pointer;
+  transition:border-color 0.2s;
+}
+.card:hover{border-color:#fca311}
+#stage.dark .card{background:#111;border-color:rgba(255,255,255,0.08)}
+#stage.navy .card{background:#1a2a4a;border-color:rgba(252,163,17,0.2)}
+#stage.dark .card:hover,#stage.navy .card:hover{border-color:#fca311}
+
+.card-type{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#fca311;margin-bottom:8px}
+.card-title{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:600;letter-spacing:-0.02em;color:#000;margin-bottom:4px}
+#stage.dark .card-title,#stage.navy .card-title{color:#F8F6F2}
+.card-desc{font-family:'Satoshi',sans-serif;font-size:11px;color:rgba(0,0,0,0.4);line-height:1.5}
+#stage.dark .card-desc,#stage.navy .card-desc{color:rgba(248,246,242,0.4)}
+.card-metric{font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:#fca311;letter-spacing:-0.03em;line-height:1}
+
+/* Card positions */
+#card-a{width:220px;right:8%;top:10%}     /* top right — will move DOWN (opposite) */
+#card-b{width:180px;left:52%;top:30%}    /* center — moves up fast */
+#card-c{width:200px;right:15%;top:50%}   /* right mid — drifts left + up */
+#card-d{width:160px;left:48px;bottom:12%} /* bottom left — moves up slowest */
+
+/* Name/role tag — fixed bottom */
+.identity{
+  position:absolute;bottom:28px;left:48px;
+  z-index:50;
+}
+.identity-name{font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;color:rgba(0,0,0,0.5);letter-spacing:-0.01em}
+#stage.dark .identity-name,#stage.navy .identity-name{color:rgba(248,246,242,0.4)}
+.identity-role{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(0,0,0,0.25);margin-top:2px}
+#stage.dark .identity-role,#stage.navy .identity-role{color:rgba(248,246,242,0.2)}
+
+/* AFTER STICKY — regular sections */
+.post{padding:80px 48px;background:#F8F6F2}
+.post-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;border-top:2px solid #fca311;padding-top:32px;margin-top:32px}
+.post-proj{padding:24px 32px;border-right:1px solid rgba(0,0,0,0.08)}
+.post-proj:first-child{padding-left:0}
+.post-proj:last-child{border-right:none}
+.post-proj-type{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(252,163,17,0.7);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.post-proj-name{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:600;color:#000;letter-spacing:-0.02em}
+.post-proj-year{font-size:10px;color:rgba(0,0,0,0.25);margin-top:4px;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Nidhi Joshi</span>
+  <span class="nav-tag">V1 · Depth Parallax</span>
+</nav>
+
+<div class="proto-label" id="plabel">V1 · depth parallax · scroll to feel</div>
+
+<div id="wrap">
+<div id="stage">
+
+  <!-- Amber fixed anchors -->
+  <div class="amber-anchor"></div>
+  <div class="amber-dot"></div>
+
+  <!-- Layer 0: Ghost (slowest) -->
+  <div id="ghost">AI</div>
+
+  <!-- Layer 1: Type lines (standard) -->
+  <div class="line" id="l1">RESEARCH</div>
+  <div class="line" id="l2">ENGINE<span class="acc">ERED</span></div>
+  <div class="line" id="l3">SHIPPED.</div>
+
+  <!-- Descriptors -->
+  <div class="line-sub" id="sub1">Chrome extension that watches you work and writes docs.</div>
+  <div class="line-sub" id="sub2">92% accuracy on field robots. 40% less herbicide.</div>
+  <div class="line-sub" id="sub3">Drop a PDF. Ask anything. Get cited answers.</div>
+
+  <!-- Layer 2: Cards (fastest, unconventional directions) -->
+  <div class="card" id="card-a">
+    <div class="card-type">Agent</div>
+    <div class="card-title">AutoDoc</div>
+    <div class="card-desc">Chrome MV3 · NestJS · Gemini AI</div>
+  </div>
+
+  <div class="card" id="card-b">
+    <div class="card-type">Impact</div>
+    <div class="card-metric">92%</div>
+    <div class="card-desc">Detection accuracy</div>
+  </div>
+
+  <div class="card" id="card-c">
+    <div class="card-type">Vision</div>
+    <div class="card-title">Weed Detection</div>
+    <div class="card-desc">YOLOv8 · Jetson Nano · Berlin</div>
+  </div>
+
+  <div class="card" id="card-d">
+    <div class="card-type">RAG</div>
+    <div class="card-title">Lumen</div>
+    <div class="card-desc">FastAPI · OpenRouter · Google Drive</div>
+  </div>
+
+  <!-- Identity -->
+  <div class="identity">
+    <div class="identity-name">Nidhi Joshi</div>
+    <div class="identity-role">AI/ML Engineer · Duluth, GA</div>
+  </div>
+
+</div>
+</div>
+
+<!-- POST-STICKY CONTENT -->
+<div class="post">
+  <div style="font-family:'Clash Display',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(0,0,0,0.3);margin-bottom:8px">All Projects</div>
+  <div class="post-grid">
+    <div class="post-proj"><div class="post-proj-type">Agent</div><div class="post-proj-name">AutoDoc</div><div class="post-proj-year">2025</div></div>
+    <div class="post-proj"><div class="post-proj-type">Vision</div><div class="post-proj-name">Weed Detection</div><div class="post-proj-year">2023–24</div></div>
+    <div class="post-proj"><div class="post-proj-type">Vision</div><div class="post-proj-name">Projection Mapper</div><div class="post-proj-year">2025</div></div>
+    <div class="post-proj"><div class="post-proj-type">RAG</div><div class="post-proj-name">Lumen</div><div class="post-proj-year">2026</div></div>
+  </div>
+</div>
+
+<script>
+const wrap  = document.getElementById('wrap');
+const stage = document.getElementById('stage');
+const ghost = document.getElementById('ghost');
+const l1    = document.getElementById('l1');
+const l2    = document.getElementById('l2');
+const l3    = document.getElementById('l3');
+const sub1  = document.getElementById('sub1');
+const sub2  = document.getElementById('sub2');
+const sub3  = document.getElementById('sub3');
+const cardA = document.getElementById('card-a');
+const cardB = document.getElementById('card-b');
+const cardC = document.getElementById('card-c');
+const cardD = document.getElementById('card-d');
+const label = document.getElementById('plabel');
+
+const vh = window.innerHeight;
+
+function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+let ticking = false;
+function update(){
+  const wTop   = wrap.getBoundingClientRect().top + window.scrollY;
+  const wH     = wrap.clientHeight;
+  const scrolled = clamp(window.scrollY - wTop, 0, wH - vh);
+  const p = scrolled / (wH - vh); // 0 → 1
+
+  // ── Background hard cuts ──
+  if(p < 0.30){
+    stage.className = '';
+    label.className = 'proto-label';
+  } else if(p < 0.62){
+    stage.className = 'dark';
+    label.className = 'proto-label light';
+  } else {
+    stage.className = 'navy';
+    label.className = 'proto-label light';
+  }
+
+  // ── Layer 0: ghost (0.15x) ──
+  ghost.style.transform = `translateY(${p * -60}px)`;
+
+  // ── Layer 1: type lines (different rates per line) ──
+  // l1 moves fast (goes up quickly — feels close)
+  l1.style.transform   = `translateY(${p * -280}px)`;
+  // l2 medium
+  l2.style.transform   = `translateY(${p * -140}px)`;
+  // l3 slow (stays longer — feels distant)
+  l3.style.transform   = `translateY(${p * -40}px)`;
+
+  // Descriptors (slightly faster than their paired line)
+  sub1.style.transform = `translateY(${p * -320}px)`;
+  sub2.style.transform = `translateY(${p * -180}px)`;
+  sub3.style.transform = `translateY(${p * -80}px)`;
+
+  // ── Layer 2: cards — unconventional directions ──
+  // Card A (top-right): moves DOWN — opposite to everything else
+  cardA.style.transform = `translateY(${p * 180}px) rotate(${p * 2}deg)`;
+
+  // Card B (center): moves up VERY fast + drifts left
+  cardB.style.transform = `translateY(${p * -380}px) translateX(${p * -60}px)`;
+
+  // Card C (right mid): moves up + rotates slightly
+  cardC.style.transform = `translateY(${p * -200}px) translateX(${p * -40}px) rotate(${p * -1.5}deg)`;
+
+  // Card D (bottom left): barely moves (anchored feel)
+  cardD.style.transform = `translateY(${p * -30}px)`;
+
+  ticking = false;
+}
+
+window.addEventListener('scroll', ()=>{
+  if(!ticking){ requestAnimationFrame(update); ticking=true; }
+}, {passive:true});
+
+update();
+</script>
+</body>
+</html>

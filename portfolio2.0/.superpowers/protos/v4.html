@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V4 — Z-Depth · Moving Through Space</title>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Satoshi',sans-serif}
+body{overflow-x:hidden}
+
+/* scroll driver gives us the scrollable height */
+#driver{height:700vh}
+
+/* fixed stage — nothing moves except what's inside */
+#stage{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  overflow:hidden;
+}
+
+/* each scene: full-screen, stacked at same position */
+.scene{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:end;
+  padding:56px 64px;
+  gap:48px;
+  will-change:transform,opacity;
+  transform-origin:center center;
+  backface-visibility:hidden;
+}
+
+/* scene backgrounds */
+.s01{background:#F8F6F2}
+.s02{background:#0a0a0a}
+.s03{background:#0a0a0a}
+.s04{background:#14213d}
+.s05{background:#14213d}
+.s06{background:#F8F6F2}
+.s07{background:#000}
+
+/* chapter counter — always in same spot */
+#chmark{
+  position:fixed;top:32px;left:64px;z-index:9999;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(252,163,17,0.6);
+}
+#chname{
+  position:fixed;top:32px;right:64px;z-index:9999;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(252,163,17,0.6);
+}
+
+/* amber progress — bottom */
+#prog{position:fixed;bottom:0;left:0;height:2px;background:#fca311;z-index:9999;width:0}
+
+/* typography helpers */
+.mono{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase}
+.hed{font-family:'Clash Display',sans-serif;font-weight:700;letter-spacing:-0.04em;line-height:0.88}
+.sub{font-family:'Satoshi',sans-serif;font-size:14px;line-height:1.72;font-weight:300}
+.tech{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-top:16px;margin-bottom:20px}
+
+/* light scenes */
+.light .mono{color:rgba(0,0,0,0.3)}
+.light .hed{color:#000}
+.light .sub{color:rgba(0,0,0,0.5)}
+.light .tech{color:rgba(0,0,0,0.3)}
+
+/* dark scenes */
+.dark .mono{color:rgba(252,163,17,0.45)}
+.dark .hed{color:#F8F6F2}
+.dark .sub{color:rgba(248,246,242,0.42)}
+.dark .tech{color:rgba(252,163,17,0.35)}
+
+.acc{color:#fca311}
+
+/* big metric styling */
+.metric{
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  font-size:clamp(100px,16vw,200px);letter-spacing:-0.04em;line-height:0.85;
+  color:#fca311;
+}
+
+/* CTA links */
+.links{display:flex;gap:28px;margin-top:40px;flex-wrap:wrap}
+.links a{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(248,246,242,0.35);text-decoration:none;
+  transition:color 0.2s;
+}
+.links a:hover{color:#fca311}
+
+/* scene-right column alignment */
+.scene-right{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8px}
+
+/* amber vertical line accent */
+.vline{
+  width:2px;height:60px;background:#fca311;
+  margin-bottom:24px;
+}
+</style>
+</head>
+<body>
+
+<div id="driver"></div>
+
+<div id="stage">
+  <div id="chmark">01 / 07</div>
+  <div id="chname">Hero</div>
+  <div id="prog"></div>
+
+  <!-- 01 · HERO -->
+  <div class="scene s01 light" id="s01">
+    <div>
+      <div class="mono" style="margin-bottom:28px">Nidhi Joshi · AI/ML Engineer · Duluth GA</div>
+      <div class="hed" style="font-size:clamp(72px,10vw,132px)">
+        RE<br>SEARCH<br>ENGINE<span class="acc">RED</span><br>SHIPPED.
+      </div>
+    </div>
+    <div class="scene-right">
+      <div class="sub" style="max-width:340px">
+        I don't ship AI without guardrails.<br>Bridges research and production —
+        robust, explainable, end-to-end.
+      </div>
+      <div style="margin-top:32px;display:flex;gap:20px">
+        <span class="mono" style="color:#fca311">↓ scroll to move through</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 · LUMEN -->
+  <div class="scene s02 dark" id="s02" style="grid-template-columns:2fr 1fr">
+    <div>
+      <div class="vline"></div>
+      <div class="mono">02 · RAG · 2026</div>
+      <div class="hed" style="font-size:clamp(56px,8vw,112px);margin-top:12px">Lumen</div>
+      <div class="tech">FastAPI · OpenRouter · Google Drive · pgvector</div>
+      <div class="sub" style="max-width:420px">
+        Drop a PDF. Ask anything. Get cited answers.
+        A research assistant that reads your documents so you don't have to start from scratch.
+      </div>
+    </div>
+    <div class="scene-right" style="align-items:flex-end">
+      <div class="mono" style="color:rgba(248,246,242,0.15);writing-mode:vertical-rl;letter-spacing:0.3em;font-size:9px">RESEARCH · RETRIEVAL · AUGMENTED GENERATION</div>
+    </div>
+  </div>
+
+  <!-- 03 · AUTODOC -->
+  <div class="scene s03 dark" id="s03" style="grid-template-columns:1fr 2fr;align-items:center">
+    <div style="align-self:end">
+      <div class="mono" style="color:rgba(248,246,242,0.15);font-size:9px">chrome · nest · gemini</div>
+    </div>
+    <div>
+      <div class="vline" style="background:#fca311;height:40px"></div>
+      <div class="mono">03 · Agent · 2025</div>
+      <div class="hed" style="font-size:clamp(56px,8vw,112px);margin-top:12px">AutoDoc</div>
+      <div class="tech">Chrome MV3 · NestJS · Gemini AI · Docker</div>
+      <div class="sub" style="max-width:440px">
+        Chrome extension that watches you work and writes docs.
+        Reads your active tab, infers context, drafts structured documentation — automatically.
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 · PROJECTION MAPPER -->
+  <div class="scene s04 dark" id="s04">
+    <div>
+      <div class="vline"></div>
+      <div class="mono">04 · Vision · 2025</div>
+      <div class="hed" style="font-size:clamp(56px,8vw,104px);margin-top:12px">Projection<br>Mapper</div>
+      <div class="tech">Python · OpenCV · PySide6 · NumPy</div>
+      <div class="sub" style="max-width:380px">
+        Desktop tool for real-time projection mapping.
+        Define polygonal surfaces, warp video feeds, keystone-correct geometry.
+        Built for live performance and installation art.
+      </div>
+    </div>
+    <div class="scene-right" style="align-items:flex-end">
+      <div style="border:1px solid rgba(252,163,17,0.15);width:180px;height:140px;display:flex;align-items:center;justify-content:center">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(252,163,17,0.25);text-align:center">Surface<br>Projection<br>Grid</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 · WEED DETECTION -->
+  <div class="scene s05 dark" id="s05" style="align-items:end">
+    <div>
+      <div class="mono" style="margin-bottom:12px">05 · Vision · Work · 2023–24</div>
+      <div class="metric">92%</div>
+      <div class="hed" style="font-size:clamp(48px,6vw,88px);margin-top:8px">Weed Detection</div>
+      <div class="tech">YOLOv8 · Jetson Nano · Escarda Technologies · Berlin</div>
+    </div>
+    <div class="scene-right">
+      <div class="sub" style="max-width:320px">
+        92% detection accuracy on a field robot.
+        40% reduction in herbicide use.
+        Deployed in Brandenburg, Germany.
+      </div>
+      <div style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:280px">
+        <div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:#fca311">92%</div>
+          <div class="mono" style="color:rgba(248,246,242,0.3);font-size:9px;margin-top:4px">accuracy</div>
+        </div>
+        <div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:#fca311">40%</div>
+          <div class="mono" style="color:rgba(248,246,242,0.3);font-size:9px;margin-top:4px">less chemicals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 · ABOUT -->
+  <div class="scene s06 light" id="s06">
+    <div>
+      <div class="mono" style="margin-bottom:28px">06 · About</div>
+      <div class="hed" style="font-size:clamp(48px,7vw,96px)">Building AI<br>that ships.</div>
+      <div class="sub" style="max-width:400px;margin-top:24px">
+        AI/ML engineer who bridges research and production.
+        Freelancing and building in public — from RAG pipelines and Chrome agents to projection tools.
+      </div>
+    </div>
+    <div class="scene-right">
+      <div style="border-top:1px solid rgba(0,0,0,0.1);padding-top:20px;margin-bottom:16px">
+        <div class="mono" style="color:rgba(252,163,17,0.6);margin-bottom:8px">Experience</div>
+        <div style="font-family:'Clash Display',sans-serif;font-size:18px;font-weight:600;color:#000">Escarda Technologies</div>
+        <div class="mono" style="color:rgba(0,0,0,0.3);margin-top:4px">AI/ML Engineer · Jan 2023 – Sep 2024 · Berlin</div>
+      </div>
+      <div style="border-top:1px solid rgba(0,0,0,0.1);padding-top:20px">
+        <div class="mono" style="color:rgba(252,163,17,0.6);margin-bottom:8px">Education</div>
+        <div style="font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;color:#000">MSc IT · Stuttgart · 2019–2022</div>
+        <div style="font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;color:#000;margin-top:6px">BE EE · Ramaiah · 2013–2017</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 · CTA -->
+  <div class="scene s07 dark" id="s07" style="align-items:center;background:#14213d">
+    <div>
+      <div class="mono" style="margin-bottom:28px">07 · Let's work</div>
+      <div class="hed" style="font-size:clamp(56px,8vw,112px)">
+        Let's build<br>something<br>that <span class="acc">ships.</span>
+      </div>
+      <div class="links">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Resume</a>
+        <a href="#">Email</a>
+      </div>
+    </div>
+    <div class="scene-right" style="align-items:flex-end">
+      <div style="font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;color:rgba(248,246,242,0.2);letter-spacing:-0.01em">Nidhi Joshi</div>
+      <div class="mono" style="color:rgba(248,246,242,0.15);margin-top:4px">Duluth, GA · Open to work</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const scenes=[...document.querySelectorAll('.scene')];
+const chmark=document.getElementById('chmark');
+const chname=document.getElementById('chname');
+const prog=document.getElementById('prog');
+const names=['Hero','Lumen','AutoDoc','Projection Mapper','Weed Detection','About','CTA'];
+const N=scenes.length;
+
+// initial: show scene 01 above all, others invisible scaled down
+scenes.forEach((s,i)=>{
+  s.style.transition='none';
+  if(i===0){s.style.transform='scale(1)';s.style.opacity='1';s.style.zIndex='10';}
+  else{s.style.transform='scale(0.88)';s.style.opacity='0';s.style.zIndex='0';}
+});
+
+let raf=false;
+function update(){
+  const scrollY=window.scrollY;
+  const maxScroll=document.documentElement.scrollHeight-window.innerHeight;
+  const totalP=scrollY/maxScroll;
+  prog.style.width=(totalP*100)+'%';
+
+  // scenes: each occupies 1/N of total scroll
+  const rawIdx=totalP*(N-1); // 0→6
+  const curr=Math.floor(rawIdx);
+  const t=rawIdx-curr; // 0→1 within transition
+
+  chmark.textContent=String(Math.min(curr+1,N)).padStart(2,'0')+' / 07';
+  chname.textContent=names[Math.min(curr,N-1)];
+
+  scenes.forEach((s,i)=>{
+    // "depth" relative to current position
+    const d=i-rawIdx;
+
+    let scale,opacity,z;
+    if(d>1.2){
+      // far ahead: invisible, small
+      scale=0.82;opacity=0;z=1;
+    } else if(d>0){
+      // approaching: growing in from behind current
+      const approach=1-(d/1.2);
+      scale=0.82+approach*0.18;
+      opacity=approach*approach; // ease-in
+      z=5;
+    } else if(d>-0.1){
+      // current / just leaving
+      scale=1;opacity=1;z=20;
+    } else if(d>-0.6){
+      // receding behind
+      const recede=Math.abs(d)/0.6;
+      scale=1-recede*0.12;
+      opacity=1-recede;
+      z=15;
+    } else {
+      // gone
+      scale=0.88;opacity=0;z=1;
+    }
+
+    s.style.transform=`scale(${scale.toFixed(4)})`;
+    s.style.opacity=opacity.toFixed(4);
+    s.style.zIndex=z;
+  });
+
+  raf=false;
+}
+
+window.addEventListener('scroll',()=>{
+  if(!raf){requestAnimationFrame(update);raf=true;}
+},{passive:true});
+update();
+</script>
+</body>
+</html>

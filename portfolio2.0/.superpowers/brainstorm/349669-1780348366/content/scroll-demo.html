@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scroll-Driven Assembly</title>
+<style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600,700&display=swap');
+  @import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #000000;
+    --navy:  #14213d;
+    --amber: #fca311;
+    --white: #F8F6F2;
+    --w2:    #EFEDE8;
+    --muted: rgba(20,33,61,0.42);
+  }
+
+  html, body { height: 100%; }
+  body { background: #0a0a0a; font-family: 'Satoshi', sans-serif; overflow-x: hidden; }
+
+  /* ── SCROLL WRAPPER ── */
+  #scroll-wrapper {
+    height: 550vh;
+    position: relative;
+  }
+
+  /* ── STICKY STAGE ── */
+  #stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--amber);
+    z-index: 9999;
+    transform-origin: left;
+    transition: width 0.05s linear;
+  }
+
+  /* ── SCROLL HINT ── */
+  #scroll-hint {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+  #scroll-hint span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(20,33,61,0.35);
+  }
+  .hint-arrow {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, rgba(252,163,17,0.6), transparent);
+    animation: hint-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes hint-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ── STAGE LABEL ── */
+  #stage-label {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(20,33,61,0.2);
+    z-index: 100;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════════════════════
+     CELLS — absolute within stage
+  ══════════════════════════════════════════ */
+  .cell {
+    position: absolute;
+    will-change: transform;
+  }
+
+  /* ── HERO CELL ── */
+  #c-hero {
+    left: 0; top: 0;
+    width: 66.7%; height: 55vh;
+    background: var(--black);
+    padding: 52px 52px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-right: 1px solid rgba(252,163,17,0.1);
+    border-bottom: 1px solid rgba(252,163,17,0.1);
+    overflow: hidden;
+    z-index: 2;
+  }
+  .c-ghost {
+    position: absolute; top: 0; left: 52px;
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(72px, 9.5vw, 128px); font-weight: 700;
+    color: var(--white); line-height: 0.83; letter-spacing: -0.05em;
+    opacity: 0.03; pointer-events: none; transform: translateX(12px);
+  }
+  .c-big {
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(72px, 9.5vw, 128px); font-weight: 700;
+    color: var(--white); line-height: 0.83; letter-spacing: -0.05em;
+    position: relative; z-index: 1;
+  }
+  .c-big .acc { color: var(--amber); }
+  .c-rotated {
+    position: absolute; top: 52px; right: -28px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(252,163,17,0.18);
+    transform: rotate(90deg); transform-origin: right center; white-space: nowrap;
+  }
+
+  /* ── AMBER CELL ── */
+  #c-amber {
+    left: 66.7%; top: 0;
+    width: 33.3%; height: 75vh;
+    background: var(--amber);
+    padding: 36px 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+    z-index: 3;
+  }
+  .amber-bg-text {
+    position: absolute; top: 16px; left: 16px; right: 8px;
+    font-family: 'Clash Display', sans-serif; font-size: 84px; font-weight: 700;
+    color: rgba(0,0,0,0.07); line-height: 0.82; letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+  .amber-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(0,0,0,0.42); position: relative; z-index: 1; }
+  .amber-name { font-family: 'Clash Display', sans-serif; font-size: 24px; font-weight: 600; color: #000; letter-spacing: -0.02em; position: relative; z-index: 1; margin-top: 4px; }
+  .amber-role { font-size: 11px; color: rgba(0,0,0,0.42); position: relative; z-index: 1; margin-top: 3px; }
+  .amber-arrow {
+    width: 44px; height: 44px; background: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--amber); cursor: pointer;
+    position: relative; z-index: 1; align-self: flex-end;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .amber-arrow:hover { transform: rotate(-45deg) scale(1.08); }
+
+  /* ── ABOUT CELL ── */
+  #c-about {
+    left: 0; top: 55vh;
+    width: 33.35%; height: 20vh;
+    background: var(--white);
+    padding: 28px 52px;
+    border-right: 1px solid rgba(20,33,61,0.1);
+    border-bottom: 1px solid rgba(20,33,61,0.1);
+    z-index: 2;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .c-tag { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(20,33,61,0.3); margin-bottom: 10px; }
+  .c-desc { font-size: 13px; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 300px; }
+
+  /* ── WORK CELL ── */
+  #c-work {
+    left: 33.35%; top: 55vh;
+    width: 33.35%; height: 20vh;
+    background: var(--w2);
+    padding: 28px 40px;
+    border-bottom: 1px solid rgba(20,33,61,0.1);
+    z-index: 2;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .c-exp-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(252,163,17,0.55); }
+  .c-exp-role { font-family: 'Clash Display', sans-serif; font-size: 22px; font-weight: 600; color: #000; letter-spacing: -0.02em; line-height: 1.1; margin-top: 5px; }
+  .c-exp-co { font-size: 11px; color: rgba(20,33,61,0.38); margin-top: 3px; }
+  .c-hl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--amber); border: 1px solid rgba(252,163,17,0.3); padding: 4px 10px; display: inline-block; margin-top: 10px; letter-spacing: 0.05em; }
+
+  /* ── PROJECTS ROW ── */
+  #c-projects {
+    left: 0; top: 75vh;
+    width: 100%; height: 25vh;
+    background: var(--navy);
+    padding: 28px 52px;
+    display: flex;
+    border-top: 2px solid var(--amber);
+    z-index: 4;
+  }
+  .p-item {
+    flex: 1; padding: 0 28px;
+    border-right: 1px solid rgba(252,163,17,0.08);
+    display: flex; flex-direction: column; justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .p-item:first-child { padding-left: 0; }
+  .p-item:last-child { border-right: none; }
+  .p-item:hover { background: rgba(252,163,17,0.05); }
+  .p-type { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(252,163,17,0.5); }
+  .p-title { font-family: 'Clash Display', sans-serif; font-size: 18px; font-weight: 600; color: var(--white); letter-spacing: -0.02em; margin-top: 4px; transition: color 0.2s; }
+  .p-item:hover .p-title { color: var(--amber); }
+  .p-year { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(248,246,242,0.2); }
+
+  /* ── POST-ASSEMBLE: subtle grid breathing ── */
+  #stage.assembled #c-hero   { transition: filter 0.4s; }
+  #stage.assembled #c-hero:hover   { filter: brightness(1.08); }
+  #stage.assembled #c-about:hover  { background: #f0ede5; }
+  #stage.assembled #c-work:hover   { background: #e8e4da; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="scroll-hint">
+  <span>Scroll to assemble</span>
+  <div class="hint-arrow"></div>
+</div>
+
+<div id="scroll-wrapper">
+  <div id="stage">
+    <div id="stage-label">scroll-driven assembly · v3 palette · zine/constructed</div>
+
+    <!-- HERO CELL -->
+    <div class="cell" id="c-hero">
+      <div class="c-ghost">RE<br>SEARCH<br>ED.</div>
+      <div class="c-big">RE<br>SEARCH<br><span class="acc">ED.</span></div>
+      <div class="c-rotated">Nidhi Joshi · AI/ML Engineer · 2025</div>
+    </div>
+
+    <!-- AMBER TALL CELL -->
+    <div class="cell" id="c-amber">
+      <div class="amber-bg-text">AI<br>ML</div>
+      <div>
+        <div class="amber-label">Available for work</div>
+        <div class="amber-name">Nidhi Joshi</div>
+        <div class="amber-role">AI/ML Engineer</div>
+      </div>
+      <div class="amber-arrow">→</div>
+    </div>
+
+    <!-- ABOUT CELL -->
+    <div class="cell" id="c-about">
+      <div class="c-tag">About</div>
+      <p class="c-desc">Building systems that are robust, explainable, and ready to ship. I don't ship AI without guardrails.</p>
+    </div>
+
+    <!-- WORK CELL -->
+    <div class="cell" id="c-work">
+      <div>
+        <div class="c-exp-label">Recent Work</div>
+        <div class="c-exp-role">AI/ML Engineer</div>
+        <div class="c-exp-co">Escarda Technologies · Berlin · 2023–2024</div>
+      </div>
+      <div class="c-hl">92% accuracy · 40% less chemicals</div>
+    </div>
+
+    <!-- PROJECTS ROW -->
+    <div class="cell" id="c-projects">
+      <div class="p-item"><div class="p-type">Agent</div><div><div class="p-title">AutoDoc</div><div class="p-year">2025</div></div></div>
+      <div class="p-item"><div class="p-type">Vision</div><div><div class="p-title">Weed Detection</div><div class="p-year">2023–2024</div></div></div>
+      <div class="p-item"><div class="p-type">Vision</div><div><div class="p-title">Projection Mapper</div><div class="p-year">2025</div></div></div>
+      <div class="p-item"><div class="p-type">RAG</div><div><div class="p-title">Lumen</div><div class="p-year">2026</div></div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const wrapper  = document.getElementById('scroll-wrapper');
+  const stage    = document.getElementById('stage');
+  const hint     = document.getElementById('scroll-hint');
+  const progBar  = document.getElementById('progress-bar');
+
+  // ── EASING ────────────────────────────────
+  const easeOutExpo = t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  // Slight overshoot — physical, spring-like
+  const easeOutBack = t => {
+    const c1 = 1.35, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  };
+  // Very gentle overshoot for rotation settling
+  const easeOutSoft = t => {
+    const c1 = 0.55, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  };
+
+  function clamp01(v) { return Math.min(1, Math.max(0, v)); }
+
+  function rangeProgress(scroll, start, end) {
+    return clamp01((scroll - start) / (end - start));
+  }
+
+  // ── CELL DEFINITIONS ──────────────────────
+  // Each cell: scroll range [start, end], start offset (x vw, y vh, rot deg), easing
+  // All "from" values are relative to final position
+  // Unconventional: diagonal paths, overshooting rotations, wrong-quadrant origins
+  const cells = [
+    {
+      el: document.getElementById('c-hero'),
+      range: [0.0, 0.22],
+      // Comes screaming in from top-right, rotating counter-clockwise
+      fromX:  90,  fromY: -55, fromRot:  9,
+      easeTr: easeOutBack, easeRot: easeOutSoft,
+    },
+    {
+      el: document.getElementById('c-amber'),
+      range: [0.08, 0.30],
+      // Swings up from bottom-LEFT (diagonal opposite corner — completely wrong side)
+      fromX: -70,  fromY:  90, fromRot: -13,
+      easeTr: easeOutBack, easeRot: easeOutSoft,
+    },
+    {
+      el: document.getElementById('c-about'),
+      range: [0.20, 0.40],
+      // Falls from top-center but offset RIGHT, tilted a lot
+      fromX:  40,  fromY: -100, fromRot: 18,
+      easeTr: easeOutExpo, easeRot: easeOutBack,
+    },
+    {
+      el: document.getElementById('c-work'),
+      range: [0.28, 0.48],
+      // Comes from far bottom-left, slight clockwise spin
+      fromX: -95,  fromY:  70, fromRot: -10,
+      easeTr: easeOutBack, easeRot: easeOutSoft,
+    },
+    {
+      el: document.getElementById('c-projects'),
+      range: [0.38, 0.58],
+      // Rises from bottom-right corner, tilt
+      fromX:  55,  fromY: 100, fromRot:  6,
+      easeTr: easeOutBack, easeRot: easeOutExpo,
+    },
+  ];
+
+  // Set initial state
+  cells.forEach(c => {
+    c.el.style.transform = `translate(${c.fromX}vw, ${c.fromY}vh) rotate(${c.fromRot}deg)`;
+    c.el.style.transition = 'none';
+  });
+
+  let assembled = false;
+  let ticking = false;
+
+  function update() {
+    const wrapperTop    = wrapper.getBoundingClientRect().top + window.scrollY;
+    const totalScroll   = wrapper.clientHeight - window.innerHeight;
+    const scrolled      = Math.max(0, window.scrollY - wrapperTop);
+    const scroll        = clamp01(scrolled / totalScroll);
+
+    // Progress bar
+    progBar.style.width = (scroll * 100) + '%';
+
+    // Hint fade
+    hint.style.opacity = scroll < 0.04 ? '1' : Math.max(0, 1 - (scroll - 0.04) / 0.06) + '';
+
+    // Update each cell
+    cells.forEach(c => {
+      const t    = rangeProgress(scroll, c.range[0], c.range[1]);
+      const tTr  = c.easeTr(t);
+      const tRot = c.easeRot(t);
+      const x    = c.fromX * (1 - tTr);
+      const y    = c.fromY * (1 - tTr);
+      const r    = c.fromRot * (1 - tRot);
+      c.el.style.transform = `translate(${x}vw, ${y}vh) rotate(${r}deg)`;
+    });
+
+    // Mark assembled once all cells are close enough
+    if (scroll > 0.62 && !assembled) {
+      assembled = true;
+      stage.classList.add('assembled');
+      // Snap cleanly to 0,0,0
+      cells.forEach(c => {
+        c.el.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+        c.el.style.transform  = 'translate(0,0) rotate(0deg)';
+      });
+    }
+    if (scroll < 0.58 && assembled) {
+      assembled = false;
+      stage.classList.remove('assembled');
+      cells.forEach(c => { c.el.style.transition = 'none'; });
+    }
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Initial paint
+  update();
+</script>
+</body>
+</html>

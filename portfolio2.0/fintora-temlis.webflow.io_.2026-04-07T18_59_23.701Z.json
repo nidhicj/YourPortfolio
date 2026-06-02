@@ -1,0 +1,233 @@
+{
+  "data": {
+    "branding": {
+      "colorScheme": "light",
+      "fonts": [
+        {
+          "family": "Inter",
+          "role": "body"
+        }
+      ],
+      "colors": {
+        "primary": "#0061FB",
+        "secondary": "#EBF213",
+        "accent": "#0061FB",
+        "background": "#FFFFFF",
+        "textPrimary": "#2B2B2B",
+        "link": "#556C73"
+      },
+      "typography": {
+        "fontFamilies": {
+          "primary": "Inter",
+          "heading": "Inter"
+        },
+        "fontStacks": {
+          "heading": [
+            "Inter",
+            "sans-serif"
+          ],
+          "body": [
+            "Inter",
+            "sans-serif"
+          ],
+          "paragraph": [
+            "Inter",
+            "sans-serif"
+          ]
+        },
+        "fontSizes": {
+          "h1": "140px",
+          "h2": "40px",
+          "body": "16px"
+        }
+      },
+      "spacing": {
+        "baseUnit": 4,
+        "borderRadius": "3px"
+      },
+      "components": {
+        "buttonPrimary": {
+          "background": "#0061FB",
+          "textColor": "#FFFFFF",
+          "borderRadius": "60px",
+          "borderRadiusCorners": {
+            "topLeft": "60px",
+            "topRight": "60px",
+            "bottomRight": "60px",
+            "bottomLeft": "60px"
+          },
+          "shadow": "none"
+        },
+        "buttonSecondary": {
+          "background": "#EBF213",
+          "textColor": "#000000",
+          "borderRadius": "4px",
+          "borderRadiusCorners": {
+            "topLeft": "4px",
+            "topRight": "4px",
+            "bottomRight": "4px",
+            "bottomLeft": "4px"
+          },
+          "shadow": "none"
+        }
+      },
+      "images": {
+        "logo": "https://cdn.prod.website-files.com/6887a0b27499e03cf7a9ac9a/68e98a9fb11400e14c995d8c_fintora-logo.svg",
+        "favicon": "https://cdn.prod.website-files.com/665687d713145087b3ce1703/665a4535765980c07e93225b_Group%202942.png",
+        "ogImage": "https://cdn.prod.website-files.com/6887a0b27499e03cf7a9ac9a/68e99618499ecd7b8a858e5c_Ophen%20Graph.webp"
+      },
+      "__llm_logo_reasoning": {
+        "selectedIndex": 1,
+        "reasoning": "Logo rejected: Red flags detected (menu word). Selected #1 because it is visible, located in the header, links to the homepage, and matches the brand name 'Fintora'.",
+        "confidence": 0.9,
+        "rejected": true,
+        "source": "llm"
+      },
+      "__llm_button_reasoning": {
+        "primary": {
+          "index": 0,
+          "text": "Book a demo",
+          "reasoning": "Button #0 'Book a demo' uses the vibrant brand color #0061FB, making it a strong candidate for the primary CTA due to its action-oriented text and prominent color."
+        },
+        "secondary": {
+          "index": 6,
+          "text": "See all templates",
+          "reasoning": "Button #6 'See all templates' uses a different vibrant color #EBF213, making it suitable as a secondary CTA with a distinct color from the primary button."
+        },
+        "confidence": 0.95
+      },
+      "personality": {
+        "tone": "modern",
+        "energy": "high",
+        "targetAudience": "business professionals looking for web templates"
+      },
+      "designSystem": {
+        "framework": "custom",
+        "componentLibrary": ""
+      },
+      "confidence": {
+        "buttons": 0.95,
+        "colors": 0.9,
+        "overall": 0.925
+      },
+      "__llm_metadata": {
+        "logoSelection": {
+          "llmCalled": true,
+          "llmSucceeded": true,
+          "finalSource": "llm",
+          "rawLogoSelection": {
+            "selectedLogoIndex": 1,
+            "selectedLogoReasoning": "Selected #1 because it is visible, located in the header, links to the homepage, and matches the brand name 'Fintora'.",
+            "confidence": 0.9
+          }
+        },
+        "buttonClassification": {
+          "llmCalled": true,
+          "llmSucceeded": true
+        }
+      }
+    },
+    "metadata": {
+      "language": "en",
+      "ogTitle": "Fintora - Webflow HTML Website Template",
+      "og:image": "https://cdn.prod.website-files.com/6887a0b27499e03cf7a9ac9a/68e99618499ecd7b8a858e5c_Ophen%20Graph.webp",
+      "ogImage": "https://cdn.prod.website-files.com/6887a0b27499e03cf7a9ac9a/68e99618499ecd7b8a858e5c_Ophen%20Graph.webp",
+      "title": "Fintora - Webflow HTML Website Template",
+      "twitter:title": "Fintora - Webflow HTML Website Template",
+      "generator": "Webflow",
+      "viewport": "width=device-width, initial-scale=1",
+      "twitter:image": "https://cdn.prod.website-files.com/6887a0b27499e03cf7a9ac9a/68e99618499ecd7b8a858e5c_Ophen%20Graph.webp",
+      "og:title": "Fintora - Webflow HTML Website Template",
+      "favicon": "https://cdn.prod.website-files.com/665687d713145087b3ce1703/665a4535765980c07e93225b_Group%202942.png",
+      "scrapeId": "019d6950-505b-7500-9d0a-0dffd8c6acf6",
+      "sourceURL": "https://fintora-temlis.webflow.io/",
+      "url": "https://fintora-temlis.webflow.io/",
+      "statusCode": 200,
+      "contentType": "text/html; charset=utf-8",
+      "timezone": "America/New_York",
+      "proxyUsed": "basic",
+      "indexId": "0e5c1ec0-d323-437a-bafc-1e5f848064d6",
+      "creditsUsed": 1,
+      "concurrencyLimited": false
+    }
+  },
+  "scrape_id": "019d6950-505b-7500-9d0a-0dffd8c6acf6",
+  "id": "8OHKBymU7t_AlxZYm_IdP",
+  "startedAt": "2026-04-07T18:59:23.701Z",
+  "endedAt": "2026-04-07T18:59:45.390Z",
+  "endpoint": "scrape",
+  "formState": {
+    "extractSetupCompleted": false,
+    "urls": [],
+    "extractSchema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "company_mission": {
+          "type": "string"
+        },
+        "supports_sso": {
+          "type": "boolean"
+        },
+        "is_open_source": {
+          "type": "boolean"
+        },
+        "is_in_yc": {
+          "type": "boolean"
+        }
+      }
+    },
+    "extractPrompt": "Extract the company details, following the schema.",
+    "enableWebSearch": false,
+    "constrainUrls": false,
+    "options": {
+      "onlyMainContent": false,
+      "parsePDF": true,
+      "stealthMode": false,
+      "excludeTags": [],
+      "includeTags": [],
+      "waitFor": "",
+      "timeout": "",
+      "maxAge": "2 days",
+      "ignoreSitemap": false,
+      "crawlEntireDomain": false,
+      "sitemap": "include",
+      "limit": "10",
+      "maxDepth": "",
+      "excludePaths": [],
+      "includePaths": [],
+      "includeSubdomains": false,
+      "search": "",
+      "scrapeContentFromSearchResults": true,
+      "timeBasedSearch": "",
+      "location": "",
+      "prompt": ""
+    },
+    "formats": [
+      "branding"
+    ],
+    "sources": [
+      "web"
+    ],
+    "categories": [],
+    "jsonSchema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "company_description": {
+          "type": "string"
+        }
+      }
+    },
+    "jsonPrompt": "",
+    "agent": {},
+    "url": "fintora-temlis.webflow.io/",
+    "endpoint": "scrape"
+  },
+  "status": "success",
+  "version": "G_P4jJ71WBRqKaadSSzIQ",
+  "isPreview": false
+}
