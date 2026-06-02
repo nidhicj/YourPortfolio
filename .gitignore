@@ -1,39 +1,41 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
-node_modules/
-.pnp
-.pnp.js
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# build output
-.next/
-out/
-dist/
-build/
+# testing
+/coverage
 
-# env files
-.env
-.env.local
-.env.*.local
+# next.js
+/.next/
+/out/
 
-# debug logs
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
-# system
-.DS_Store
-Thumbs.db
+# env files (can opt-in for committing if needed)
+.env*
 
-# screenshots / playwright artifacts
-*.png
-*.jpg
-*.jpeg
-.playwright-mcp/
+# vercel
+.vercel
 
-# zip files
-*.zip
-
-# product animator template (not part of portfolio)
-product-animator-v2-template/
-
-# worktree — portfolio3.0 is managed as a separate git worktree
-portfolio3.0/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
