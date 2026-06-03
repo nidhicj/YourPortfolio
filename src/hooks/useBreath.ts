@@ -17,7 +17,10 @@ function blendColor(lo: ColorTuple, hi: ColorTuple, t: number): string {
   return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a.toFixed(3)})`;
 }
 
-export function useBreath<T extends HTMLElement = HTMLElement>(opts: {
+export function useBreath<T extends HTMLElement = HTMLElement>({
+  type,
+  bg = 'light',
+}: {
   type: BreathType;
   bg?: BgType;
 }) {
@@ -27,8 +30,7 @@ export function useBreath<T extends HTMLElement = HTMLElement>(opts: {
     const el = ref.current;
     if (!el) return;
 
-    const bg = opts.bg ?? 'light';
-    const range = breath.colors[opts.type][bg];
+    const range = breath.colors[type][bg];
 
     let phase = 0;
     let active = false;
@@ -49,7 +51,7 @@ export function useBreath<T extends HTMLElement = HTMLElement>(opts: {
       if (active || breathIntensity > 0.001) {
         rafId = requestAnimationFrame(tick);
       } else {
-        el!.style.color = blendColor(range.lo, range.hi, 0);
+        el!.style.color = '';
         rafId = null;
       }
     }
@@ -73,7 +75,7 @@ export function useBreath<T extends HTMLElement = HTMLElement>(opts: {
       if (rafId !== null) cancelAnimationFrame(rafId);
       el.style.color = '';
     };
-  }, [opts.type, opts.bg]);
+  }, [type, bg]);
 
   return { ref };
 }
