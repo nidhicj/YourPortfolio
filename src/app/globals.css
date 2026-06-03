@@ -52,10 +52,11 @@
   font-style: normal;
 }
 
+/* Keep color values in sync with src/lib/theme.ts → colors */
 @theme inline {
-  --font-clash:  'Clash Display', sans-serif;
+  --font-clash:   'Clash Display', sans-serif;
   --font-satoshi: 'Satoshi', sans-serif;
-  --font-mono:   'JetBrains Mono', monospace;
+  --font-mono:    'JetBrains Mono', monospace;
 
   --color-cream: #F8F6F2;
   --color-navy:  #14213d;

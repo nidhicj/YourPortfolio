@@ -14,7 +14,7 @@ export interface Link   { label: string; href: string }
 
 export interface Chapter {
   id:          string;
-  number:      string;   // '01'
+  // number:      string;   // '01'
   name:        string;   // used in spine + topbar
   composition: Composition;
   bg:          PanelBg;
@@ -34,8 +34,8 @@ export interface Chapter {
 export const chapters: Chapter[] = [
   {
     id:          'hero',
-    number:      '01',
-    name:        'Hero',
+    // number:      '01',
+    name:        ' ',
     composition: 'hero',
     bg:          'cream',
     title:       'Research\nEngineered\nShipped.',
@@ -50,11 +50,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'lumen',
-    number:      '02',
+    // number:      '02',
     name:        'Lumen',
     composition: 'bilateral',
     bg:          'black',
-    label:       '02 · RAG · 2026',
+    label:       'RAG · 2026',
     title:       'Lumen',
     tech:        'FastAPI · OpenRouter · Google Drive · pgvector',
     body:        'Drop a PDF. Ask anything. Get cited answers. A research assistant that reads your documents so you don\'t have to start from scratch.',
@@ -62,11 +62,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'autodoc',
-    number:      '03',
+    // number:      '03',
     name:        'AutoDoc',
     composition: 'reading-room',
     bg:          'black',
-    label:       '03 · Agent · 2025',
+    label:       'Agent · 2025',
     title:       'AutoDoc',
     tech:        'Chrome MV3 · NestJS · Gemini AI · Docker',
     body:        'Chrome extension that watches you work and writes docs. Reads your active tab, infers context, drafts structured documentation — automatically.',
@@ -74,11 +74,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'projection-mapper',
-    number:      '04',
+    // number:      '04',
     name:        'Mapper',
     composition: 'offset-title',
     bg:          'navy',
-    label:       '04 · Vision · 2025',
+    label:       'Vision · 2025',
     title:       'Projection\nMapper',
     tech:        'Python · OpenCV · PySide6 · NumPy',
     body:        'Desktop tool for real-time projection mapping. Warp video feeds, define polygonal surfaces, keystone-correct geometry. Built for live performance and installation art.',
@@ -86,11 +86,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'weed-detection',
-    number:      '05',
+    // number:      '05',
     name:        'Weed',
     composition: 'metric-lead',
     bg:          'navy',
-    label:       '05 · Vision · Work · 2023–24',
+    label:       'Vision · Work · 2023–24',
     title:       'Weed\nDetection',
     tech:        'YOLOv8 · Jetson Nano · Escarda Technologies · Berlin',
     body:        '92% detection accuracy on a field robot. 40% reduction in herbicide use. Deployed in Brandenburg, Germany.',
@@ -103,11 +103,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'about',
-    number:      '06',
+    // number:      '06',
     name:        'About',
     composition: 'about',
     bg:          'cream',
-    label:       '06 · About',
+    label:       'About',
     title:       'Building AI\nthat ships.',
     body:        'AI/ML engineer bridging research and production. Freelancing and building in public — from RAG pipelines and Chrome extension agents to projection mapping tools.',
     experience:  {
@@ -123,11 +123,11 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'cta',
-    number:      '07',
+    // number:      '07',
     name:        'CTA',
     composition: 'cta',
     bg:          'navy',
-    label:       '07 · Let\'s work',
+    label:       'Let\'s work',
     title:       'Let\'s build\nsomething\nthat ships.',
     links: [
       { label: 'GitHub',   href: 'https://github.com/' },

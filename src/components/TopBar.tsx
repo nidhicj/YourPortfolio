@@ -1,4 +1,5 @@
 'use client';
+import { profile } from '@/data/profile';
 
 interface TopBarProps {
   chapterNumber: string;
@@ -25,8 +26,8 @@ export default function TopBar({ chapterNumber, chapterName, total }: TopBarProp
       }}
     >
       <span style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: '13px', letterSpacing: '-0.01em', color: '#F8F6F2' }}>
-        Nidhi Joshi
-      </span>
+        {profile.name}
+</span>
       <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#F8F6F2' }}>
         {chapterNumber}/{String(total).padStart(2, '0')} · {chapterName}
       </span>

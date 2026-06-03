@@ -7,11 +7,12 @@ import OffsetTitle from '@/components/compositions/OffsetTitle';
 import MetricLead from '@/components/compositions/MetricLead';
 import About from '@/components/compositions/About';
 import Cta from '@/components/compositions/Cta';
+import { colors } from '@/lib/theme';
 
 const BG: Record<string, string> = {
-  cream: '#F8F6F2',
-  black: '#0a0a0a',
-  navy: '#14213d',
+  cream: colors.cream,
+  black: colors.ink,
+  navy:  colors.navy,
 };
 
 function Composition({ chapter }: { chapter: Chapter }) {

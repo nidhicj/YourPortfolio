@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { siteMeta } from '@/data/profile';
 
 export const metadata: Metadata = {
-  title: 'Nidhi Joshi — AI/ML Engineer',
-  description: 'I don\'t ship AI without guardrails. Building robust, explainable systems end-to-end.',
+  title:       siteMeta.title,
+  description: siteMeta.description,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

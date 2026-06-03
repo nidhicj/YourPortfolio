@@ -1,11 +1,11 @@
 import gsap from 'gsap';
 import Lenis from '@studio-freight/lenis';
+import { layout, anim, collapsedVw } from '@/lib/theme';
 
-export const ACTIVE_VW   = 62;
-export const N_CHAPTERS  = 7;
-export const COLLAPSED_VW = (100 - ACTIVE_VW) / (N_CHAPTERS - 1);
-// 80% dwell per chapter, 20% transition window
-export const DWELL       = 0.80;
+export const ACTIVE_VW    = layout.activeVw;
+export const N_CHAPTERS   = layout.nChapters;
+export const COLLAPSED_VW = collapsedVw;
+export const DWELL        = layout.dwell;
 
 export function easeOutQuart(t: number): number {
   return 1 - Math.pow(1 - t, 4);
@@ -27,18 +27,16 @@ export function createLenis(): Lenis {
   if (lenisInstance) lenisInstance.destroy();
 
   lenisInstance = new Lenis({
-    duration:      1.4,
-    easing:        (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel:   true,
-    wheelMultiplier: 0.9,
+    duration:        anim.lenisDuration,
+    easing:          (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel:     true,
+    wheelMultiplier: anim.lenisWheelMult,
   });
 
-  // Feed Lenis into GSAP ticker so they stay in sync
   const tickerCallback = (time: number) => lenisInstance?.raf(time * 1000);
   gsap.ticker.add(tickerCallback);
   gsap.ticker.lagSmoothing(0);
 
-  // Return cleanup
   (lenisInstance as Lenis & { _tickerCb: typeof tickerCallback })._tickerCb = tickerCallback;
 
   return lenisInstance;

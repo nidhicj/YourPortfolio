@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { chapters } from '@/data/chapters';
 import { createLenis, destroyLenis, panelWidth, ACTIVE_VW, COLLAPSED_VW, DWELL, N_CHAPTERS } from '@/lib/animation';
+import { anim } from '@/lib/theme';
 import Panel from '@/components/Panel';
 import TopBar from '@/components/TopBar';
 import type Lenis from '@studio-freight/lenis';
 
-const SCROLL_PER_CHAPTER = 600;
+const SCROLL_PER_CHAPTER = anim.scrollPerChapter;
 
 function easeOutQuart(t: number): number {
   return 1 - Math.pow(1 - t, 4);
@@ -67,8 +68,8 @@ export default function Accordion() {
       if (displayIdx !== lastActiveIdx) {
         const oldEl = contentEls[lastActiveIdx];
         const newEl = contentEls[displayIdx];
-        if (oldEl) gsap.to(oldEl, { opacity: 0, pointerEvents: 'none', duration: 0.18 });
-        if (newEl) gsap.to(newEl, { opacity: 1, pointerEvents: 'auto', duration: 0.18 });
+        if (oldEl) gsap.to(oldEl, { opacity: 0, pointerEvents: 'none', duration: anim.contentFadeDuration });
+        if (newEl) gsap.to(newEl, { opacity: 1, pointerEvents: 'auto', duration: anim.contentFadeDuration });
         lastActiveIdx = displayIdx;
         setActiveIdx(displayIdx);
         setTopBarChapter(chapters[displayIdx]);
