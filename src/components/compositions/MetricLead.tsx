@@ -1,5 +1,6 @@
 import DemoZone from '@/components/DemoZone';
 import type { Chapter } from '@/data/chapters';
+import { BreathText } from '@/components/BreathText';
 
 /* Weed Detection: huge metric top-left, title + demo bottom */
 export default function MetricLead({ chapter }: { chapter: Chapter }) {
@@ -20,9 +21,9 @@ export default function MetricLead({ chapter }: { chapter: Chapter }) {
 
       {/* title + tech — bottom-left */}
       <div style={{ position: 'absolute', bottom: '60px', left: '64px', width: '44%' }}>
-        <h2 style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(48px,5.5vw,80px)', letterSpacing: '-0.04em', lineHeight: 0.9, color: '#F8F6F2' }}>
+        <BreathText as="h2" bg="dark" style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(48px,5.5vw,80px)', letterSpacing: '-0.04em', lineHeight: 0.9 }}>
           {chapter.title.split('\n').map((l, i) => <span key={i}>{l}{i < chapter.title.split('\n').length - 1 && <br />}</span>)}
-        </h2>
+        </BreathText>
         {chapter.tech && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(252,163,17,0.4)', margin: '14px 0 16px' }}>{chapter.tech}</p>}
         {chapter.body && <p style={{ fontFamily: 'var(--font-satoshi)', fontSize: '16px', lineHeight: 1.72, fontWeight: 300, color: 'rgba(248,246,242,0.45)' }}>{chapter.body}</p>}
       </div>

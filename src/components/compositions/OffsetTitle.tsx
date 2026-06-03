@@ -1,5 +1,6 @@
 import DemoZone from '@/components/DemoZone';
 import type { Chapter } from '@/data/chapters';
+import { BreathText } from '@/components/BreathText';
 
 /* Projection Mapper: title top-right, demo mid-left, desc bottom */
 export default function OffsetTitle({ chapter }: { chapter: Chapter }) {
@@ -11,9 +12,9 @@ export default function OffsetTitle({ chapter }: { chapter: Chapter }) {
 
       {/* title — top-right intentionally */}
       <div style={{ position: 'absolute', top: '100px', right: '64px', textAlign: 'right' }}>
-        <h2 style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(56px,7vw,100px)', letterSpacing: '-0.04em', lineHeight: 0.9, color: '#F8F6F2' }}>
+        <BreathText as="h2" bg="dark" style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(56px,7vw,100px)', letterSpacing: '-0.04em', lineHeight: 0.9 }}>
           {chapter.title.split('\n').map((l, i) => <span key={i}>{l}{i < chapter.title.split('\n').length - 1 && <br />}</span>)}
-        </h2>
+        </BreathText>
         {chapter.tech && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(252,163,17,0.4)', marginTop: '16px', textAlign: 'right' }}>{chapter.tech}</p>}
       </div>
 
