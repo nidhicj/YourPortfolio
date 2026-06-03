@@ -1,54 +1,105 @@
 import type { Chapter } from '@/data/chapters';
-
-const P = { padding: '72px 64px 60px' } as const;
+import { fonts, typo, space } from '@/lib/theme';
+import { profile, labels } from '@/data/profile';
+import { BreathText } from '@/components/BreathText';
+import { BreathLink } from '@/components/BreathLink';
 
 export default function Hero({ chapter }: { chapter: Chapter }) {
   return (
-    <div className="content absolute inset-0 grid gap-12" style={{
-      ...P,
-      gridTemplateColumns: '1fr 1fr',
-      alignItems: 'end',
-
-    }}>
-      {/* left: title */}
+    <div
+      className="content absolute inset-0 grid"
+      style={{
+        padding: `${space.panelTop}px ${space.panelX}px ${space.panelBottom}px`,
+        gridTemplateColumns: '1fr 1fr',
+        columnGap: '48px',
+        alignItems: 'start',
+      }}
+    >
+      {/* left: meta + headline */}
       <div>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.3)', marginBottom: '28px' }}>
-          AI/ML Engineer · Duluth, GA
+        <p style={{
+          fontFamily:    fonts.mono,
+          fontSize:      typo.metaSize,
+          letterSpacing: typo.metaLetterSpacing,
+          textTransform: 'uppercase',
+          color:         'rgba(0,0,0,0.3)',
+          marginBottom:  `${space.metaGap}px`,
+        }}>
+          {profile.role} · {profile.location}
         </p>
-        <h1 style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(72px,9vw,128px)', letterSpacing: '-0.04em', lineHeight: 0.88, color: '#000' }}>
+        <BreathText as="h1" bg="light" style={{
+          fontFamily:    fonts.clash,
+          fontWeight:    700,
+          fontSize:      typo.heroSize,
+          letterSpacing: '-0.04em',
+          lineHeight:    0.88,
+        }}>
           {chapter.title.split('\n').map((line, i, arr) => (
             <span key={i}>
-              {i === 1 ? <>{line.slice(0, -2)}<span style={{ color: 'var(--color-amber)' }}>{line.slice(-2)}</span></> : line}
+              {i === 1
+                ? <>{line.slice(0, -2)}<span style={{ color: 'var(--color-amber)' }}>{line.slice(-2)}</span></>
+                : line}
               {i < arr.length - 1 && <br />}
             </span>
           ))}
-        </h1>
+        </BreathText>
       </div>
 
       {/* right: tagline + bio + contact */}
-      <div className="flex flex-col justify-end gap-8">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: `${space.blockGap}px` }}>
         {chapter.tagline && (
-          <blockquote style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(28px,3.2vw,46px)', letterSpacing: '-0.03em', lineHeight: 1.05, color: '#000' }}>
-            {chapter.tagline.split('\n').map((l, i) => <span key={i}>{l}{i < chapter.tagline!.split('\n').length - 1 && <br />}</span>)}
+          <blockquote style={{
+            fontFamily:    fonts.clash,
+            fontWeight:    700,
+            fontSize:      typo.taglineSize,
+            letterSpacing: '-0.03em',
+            lineHeight:    1.05,
+            color:         'rgba(10,10,10,0.88)',
+          }}>
+            {chapter.tagline.split('\n').map((l, i, arr) => (
+              <span key={i}>{l}{i < arr.length - 1 && <br />}</span>
+            ))}
           </blockquote>
         )}
         {chapter.body && (
-          <p style={{ fontFamily: 'var(--font-satoshi)', fontSize: '17px', lineHeight: 1.72, fontWeight: 300, color: 'rgba(0,0,0,0.5)', maxWidth: '360px' }}>
+          <p style={{
+            fontFamily:  fonts.satoshi,
+            fontSize:    typo.bodySize,
+            lineHeight:  typo.bodyLineHeight,
+            fontWeight:  typo.bodyWeight,
+            color:       'rgba(0,0,0,0.5)',
+            maxWidth:    '360px',
+          }}>
             {chapter.body}
           </p>
         )}
         {chapter.links && (
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(252,163,17,0.7)', marginBottom: '12px' }}>
-              Contact
+            <p style={{
+              fontFamily:    fonts.mono,
+              fontSize:      typo.metaSize,
+              letterSpacing: typo.metaLetterSpacing,
+              textTransform: 'uppercase',
+              color:         'rgba(252,163,17,0.7)',
+              marginBottom:  '12px',
+            }}>
+              {labels.contact}
             </p>
-            <div className="flex flex-wrap gap-6">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
               {chapter.links.map(l => (
-                <a key={l.label} href={l.href} style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.4)', textDecoration: 'none' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-amber)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(0,0,0,0.4)')}>
+                <BreathLink
+                  key={l.label}
+                  href={l.href}
+                  bg="light"
+                  style={{
+                    fontFamily:    fonts.mono,
+                    fontSize:      typo.metaSize,
+                    letterSpacing: typo.linkLetterSpacing,
+                    textTransform: 'uppercase',
+                  }}
+                >
                   {l.label}
-                </a>
+                </BreathLink>
               ))}
             </div>
           </div>
