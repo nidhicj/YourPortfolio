@@ -2,7 +2,10 @@ import type { Chapter } from '@/data/chapters';
 import { fonts, typo, space } from '@/lib/theme';
 import { profile, labels } from '@/data/profile';
 import { BreathText } from '@/components/BreathText';
+import { BreathSpan } from '@/components/BreathSpan';
 import { BreathLink } from '@/components/BreathLink';
+import { PhotoHover } from '@/components/PhotoHover';
+import { HeroTile } from '@/components/HeroTile';
 
 export default function Hero({ chapter }: { chapter: Chapter }) {
   return (
@@ -11,12 +14,14 @@ export default function Hero({ chapter }: { chapter: Chapter }) {
       style={{
         padding: `${space.panelTop}px ${space.panelX}px ${space.panelBottom}px`,
         gridTemplateColumns: '1fr 1fr',
+        gridTemplateRows: 'auto auto auto',
         columnGap: '48px',
+        rowGap: '32px',
         alignItems: 'start',
       }}
     >
       {/* left: meta + headline */}
-      <div>
+      <div style={{ gridColumn: '1', gridRow: '1' }}>
         <p style={{
           fontFamily:    fonts.mono,
           fontSize:      typo.metaSize,
@@ -27,52 +32,107 @@ export default function Hero({ chapter }: { chapter: Chapter }) {
         }}>
           {profile.role} · {profile.location}
         </p>
-        <BreathText as="h1" bg="light" style={{
+        <h1 style={{
           fontFamily:    fonts.clash,
           fontWeight:    700,
           fontSize:      typo.heroSize,
           letterSpacing: '-0.04em',
           lineHeight:    0.88,
         }}>
-          {chapter.title.split('\n').map((line, i, arr) => (
-            <span key={i}>
+          {chapter.title.split('\n').map((line, i) => (
+            <span key={i} style={{
+              fontSize:      i === 1 ? typo.heroSize : 'clamp(28px, 3vw, 42px)',
+              display:       'block',
+              letterSpacing: i === 0 ? '0.001em' : '-0.04em',
+              wordSpacing:   i === 0 ? '0.4em' : 'normal',
+            }}>
               {i === 1
-                ? <>{line.slice(0, -2)}<span style={{ color: 'var(--color-amber)' }}>{line.slice(-2)}</span></>
+                ? <BreathSpan bg="light">
+                    {line.slice(0, -3)}<span style={{ color: 'var(--color-amber)' }}>{line.slice(-3)}</span>
+                  </BreathSpan>
                 : line}
-              {i < arr.length - 1 && <br />}
             </span>
           ))}
-        </BreathText>
-      </div>
+        </h1>
+        {chapter.role && (
+          <blockquote style={{
+            marginTop: '24px',   // ← add this
+            fontFamily:    fonts.clash,
+            fontWeight:    700,
+            fontSize:      typo.roleSize,
+            letterSpacing: '-0.01em',
+            lineHeight:    1.05,
+            color:         'rgba(0, 0, 0, 0.88)',
+            maxWidth:    '400px',
+          }}>
+            {chapter.role.split('\n').map((l, i, arr) => (
+              <span key={i}>
+      {l.includes('Robotics')
+        ? <>{l.split('Robotics')[0]}<span style={{ color: 'var(--color-amber)' 
+  }}>Robotics</span>{l.split('Robotics')[1]}</>
+        : l}
+      {i < arr.length - 1 && <br />}
+    </span>
 
-      {/* right: tagline + bio + contact */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: `${space.blockGap}px` }}>
+            ))}
+          </blockquote>
+        )}
+        </div>
+
+        <div style={{ gridColumn: '1', gridRow: '2' }}>
         {chapter.tagline && (
           <blockquote style={{
             fontFamily:    fonts.clash,
             fontWeight:    700,
             fontSize:      typo.taglineSize,
-            letterSpacing: '-0.03em',
+            letterSpacing: '0.001em',
             lineHeight:    1.05,
-            color:         'rgba(10,10,10,0.88)',
+            color:         'rgba(0, 0, 0, 0.88)',
+            maxWidth:    '480px',
+            textAlign: 'justify',
           }}>
             {chapter.tagline.split('\n').map((l, i, arr) => (
               <span key={i}>{l}{i < arr.length - 1 && <br />}</span>
             ))}
           </blockquote>
         )}
+
         {chapter.body && (
           <p style={{
-            fontFamily:  fonts.satoshi,
+            marginTop: '28px',   // ← add this
+            fontFamily:  fonts.clash,
             fontSize:    typo.bodySize,
             lineHeight:  typo.bodyLineHeight,
             fontWeight:  typo.bodyWeight,
             color:       'rgba(0,0,0,0.5)',
-            maxWidth:    '360px',
+            maxWidth:    '500px',
+            textAlign: 'justify',
           }}>
             {chapter.body}
           </p>
         )}
+      </div>
+
+
+      {/* right: tagline + bio + contact */}
+
+      <div style={{ gridColumn: '2', gridRow: '1' }}>
+        <PhotoHover />
+      </div>
+      <div style={{
+          gridColumn: '2',
+          gridRow: '2',
+          display: 'grid',
+          gridTemplateColumns: '200px 200px',
+          gap: '16px',
+        }}>
+
+          <HeroTile label="Blog" sub="I've got opinions" bg="#14213d" />
+          <HeroTile label="My Work →" sub="Scroll to explore" bg="var(--color-amber)" />
+      </div>
+
+      <div style={{ gridColumn: '2', gridRow: '3', display: 'flex', flexDirection: 'column', gap: `${space.blockGap}px` }}>
+        
         {chapter.links && (
           <div>
             <p style={{
@@ -81,7 +141,7 @@ export default function Hero({ chapter }: { chapter: Chapter }) {
               letterSpacing: typo.metaLetterSpacing,
               textTransform: 'uppercase',
               color:         'rgba(252,163,17,0.7)',
-              marginBottom:  '12px',
+              marginBottom:  '0px',
             }}>
               {labels.contact}
             </p>

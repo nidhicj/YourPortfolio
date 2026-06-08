@@ -18,13 +18,14 @@ export const fonts = {
 
 export const typo = {
   heroSize:          'clamp(72px, 9vw, 128px)',
-  taglineSize:       'clamp(28px, 3.2vw, 46px)',
+  roleSize:          'clamp(35px, 2.0vw, 36px)',
+  taglineSize:       'clamp(15px, 1.7vw, 30px)',
   bodySize:          '17px',
   bodyLineHeight:    1.72,
-  bodyWeight:        300,
-  metaSize:          '10px',
-  metaLetterSpacing: '0.18em',
-  linkLetterSpacing: '0.16em',
+  bodyWeight:        500,
+  metaSize:          '15px',
+  metaLetterSpacing: '0.16em',
+  linkLetterSpacing: '0.12em',
 } as const;
 
 export const space = {
@@ -50,15 +51,15 @@ export const anim = {
 } as const;
 
 export const breath = {
-  speed: 0.026,  // radians/frame → ~4s cycle at 60fps
+  speed: 0.052,  // radians/frame → ~2s cycle at 60fps
   colors: {
     headline: {
-      light: { lo: [10,  10,  10,  0.88] as const, hi: [252, 163, 17, 0.95] as const },
-      dark:  { lo: [248, 246, 242, 0.85] as const, hi: [252, 163, 17, 0.95] as const },
+      light: { lo: [252, 163, 17, 0.18] as const, hi: [252, 163, 17, 0.95] as const },
+      dark:  { lo: [252, 163, 17, 0.18] as const, hi: [252, 163, 17, 0.95] as const },
     },
     link: {
-      light: { lo: [0,   0,   0,   0.38] as const, hi: [252, 163, 17, 0.90] as const },
-      dark:  { lo: [248, 246, 242, 0.32] as const, hi: [252, 163, 17, 0.90] as const },
+      light: { lo: [252, 163, 17, 0.18] as const, hi: [252, 163, 17, 0.90] as const },
+      dark:  { lo: [252, 163, 17, 0.18] as const, hi: [252, 163, 17, 0.90] as const },
     },
   },
 } as const;

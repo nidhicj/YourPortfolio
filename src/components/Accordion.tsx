@@ -95,7 +95,7 @@ export default function Accordion() {
       <div id="scroll-driver" style={{ position: 'absolute', top: 0, left: 0, width: '1px', pointerEvents: 'none' }} />
 
       <TopBar
-        chapterNumber={topBarChapter.number}
+        chapterNumber={""}
         chapterName={topBarChapter.name}
         total={N_CHAPTERS}
       />

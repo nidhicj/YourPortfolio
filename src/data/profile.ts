@@ -11,7 +11,7 @@ export const siteMeta = {
 } as const;
 
 export const labels = {
-  contact:    'Contact',
+  contact:    ' ',
   experience: 'Experience',
   education:  'Education',
 } as const;

@@ -29,7 +29,7 @@ export default function TopBar({ chapterNumber, chapterName, total }: TopBarProp
         {profile.name}
 </span>
       <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#F8F6F2' }}>
-        {chapterNumber}/{String(total).padStart(2, '0')} · {chapterName}
+        · {chapterName}
       </span>
     </div>
   );

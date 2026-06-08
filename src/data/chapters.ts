@@ -20,6 +20,7 @@ export interface Chapter {
   bg:          PanelBg;
   label?:      string;   // small mono label  e.g. '02 · RAG · 2026'
   title:       string;
+  role:        string;
   tagline?:    string;
   tech?:       string;
   body?:       string;
@@ -27,6 +28,7 @@ export interface Chapter {
   stats?:      Stat[];
   links?:      Link[];
   demo?:       boolean;  // show demo zone
+  video?:      string;  // path to video in public/ e.g. '/lumen-demo.webm'
   experience?: { role: string; company: string; period: string; location: string };
   education?:  { degree: string; school: string; years: string }[];
 }
@@ -38,14 +40,15 @@ export const chapters: Chapter[] = [
     name:        ' ',
     composition: 'hero',
     bg:          'cream',
-    title:       'Research\nEngineered\nShipped.',
-    tagline:     '"I don\'t ship AI\nwithout guardrails."',
-    body:        'Bridges research and production — robust, explainable, end-to-end. Currently freelancing, open to work.',
+    title:       'Hey, I am\nNidhi.\n',
+    role:        'AI Solutions & Robotics Enthusiast',
+    tagline:     'I build AI that hallucinates less than the AI that wrote this line',
+    body:        'Ideas are easy. Making them work - efficiently, at scale, without surprises in production - is the real puzzle. And puzzles are kind of my thing. You handle the vision, I will handle the execution. \nopen_to_work = True and the inbox is listening on port 24/7.',
     links: [
-      { label: 'GitHub',   href: 'https://github.com/' },
-      { label: 'LinkedIn', href: 'https://linkedin.com/in/' },
+      { label: 'GitHub',   href: 'https://github.com/nidhicj' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/connect-nidhichijoshi/' },
       { label: 'Resume',   href: '/resume.pdf' },
-      { label: 'Email',    href: 'mailto:shriramsomeshwar@gmail.com' },
+      { label: 'Email',    href: 'mailto:joshichi.nidhi@gmail.com' },
     ],
   },
   {
@@ -54,20 +57,26 @@ export const chapters: Chapter[] = [
     name:        'Lumen',
     composition: 'bilateral',
     bg:          'black',
-    label:       'RAG · 2026',
+    label:       'RAG · Full-Stack · 2026',
     title:       'Lumen',
-    tech:        'FastAPI · OpenRouter · Google Drive · pgvector',
-    body:        'Drop a PDF. Ask anything. Get cited answers. A research assistant that reads your documents so you don\'t have to start from scratch.',
+    role:        '',
+    tech:        'FastAPI · React · OpenRouter · Google Drive API · TF-IDF',
+    body:        'RAG pipeline built from scratch — no LangChain, no LlamaIndex. Drop a PDF, paste a URL, or connect a Google Drive folder. Get cited answers with inline [1][2] source markers. Four free LLMs with automatic fallback if one fails.',
     demo:        true,
+    video:       '/lumen-demo.webm',
+    links: [
+      { label: 'Live Demo →', href: 'https://lumen-frontend-topaz.vercel.app/' },
+    ],
   },
   {
     id:          'autodoc',
     // number:      '03',
     name:        'AutoDoc',
-    composition: 'reading-room',
+    composition: 'bilateral',
     bg:          'black',
     label:       'Agent · 2025',
     title:       'AutoDoc',
+    role:        '',
     tech:        'Chrome MV3 · NestJS · Gemini AI · Docker',
     body:        'Chrome extension that watches you work and writes docs. Reads your active tab, infers context, drafts structured documentation — automatically.',
     demo:        true,
@@ -76,10 +85,11 @@ export const chapters: Chapter[] = [
     id:          'projection-mapper',
     // number:      '04',
     name:        'Mapper',
-    composition: 'offset-title',
+    composition: 'bilateral',
     bg:          'navy',
     label:       'Vision · 2025',
     title:       'Projection\nMapper',
+    role:        '',
     tech:        'Python · OpenCV · PySide6 · NumPy',
     body:        'Desktop tool for real-time projection mapping. Warp video feeds, define polygonal surfaces, keystone-correct geometry. Built for live performance and installation art.',
     demo:        true,
@@ -88,10 +98,11 @@ export const chapters: Chapter[] = [
     id:          'weed-detection',
     // number:      '05',
     name:        'Weed',
-    composition: 'metric-lead',
+    composition: 'bilateral',
     bg:          'navy',
     label:       'Vision · Work · 2023–24',
     title:       'Weed\nDetection',
+    role:        '',
     tech:        'YOLOv8 · Jetson Nano · Escarda Technologies · Berlin',
     body:        '92% detection accuracy on a field robot. 40% reduction in herbicide use. Deployed in Brandenburg, Germany.',
     metric:      '92%',
@@ -109,6 +120,7 @@ export const chapters: Chapter[] = [
     bg:          'cream',
     label:       'About',
     title:       'Building AI\nthat ships.',
+    role:        '',
     body:        'AI/ML engineer bridging research and production. Freelancing and building in public — from RAG pipelines and Chrome extension agents to projection mapping tools.',
     experience:  {
       role:     'AI/ML Engineer',
@@ -129,6 +141,7 @@ export const chapters: Chapter[] = [
     bg:          'navy',
     label:       'Let\'s work',
     title:       'Let\'s build\nsomething\nthat ships.',
+    role:        '',
     links: [
       { label: 'GitHub',   href: 'https://github.com/' },
       { label: 'LinkedIn', href: 'https://linkedin.com/in/' },

@@ -43,6 +43,7 @@ export default function Panel({ chapter, isActive }: PanelProps) {
         overflow: 'hidden',
         flexShrink: 0,
         background: BG[chapter.bg],
+        color: chapter.bg === 'cream' ? colors.ink : colors.cream,
       }}
     >
       <Spine chapter={chapter} isActive={isActive} />

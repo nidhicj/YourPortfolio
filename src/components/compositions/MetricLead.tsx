@@ -12,7 +12,7 @@ export default function MetricLead({ chapter }: { chapter: Chapter }) {
 
       {/* metric dominates */}
       {chapter.metric && (
-        <div style={{ position: 'absolute', top: '52px', left: '52px' }}>
+        <div style={{ position: 'absolute', top: '72px', left: '792px' }}>
           <span style={{ fontFamily: 'var(--font-clash)', fontWeight: 700, fontSize: 'clamp(96px,13vw,176px)', letterSpacing: '-0.04em', lineHeight: 0.85, color: 'var(--color-amber)' }}>
             {chapter.metric}
           </span>
@@ -25,7 +25,7 @@ export default function MetricLead({ chapter }: { chapter: Chapter }) {
           {chapter.title.split('\n').map((l, i) => <span key={i}>{l}{i < chapter.title.split('\n').length - 1 && <br />}</span>)}
         </BreathText>
         {chapter.tech && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(252,163,17,0.4)', margin: '14px 0 16px' }}>{chapter.tech}</p>}
-        {chapter.body && <p style={{ fontFamily: 'var(--font-satoshi)', fontSize: '16px', lineHeight: 1.72, fontWeight: 300, color: 'rgba(248,246,242,0.45)' }}>{chapter.body}</p>}
+        {chapter.body && <p style={{ fontFamily: 'var(--font-satoshi)', fontSize: '16px', lineHeight: 1.72, fontWeight: 700, color: 'rgba(255, 255, 255, 0.45)' }}>{chapter.body}</p>}
       </div>
 
       {/* demo + stats — bottom-right */}
