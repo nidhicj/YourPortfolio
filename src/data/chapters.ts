@@ -14,7 +14,7 @@ export interface Link   { label: string; href: string }
 
 export interface Chapter {
   id:          string;
-  // number:      string;   // '01'
+  number:      string;   // '01'
   name:        string;   // used in spine + topbar
   composition: Composition;
   bg:          PanelBg;
@@ -36,7 +36,7 @@ export interface Chapter {
 export const chapters: Chapter[] = [
   {
     id:          'hero',
-    // number:      '01',
+    number:      '',
     name:        ' ',
     composition: 'hero',
     bg:          'cream',
@@ -53,7 +53,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'lumen',
-    // number:      '02',
+    number:      '',
     name:        'Lumen',
     composition: 'bilateral',
     bg:          'black',
@@ -70,7 +70,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'autodoc',
-    // number:      '03',
+    number:      '',
     name:        'AutoDoc',
     composition: 'bilateral',
     bg:          'black',
@@ -83,7 +83,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'projection-mapper',
-    // number:      '04',
+    number:      '',
     name:        'Mapper',
     composition: 'bilateral',
     bg:          'navy',
@@ -96,7 +96,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'weed-detection',
-    // number:      '05',
+    number:      '',
     name:        'Weed',
     composition: 'bilateral',
     bg:          'navy',
@@ -105,7 +105,7 @@ export const chapters: Chapter[] = [
     role:        '',
     tech:        'YOLOv8 · Jetson Nano · Escarda Technologies · Berlin',
     body:        '92% detection accuracy on a field robot. 40% reduction in herbicide use. Deployed in Brandenburg, Germany.',
-    metric:      '92%',
+    metric:      '%',
     stats: [
       { value: '92%', label: 'accuracy' },
       { value: '40%', label: 'less chemicals' },
@@ -114,7 +114,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'about',
-    // number:      '06',
+    number:      '',
     name:        'About',
     composition: 'about',
     bg:          'cream',
@@ -135,7 +135,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'cta',
-    // number:      '07',
+    number:      '',
     name:        'CTA',
     composition: 'cta',
     bg:          'navy',
