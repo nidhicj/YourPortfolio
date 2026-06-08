@@ -36,7 +36,7 @@ export interface Chapter {
 export const chapters: Chapter[] = [
   {
     id:          'hero',
-    number:      '',
+    number:      ' ',
     name:        ' ',
     composition: 'hero',
     bg:          'cream',
@@ -53,7 +53,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'lumen',
-    number:      '',
+    number:      ' ',
     name:        'Lumen',
     composition: 'bilateral',
     bg:          'black',
@@ -70,7 +70,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'autodoc',
-    number:      '',
+    number:      ' ',
     name:        'AutoDoc',
     composition: 'bilateral',
     bg:          'black',
@@ -83,7 +83,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'projection-mapper',
-    number:      '',
+    number:      ' ',
     name:        'Mapper',
     composition: 'bilateral',
     bg:          'navy',
@@ -96,7 +96,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'weed-detection',
-    number:      '',
+    number:      ' ',
     name:        'Weed',
     composition: 'bilateral',
     bg:          'navy',
@@ -114,7 +114,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'about',
-    number:      '',
+    number:      ' ',
     name:        'About',
     composition: 'about',
     bg:          'cream',
@@ -135,7 +135,7 @@ export const chapters: Chapter[] = [
   },
   {
     id:          'cta',
-    number:      '',
+    number:      ' ',
     name:        'CTA',
     composition: 'cta',
     bg:          'navy',
