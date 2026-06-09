@@ -4,7 +4,7 @@
 // Note: the @theme block in globals.css uses the same color values — keep in sync.
 
 export const colors = {
-  cream:  '#F8F6F2',
+  cream:  '#ffffff',
   navy:   '#14213d',
   amber:  '#fca311',
   ink:    '#0a0a0a',
