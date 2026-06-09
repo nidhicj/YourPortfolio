@@ -20,14 +20,14 @@ interface SpineProps {
 export default function Spine({ chapter, isActive, onJumpTo }: SpineProps) {
   return (
     <div
-      className={`spine absolute inset-0 flex flex-col items-center justify-center gap-4 ${onJumpTo ? '' : 'pointer-events-none'}`}
+      className={`spine absolute inset-0 flex flex-col items-center justify-center gap-4 ${(!isActive && onJumpTo) ? '' : 'pointer-events-none'}`}
       style={{
         opacity: isActive ? 0 : 1,
         transition: 'opacity 0.25s',
         zIndex: 5,
-        cursor: onJumpTo ? 'pointer' : 'default',
+        cursor: (!isActive && onJumpTo) ? 'pointer' : 'default',
       }}
-      onClick={onJumpTo}
+      onClick={!isActive ? onJumpTo : undefined}
     >
       <span style={{
         fontFamily: 'var(--font-mono)',
