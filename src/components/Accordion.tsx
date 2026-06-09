@@ -118,7 +118,11 @@ export default function Accordion() {
             ref={el => { panelRefs.current[i] = el; }}
             style={{ height: '100%', flexShrink: 0, position: 'relative', overflow: 'hidden', willChange: 'width' }}
           >
-            <Panel chapter={chapter} isActive={activeIdx === i} />
+            <Panel
+              chapter={chapter}
+              isActive={activeIdx === i}
+              onJumpTo={() => lenisRef.current?.scrollTo(i * SCROLL_PER_CHAPTER)}
+            />
           </div>
         ))}
       </div>

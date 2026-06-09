@@ -2,6 +2,7 @@ import type { Chapter } from '@/data/chapters';
 import Spine from '@/components/Spine';
 import Hero from '@/components/compositions/Hero';
 import Bilateral from '@/components/compositions/Bilateral';
+import VideoCenter from '@/components/compositions/VideoCenter';
 import ReadingRoom from '@/components/compositions/ReadingRoom';
 import OffsetTitle from '@/components/compositions/OffsetTitle';
 import MetricLead from '@/components/compositions/MetricLead';
@@ -22,6 +23,7 @@ function Composition({ chapter }: { chapter: Chapter }) {
     case 'reading-room': return <ReadingRoom chapter={chapter} />;
     case 'offset-title': return <OffsetTitle chapter={chapter} />;
     case 'metric-lead': return <MetricLead chapter={chapter} />;
+    case 'video-center': return <VideoCenter chapter={chapter} />;
     case 'about':       return <About chapter={chapter} />;
     case 'cta':         return <Cta chapter={chapter} />;
   }
@@ -30,9 +32,10 @@ function Composition({ chapter }: { chapter: Chapter }) {
 interface PanelProps {
   chapter: Chapter;
   isActive: boolean;
+  onJumpTo?: () => void;
 }
 
-export default function Panel({ chapter, isActive }: PanelProps) {
+export default function Panel({ chapter, isActive, onJumpTo }: PanelProps) {
   return (
     <div
       data-panel={chapter.id}
@@ -46,7 +49,7 @@ export default function Panel({ chapter, isActive }: PanelProps) {
         color: chapter.bg === 'cream' ? colors.ink : colors.cream,
       }}
     >
-      <Spine chapter={chapter} isActive={isActive} />
+      <Spine chapter={chapter} isActive={isActive} onJumpTo={onJumpTo} />
       <Composition chapter={chapter} />
     </div>
   );

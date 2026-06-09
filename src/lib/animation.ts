@@ -42,6 +42,10 @@ export function createLenis(): Lenis {
   return lenisInstance;
 }
 
+export function getLenis(): Lenis | null {
+  return lenisInstance;
+}
+
 export function destroyLenis(lenis: Lenis) {
   const cb = (lenis as Lenis & { _tickerCb?: (...args: unknown[]) => void })._tickerCb;
   if (cb) gsap.ticker.remove(cb);

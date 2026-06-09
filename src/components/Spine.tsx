@@ -14,17 +14,20 @@ const nameColor: Record<string, string> = {
 interface SpineProps {
   chapter: Chapter;
   isActive: boolean;
+  onJumpTo?: () => void;
 }
 
-export default function Spine({ chapter, isActive }: SpineProps) {
+export default function Spine({ chapter, isActive, onJumpTo }: SpineProps) {
   return (
     <div
-      className="spine absolute inset-0 flex flex-col items-center justify-center gap-4 pointer-events-none"
+      className={`spine absolute inset-0 flex flex-col items-center justify-center gap-4 ${onJumpTo ? '' : 'pointer-events-none'}`}
       style={{
         opacity: isActive ? 0 : 1,
         transition: 'opacity 0.25s',
         zIndex: 5,
+        cursor: onJumpTo ? 'pointer' : 'default',
       }}
+      onClick={onJumpTo}
     >
       <span style={{
         fontFamily: 'var(--font-mono)',
