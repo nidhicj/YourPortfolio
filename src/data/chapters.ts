@@ -3,6 +3,7 @@ export type Composition =
   | 'bilateral'
   | 'reading-room'
   | 'offset-title'
+  | 'video-center'
   | 'metric-lead'
   | 'about'
   | 'cta';
@@ -43,7 +44,7 @@ export const chapters: Chapter[] = [
     title:       'Hey, I am\nNidhi.\n',
     role:        'AI Solutions & Robotics Enthusiast',
     tagline:     'I build AI that hallucinates less than the AI that wrote this line',
-    body:        'Ideas are easy. Making them work - efficiently, at scale, without surprises in production - is the real puzzle. And puzzles are kind of my thing. You handle the vision, I will handle the execution. \nopen_to_work = True and the inbox is listening on port 24/7.',
+    body:        'Ideas are easy. Making them work - efficiently, at scale, without surprises in production - is the real puzzle. And puzzles are kind of my thing. You handle the vision, I will handle the execution.\n \n open_to_work = True and the inbox is listening on port 24/7.',
     links: [
       { label: 'GitHub',   href: 'https://github.com/nidhicj' },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/in/connect-nidhichijoshi/' },
@@ -55,7 +56,7 @@ export const chapters: Chapter[] = [
     id:          'lumen',
     number:      ' ',
     name:        'Lumen',
-    composition: 'bilateral',
+    composition: 'video-center',
     bg:          'black',
     label:       'RAG · Full-Stack · 2026',
     title:       'Lumen',
@@ -72,7 +73,7 @@ export const chapters: Chapter[] = [
     id:          'autodoc',
     number:      ' ',
     name:        'AutoDoc',
-    composition: 'bilateral',
+    composition: 'video-center',
     bg:          'black',
     label:       'Agent · 2025',
     title:       'AutoDoc',
@@ -85,7 +86,7 @@ export const chapters: Chapter[] = [
     id:          'projection-mapper',
     number:      ' ',
     name:        'Mapper',
-    composition: 'bilateral',
+    composition: 'video-center',
     bg:          'navy',
     label:       'Vision · 2025',
     title:       'Projection\nMapper',
@@ -98,7 +99,7 @@ export const chapters: Chapter[] = [
     id:          'weed-detection',
     number:      ' ',
     name:        'Weed',
-    composition: 'bilateral',
+    composition: 'video-center',
     bg:          'navy',
     label:       'Vision · Work · 2023–24',
     title:       'Weed\nDetection',
@@ -143,10 +144,10 @@ export const chapters: Chapter[] = [
     title:       'Let\'s build\nsomething\nthat ships.',
     role:        '',
     links: [
-      { label: 'GitHub',   href: 'https://github.com/' },
-      { label: 'LinkedIn', href: 'https://linkedin.com/in/' },
+      { label: 'GitHub',   href: 'https://github.com/nidhicj' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/connect-nidhichijoshi/' },
       { label: 'Resume',   href: '/resume.pdf' },
-      { label: 'Email',    href: 'mailto:shriramsomeshwar@gmail.com' },
+      { label: 'Email',    href: 'mailto:joshichi.nidhi@gmail.com' },
     ],
   },
 ];
